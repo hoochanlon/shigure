@@ -5,51 +5,8 @@
  * 断点按可用布局空间划分，而不是绑定具体设备型号。
  */
 
-/* 触控平板横屏：iPad Pro 等设备虽然 CSS 宽度较大，也不使用桌面三栏 */
-@media (pointer: coarse) and (hover: none) and (min-width: 1200px) and (max-width: 1400px) {
-  html,
-  body {
-    overflow-x: hidden;
-  }
-
-  .app-shell {
-    width: min(100% - 64px, 1280px);
-  }
-
-  .workspace {
-    grid-template-columns: minmax(180px, .8fr) minmax(0, 1.8fr);
-    gap: 44px;
-  }
-
-  .environment-panel {
-    grid-column: 1 / -1;
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 20px 32px;
-    padding-top: 20px;
-  }
-
-  .panel-label {
-    grid-column: 1 / -1;
-  }
-
-  .timer-stage {
-    min-width: 0;
-    padding-inline: 12px;
-  }
-
-  .stopwatch-time {
-    font-size: clamp(2rem, 4vw, 2.6rem);
-  }
-}
-
 /* 平板横屏与窄桌面：保留侧栏，环境区换到下一行 */
-@media (max-width: 1199px) {
-  html,
-  body {
-    overflow-x: hidden;
-  }
-
+@media (max-width: 1200px) {
   .app-shell {
     width: min(100% - 48px, 1080px);
     padding-inline: max(0px, env(safe-area-inset-left)) max(0px, env(safe-area-inset-right));
@@ -81,14 +38,6 @@
   .timer-stage {
     min-width: 0;
     padding-inline: 12px;
-  }
-
-  .remaining-time {
-    font-size: clamp(5.5rem, 12vw, 8.5rem);
-  }
-
-  .stopwatch-time {
-    font-size: clamp(2rem, 5vw, 3.5rem);
   }
 }
 
@@ -186,19 +135,6 @@
     padding: 9px 18px;
   }
 
-  .remaining-time {
-    margin: 18px 0 16px;
-    font-size: clamp(4.5rem, 22vw, 7rem);
-    letter-spacing: 0;
-  }
-
-  .stopwatch-time {
-    width: 100%;
-    font-size: clamp(1.6rem, 8vw, 2.7rem);
-    letter-spacing: 0;
-    white-space: nowrap;
-  }
-
   .progress-track {
     width: min(100%, 420px);
   }
@@ -225,7 +161,7 @@
     grid-template-columns: auto minmax(0, 1fr) auto;
   }
 
-  .wallpaper-control {
+  .wallpaper-options {
     gap: 6px;
   }
 
@@ -251,10 +187,6 @@
 
   .side-rail h1 {
     font-size: 2.35rem;
-  }
-
-  .stopwatch-time {
-    font-size: clamp(1.35rem, 7.5vw, 2.2rem);
   }
 
   .settings-grid {

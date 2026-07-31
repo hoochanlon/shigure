@@ -33,7 +33,10 @@
         const savedState = localStorage.getItem('pomodoro.timer.state');
         if (savedState) {
           const state = JSON.parse(savedState);
-          const wallpaper = state.settings?.wallpaper || 'light';
+          const isSystemTheme = state.settings?.themeMode === 'system';
+          const wallpaper = isSystemTheme
+            ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')
+            : (state.settings?.wallpaper || 'light');
           if (wallpaper === 'rain') {
             document.documentElement.classList.add('has-rain-wallpaper');
           } else if (wallpaper === 'dark') {
@@ -161,14 +164,22 @@
           <div><strong data-i18n="rainSound">雨声</strong><p data-i18n="rainDescription">让背景安静下来</p></div>
           <label class="switch"><input id="rain-toggle" type="checkbox"><span></span><b class="sr-only" data-i18n="rainSound">雨声</b></label>
         </div>
-        <label class="volume-control" for="rain-volume"><span data-i18n="volume">音量</span><input id="rain-volume" type="range" min="0" max="1" step="0.01" value="0.35"><output id="rain-volume-value">35%</output></label>
+        <label class="volume-control" for="rain-volume"><span class="sound-icon" aria-hidden="true"><span class="sound-glyph sound-icon-volume"></span></span><span class="sr-only" data-i18n="volume">音量</span><input id="rain-volume" type="range" min="0" max="1" step="0.01" value="0.35"><output id="rain-volume-value">35%</output></label>
         <div class="sound-control alert-control"><div class="sound-icon" aria-hidden="true"><span class="sound-glyph sound-icon-alert"></span></div><div><strong data-i18n="alertSound">结束提示音</strong><p data-i18n="alertDescription">计时结束时播放提示音</p></div><label class="switch"><input id="alert-toggle" type="checkbox"><span></span><b class="sr-only" data-i18n="alertSound">结束提示音</b></label></div>
-        <label class="volume-control" for="alert-volume"><span data-i18n="alertVolume">提示音音量</span><input id="alert-volume" type="range" min="0" max="1" step="0.01" value="0.7"><output id="alert-volume-value">70%</output></label>
-        <div class="wallpaper-control" role="group" aria-label="Wallpaper">
-          <span class="wallpaper-label" data-i18n="wallpaper">背景</span>
-          <button id="wallpaper-light" class="wallpaper-option" type="button" aria-pressed="true" data-i18n="lightWallpaper">纯白</button>
-          <button id="wallpaper-dark" class="wallpaper-option" type="button" aria-pressed="false" data-i18n="darkWallpaper">纯黑</button>
-          <button id="wallpaper-rain" class="wallpaper-option" type="button" aria-pressed="false" data-i18n="rainWallpaper">雨景</button>
+        <label class="volume-control" for="alert-volume"><span class="sound-icon" aria-hidden="true"><span class="sound-glyph sound-icon-volume"></span></span><span class="sr-only" data-i18n="alertVolume">提示音音量</span><input id="alert-volume" type="range" min="0" max="1" step="0.01" value="0.7"><output id="alert-volume-value">70%</output></label>
+        <div class="sound-control wallpaper-control">
+          <div class="sound-icon" aria-hidden="true"><span class="sound-glyph sound-icon-wallpaper"></span></div>
+          <div><strong data-i18n="wallpaper">墙纸</strong><p data-i18n="wallpaperDescription">给网页换不同的色彩</p></div>
+          <label class="switch"><input id="system-theme-toggle" type="checkbox"><span></span><b class="sr-only" data-i18n="followSystemTheme">跟随系统</b></label>
+        </div>
+        <div class="wallpaper-theme-control">
+          <div class="sound-icon" aria-hidden="true"><span class="sound-glyph sound-icon-color-swatch"></span></div>
+          <div class="wallpaper-options" role="group" aria-label="Wallpaper themes">
+            <span class="sr-only" data-i18n="wallpaperThemes">主题色</span>
+            <button id="wallpaper-light" class="wallpaper-option" type="button" aria-pressed="true" data-i18n="lightWallpaper">纯白</button>
+            <button id="wallpaper-dark" class="wallpaper-option" type="button" aria-pressed="false" data-i18n="darkWallpaper">纯黑</button>
+            <button id="wallpaper-rain" class="wallpaper-option" type="button" aria-pressed="false" data-i18n="rainWallpaper">雨景</button>
+          </div>
         </div>
         <div class="zen-control">
           <div class="sound-icon" aria-hidden="true">
@@ -187,9 +198,6 @@
 
     <section id="history-panel" class="panel" hidden><div class="panel-heading"><h2 data-i18n="history">历史记录</h2><button id="clear-history" class="text-button text-danger" type="button" data-i18n="clearHistory">清空记录</button></div><ul id="history-list" class="history-list"></ul></section>
   </main>
-  <footer class="app-footer">
-    <p>Copyright © 2026-<span id="current-year"></span> <a href="https://github.com/hoochanlon" target="_blank" rel="noopener noreferrer">Hoochanlon</a>.<br>All Rights Reserved.</p>
-  </footer>
   <button id="zen-exit" class="zen-exit" type="button" aria-pressed="true" data-i18n="exitZenMode">退出禅模式</button>
   <script type="module" src="./js/main.js"></script>
 </body>

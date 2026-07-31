@@ -18,7 +18,10 @@ const getSeconds = (element) => Number(element.value);
 const isValidMinutes = (value) => (value === 0 || (Number.isFinite(value) && value > 0 && value <= 99));
 const isPlaceholder = (value) => value.trim() === '';
 
-const applySettings = () => { elements['work-minutes'].value = state.settings.workMinutes; elements['break-minutes'].value = state.settings.breakMinutes; elements['auto-loop'].checked = state.settings.autoLoop; elements['stopwatch-auto-stop'].value = state.settings.stopwatchAutoStopSeconds; sound.setVolume(state.settings.alertVolume); view.renderAlert(state.settings.alertEnabled, state.settings.alertVolume); view.renderNoise(state.settings.rainEnabled, state.settings.rainVolume); view.renderWallpaper(state.settings.wallpaper); };
+const systemTheme = window.matchMedia('(prefers-color-scheme: dark)');
+const resolveWallpaper = () => state.settings.themeMode === 'system' ? (systemTheme.matches ? 'dark' : 'light') : state.settings.wallpaper;
+
+const applySettings = () => { elements['work-minutes'].value = state.settings.workMinutes; elements['break-minutes'].value = state.settings.breakMinutes; elements['auto-loop'].checked = state.settings.autoLoop; elements['stopwatch-auto-stop'].value = state.settings.stopwatchAutoStopSeconds; sound.setVolume(state.settings.alertVolume); view.renderAlert(state.settings.alertEnabled, state.settings.alertVolume); view.renderNoise(state.settings.rainEnabled, state.settings.rainVolume); view.renderWallpaper(resolveWallpaper(), state.settings.themeMode); };
 const render = (timerState = timer.state) => { view.applyLanguage(language); view.renderTimer({ ...timerState, remainingMs: timerState.remainingMs ?? state.settings.workMinutes * 60_000 }, language); view.renderHistory(state.sessions, language, deleteHistoryItem); };
 const saveSettings = () => { let workMinutes = getMinutes(elements['work-minutes']); let breakMinutes = getMinutes(elements['break-minutes']); if (!isValidMinutes(workMinutes) || !isValidMinutes(breakMinutes)) { window.alert(translate(language, 'invalidDuration')); applySettings(); return false; } if (workMinutes === 0) workMinutes = siteConfig.defaults.workMinutes; if (breakMinutes === 0) breakMinutes = siteConfig.defaults.breakMinutes; state.settings = { ...state.settings, workMinutes, breakMinutes, autoLoop: elements['auto-loop'].checked }; persist(); applySettings(); render(); return true; };
 const saveStopwatchSettings = () => { const stopwatchAutoStopSeconds = getSeconds(elements['stopwatch-auto-stop']); if (!Number.isInteger(stopwatchAutoStopSeconds) || stopwatchAutoStopSeconds < 0) { window.alert(translate(language, 'invalidAutoStop')); applySettings(); return false; } state.settings = { ...state.settings, stopwatchAutoStopSeconds }; persist(); return true; };
@@ -26,7 +29,8 @@ const record = (session) => { state.sessions.unshift(session); state.sessions = 
 const deleteHistoryItem = (index) => { state.sessions.splice(index, 1); persist(); view.renderHistory(state.sessions, language, deleteHistoryItem); };
 const updateRain = (enabled, volume = state.settings.rainVolume) => { state.settings = { ...state.settings, rainEnabled: enabled, rainVolume: Number(volume) }; rain.setVolume(state.settings.rainVolume); if (enabled) rain.play(); else rain.stop(); persist(); view.renderNoise(enabled, state.settings.rainVolume); };
 const updateAlert = (enabled, volume = state.settings.alertVolume) => { state.settings = { ...state.settings, alertEnabled: enabled, alertVolume: Number(volume) }; sound.setVolume(state.settings.alertVolume); persist(); view.renderAlert(enabled, state.settings.alertVolume); };
-const updateWallpaper = (wallpaper) => { state.settings = { ...state.settings, wallpaper }; persist(); view.renderWallpaper(wallpaper); };
+const updateWallpaper = (wallpaper) => { state.settings = { ...state.settings, wallpaper, themeMode: 'manual' }; persist(); view.renderWallpaper(wallpaper, 'manual'); };
+const updateThemeMode = (enabled) => { const wallpaper = enabled ? state.settings.wallpaper : resolveWallpaper(); state.settings = { ...state.settings, wallpaper, themeMode: enabled ? 'system' : 'manual' }; persist(); applySettings(); };
 const stopwatch = new Stopwatch((stopwatchState) => view.renderStopwatch(stopwatchState, language), () => { if (state.settings.alertEnabled) sound.play(); });
 const timer = new Timer((timerState) => { if (timerState.status === 'completed') { record(timerState.session); if (state.settings.alertEnabled) sound.play(); if (state.settings.autoLoop) window.setTimeout(() => start(timerState.session.mode === 'work' ? 'break' : 'work'), 350); } view.renderTimer(timerState, language); });
 const start = (mode) => { if (!saveSettings()) return; const task = mode === 'work' ? elements['task-name'].value.trim() : translate(language, 'breakTask'); if (mode === 'work' && isPlaceholder(task)) return window.alert(translate(language, 'taskRequired')); timer.start({ task, mode, minutes: mode === 'work' ? state.settings.workMinutes : state.settings.breakMinutes }); };
@@ -48,6 +52,8 @@ elements['rain-volume'].addEventListener('input', () => updateRain(elements['rai
 elements['wallpaper-light'].addEventListener('click', () => updateWallpaper('light'));
 elements['wallpaper-dark'].addEventListener('click', () => updateWallpaper('dark'));
 elements['wallpaper-rain'].addEventListener('click', () => updateWallpaper('rain'));
+elements['system-theme-toggle'].addEventListener('change', () => updateThemeMode(elements['system-theme-toggle'].checked));
+systemTheme.addEventListener('change', () => { if (state.settings.themeMode === 'system') view.renderWallpaper(resolveWallpaper(), 'system'); });
 elements['zen-toggle'].addEventListener('change', () => { document.body.classList.toggle('zen-mode', elements['zen-toggle'].checked); });
 elements['zen-exit'].addEventListener('click', () => { elements['zen-toggle'].checked = false; document.body.classList.remove('zen-mode'); });
 elements['stopwatch-start'].addEventListener('click', () => { if (saveStopwatchSettings()) stopwatch.start({ autoStopSeconds: state.settings.stopwatchAutoStopSeconds }); });
@@ -67,7 +73,6 @@ applySettings();
 view.renderSettingsMode('pomodoro');
 render();
 view.renderStopwatch(stopwatch.state, language);
-document.getElementById('current-year').textContent = new Date().getFullYear();
 
 // 应用配置
 const brandLink = document.getElementById('brand-link');
