@@ -65,7 +65,7 @@ button, input, textarea { font: inherit; } button { cursor: pointer; } button:di
 /* 计时文本依据舞台实际宽度缩放，不依赖设备型号或视口宽度。 */
 @supports (container-type: inline-size) {
   #pomodoro-view .remaining-time { font-size: clamp(4.5rem, 22cqi, 9.5rem); }
-  #stopwatch-time.remaining-time { font-size: clamp(1.5rem, 9cqi, 4rem); letter-spacing: 0; }
+  #stopwatch-time.remaining-time { font-size: clamp(2.75rem, 18cqi, 7rem); letter-spacing: 0; }
 
   @container timer-stage (max-width: 359px) {
     #pomodoro-view .remaining-time { font-size: clamp(3.75rem, 20cqi, 4.5rem); }
@@ -74,7 +74,7 @@ button, input, textarea { font: inherit; } button { cursor: pointer; } button:di
 
   @container timer-stage (min-width: 360px) and (max-width: 559px) {
     #pomodoro-view .remaining-time { font-size: clamp(4.5rem, 20cqi, 7rem); }
-    #stopwatch-time.remaining-time { font-size: clamp(2rem, 9cqi, 3rem); }
+    #stopwatch-time.remaining-time { font-size: clamp(2.75rem, 17cqi, 5.75rem); }
   }
 }
 
