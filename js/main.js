@@ -1,0 +1,68 @@
+import { createAudioPlayer } from './audio.js';
+import { loadState, saveState } from './storage.js';
+import { translate } from './i18n.js';
+import { Timer } from './timer.js';
+import { Stopwatch } from './stopwatch.js';
+import { createView } from './view.js';
+
+const state = loadState();
+let language = localStorage.getItem('pomodoro.timer.language') || 'zh';
+const view = createView();
+const { elements } = view;
+const sound = createAudioPlayer('./assets/audio/ring.mp3');
+const rain = createAudioPlayer('./assets/audio/rain.mp3', { loop: true, volume: state.settings.rainVolume });
+const persist = () => saveState(state);
+const getMinutes = (element) => Number(element.value);
+const getSeconds = (element) => Number(element.value);
+const isValidMinutes = (value) => Number.isFinite(value) && value > 0;
+const isPlaceholder = (value) => value.trim() === '';
+
+const applySettings = () => { elements['work-minutes'].value = state.settings.workMinutes; elements['break-minutes'].value = state.settings.breakMinutes; elements['auto-loop'].checked = state.settings.autoLoop; elements['stopwatch-auto-stop'].value = state.settings.stopwatchAutoStopSeconds; sound.setVolume(state.settings.alertVolume); view.renderAlert(state.settings.alertEnabled, state.settings.alertVolume); view.renderNoise(state.settings.rainEnabled, state.settings.rainVolume); view.renderWallpaper(state.settings.wallpaper); };
+const render = (timerState = timer.state) => { view.applyLanguage(language); view.renderTimer({ ...timerState, remainingMs: timerState.remainingMs ?? state.settings.workMinutes * 60_000 }, language); view.renderHistory(state.sessions, language, deleteHistoryItem); };
+const saveSettings = () => { const workMinutes = getMinutes(elements['work-minutes']); const breakMinutes = getMinutes(elements['break-minutes']); if (!isValidMinutes(workMinutes) || !isValidMinutes(breakMinutes)) { window.alert(translate(language, 'invalidDuration')); applySettings(); return false; } state.settings = { ...state.settings, workMinutes, breakMinutes, autoLoop: elements['auto-loop'].checked }; persist(); applySettings(); return true; };
+const saveStopwatchSettings = () => { const stopwatchAutoStopSeconds = getSeconds(elements['stopwatch-auto-stop']); if (!Number.isInteger(stopwatchAutoStopSeconds) || stopwatchAutoStopSeconds < 0) { window.alert(translate(language, 'invalidAutoStop')); applySettings(); return false; } state.settings = { ...state.settings, stopwatchAutoStopSeconds }; persist(); return true; };
+const record = (session) => { state.sessions.unshift(session); state.sessions = state.sessions.slice(0, 100); persist(); view.renderHistory(state.sessions, language, deleteHistoryItem); };
+const deleteHistoryItem = (index) => { state.sessions.splice(index, 1); persist(); view.renderHistory(state.sessions, language, deleteHistoryItem); };
+const updateRain = (enabled, volume = state.settings.rainVolume) => { state.settings = { ...state.settings, rainEnabled: enabled, rainVolume: Number(volume) }; rain.setVolume(state.settings.rainVolume); if (enabled) rain.play(); else rain.stop(); persist(); view.renderNoise(enabled, state.settings.rainVolume); };
+const updateAlert = (enabled, volume = state.settings.alertVolume) => { state.settings = { ...state.settings, alertEnabled: enabled, alertVolume: Number(volume) }; sound.setVolume(state.settings.alertVolume); persist(); view.renderAlert(enabled, state.settings.alertVolume); };
+const updateWallpaper = (wallpaper) => { state.settings = { ...state.settings, wallpaper }; persist(); view.renderWallpaper(wallpaper); };
+const stopwatch = new Stopwatch((stopwatchState) => view.renderStopwatch(stopwatchState, language), () => { if (state.settings.alertEnabled) sound.play(); });
+const timer = new Timer((timerState) => { if (timerState.status === 'completed') { record(timerState.session); if (state.settings.alertEnabled) sound.play(); if (state.settings.autoLoop) window.setTimeout(() => start(timerState.session.mode === 'work' ? 'break' : 'work'), 350); } view.renderTimer(timerState, language); });
+const start = (mode) => { if (!saveSettings()) return; const task = mode === 'work' ? elements['task-name'].value.trim() : translate(language, 'breakTask'); if (mode === 'work' && isPlaceholder(task)) return window.alert(translate(language, 'taskRequired')); timer.start({ task, mode, minutes: mode === 'work' ? state.settings.workMinutes : state.settings.breakMinutes }); };
+const togglePanel = (button) => { const panel = document.getElementById(button.dataset.panelTarget); const isOpen = button.getAttribute('aria-expanded') === 'true'; document.querySelectorAll('[data-panel-target]').forEach((item) => { item.setAttribute('aria-expanded', 'false'); document.getElementById(item.dataset.panelTarget).hidden = true; }); button.setAttribute('aria-expanded', String(!isOpen)); panel.hidden = isOpen; };
+
+const switchMode = (mode) => { const pomodoroView = document.getElementById('pomodoro-view'); const stopwatchView = document.getElementById('stopwatch-view'); const tabPomodoro = document.getElementById('tab-pomodoro'); const tabStopwatch = document.getElementById('tab-stopwatch'); const subtitle = document.getElementById('app-subtitle'); view.renderSettingsMode(mode); if (mode === 'pomodoro') { pomodoroView.hidden = false; stopwatchView.hidden = true; tabPomodoro.classList.add('active'); tabStopwatch.classList.remove('active'); subtitle.textContent = translate(language, 'subtitle'); } else { pomodoroView.hidden = true; stopwatchView.hidden = false; tabPomodoro.classList.remove('active'); tabStopwatch.classList.add('active'); subtitle.textContent = translate(language, 'subtitleStopwatch'); } };
+
+elements['start-work'].addEventListener('click', () => start('work'));
+elements['start-break'].addEventListener('click', () => start('break'));
+elements['pause-resume'].addEventListener('click', () => { if (timer.state.status === 'running') timer.pause(); else timer.resume(); });
+elements['stop-timer'].addEventListener('click', () => { const session = timer.stop(); if (session) record(session); });
+elements['reset-timer'].addEventListener('click', () => timer.reset());
+elements['language-toggle'].addEventListener('click', () => { const dropdown = document.getElementById('language-dropdown'); const isOpen = dropdown.hidden; document.querySelectorAll('.language-dropdown').forEach(d => d.hidden = true); dropdown.hidden = !isOpen; elements['language-toggle'].setAttribute('aria-expanded', String(!isOpen)); });
+document.querySelectorAll('.language-option').forEach(option => { option.addEventListener('click', () => { language = option.dataset.lang; localStorage.setItem('pomodoro.timer.language', language); document.getElementById('language-dropdown').hidden = true; elements['language-toggle'].setAttribute('aria-expanded', 'false'); render(); }); });
+document.addEventListener('click', (e) => { if (!e.target.closest('.language-selector')) { document.getElementById('language-dropdown').hidden = true; elements['language-toggle'].setAttribute('aria-expanded', 'false'); } });
+elements['clear-history'].addEventListener('click', () => { if (window.confirm(translate(language, 'clearConfirm'))) { state.sessions = []; persist(); view.renderHistory([], language, deleteHistoryItem); } });
+elements['rain-toggle'].addEventListener('change', () => updateRain(elements['rain-toggle'].checked));
+elements['rain-volume'].addEventListener('input', () => updateRain(elements['rain-toggle'].checked, elements['rain-volume'].value));
+elements['wallpaper-light'].addEventListener('click', () => updateWallpaper('light'));
+elements['wallpaper-dark'].addEventListener('click', () => updateWallpaper('dark'));
+elements['wallpaper-rain'].addEventListener('click', () => updateWallpaper('rain'));
+elements['zen-toggle'].addEventListener('change', () => { document.body.classList.toggle('zen-mode', elements['zen-toggle'].checked); });
+elements['zen-exit'].addEventListener('click', () => { elements['zen-toggle'].checked = false; document.body.classList.remove('zen-mode'); });
+elements['stopwatch-start'].addEventListener('click', () => { if (saveStopwatchSettings()) stopwatch.start({ autoStopSeconds: state.settings.stopwatchAutoStopSeconds }); });
+elements['stopwatch-stop'].addEventListener('click', () => stopwatch.stop());
+elements['stopwatch-complete'].addEventListener('click', () => { const task = document.getElementById('stopwatch-task-name').value.trim(); const session = stopwatch.complete(task); if (session) { record(session); if (state.settings.alertEnabled) sound.play(); } });
+elements['stopwatch-reset'].addEventListener('click', () => stopwatch.reset());
+document.getElementById('tab-pomodoro').addEventListener('click', () => switchMode('pomodoro'));
+document.getElementById('tab-stopwatch').addEventListener('click', () => switchMode('stopwatch'));
+document.querySelectorAll('[data-panel-target]').forEach((button) => button.addEventListener('click', () => togglePanel(button)));
+['work-minutes', 'break-minutes', 'auto-loop'].forEach((id) => elements[id].addEventListener('change', saveSettings));
+elements['stopwatch-auto-stop'].addEventListener('change', saveStopwatchSettings);
+elements['alert-toggle'].addEventListener('change', () => updateAlert(elements['alert-toggle'].checked));
+elements['alert-volume'].addEventListener('input', () => updateAlert(elements['alert-toggle'].checked, elements['alert-volume'].value));
+window.addEventListener('beforeunload', (event) => { if (timer.state.status === 'running') { event.preventDefault(); event.returnValue = ''; } });
+
+applySettings();
+view.renderSettingsMode('pomodoro');
+render();
+view.renderStopwatch(stopwatch.state, language);

@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Timer - 简洁专注的番茄钟与秒表计时工具">
+  <title>Timer - 专注计时工具</title>
+  <link rel="icon" type="image/svg+xml" href="./assets/favicon/favicon.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="./assets/favicon/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="./assets/favicon/favicon-16x16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="./assets/favicon/apple-touch-icon.png">
+  <link rel="manifest" href="./assets/favicon/site.webmanifest">
+  <link rel="stylesheet" href="./css/style.css">
+</head>
+<body>
+  <main class="app-shell" aria-labelledby="app-title">
+    <div class="background-glow" aria-hidden="true"></div>
+    <header class="app-header">
+      <a class="brand" href="./" aria-label="Timer"><span class="brand-mark">◒</span><span>Timer</span></a>
+      <div class="header-actions">
+        <a href="https://github.com/hoochanlon/tomato" target="_blank" rel="noopener noreferrer" class="icon-button" aria-label="GitHub">
+          <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M0 0h24v24H0z" fill="none" />
+            <path fill="currentColor" d="M12 .297c-6.63 0-12 5.373-12 12c0 5.303 3.438 9.8 8.205 11.385c.6.113.82-.258.82-.577c0-.285-.01-1.04-.015-2.04c-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729c1.205.084 1.838 1.236 1.838 1.236c1.07 1.835 2.809 1.305 3.495.998c.108-.776.417-1.305.76-1.605c-2.665-.3-5.466-1.332-5.466-5.93c0-1.31.465-2.38 1.235-3.22c-.135-.303-.54-1.523.105-3.176c0 0 1.005-.322 3.3 1.23c.96-.267 1.98-.399 3-.405c1.02.006 2.04.138 3 .405c2.28-1.552 3.285-1.23 3.285-1.23c.645 1.653.24 2.873.12 3.176c.765.84 1.23 1.91 1.23 3.22c0 4.61-2.805 5.625-5.475 5.92c.42.36.81 1.096.81 2.22c0 1.606-.015 2.896-.015 3.286c0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12" />
+          </svg>
+        </a>
+        <a href="#" target="_blank" rel="noopener noreferrer" class="icon-button" aria-label="Blog">
+          <svg width="20" height="20" viewBox="0 0 640 640" fill="currentColor">
+            <path d="M288 88c0-13.3 10.7-24 24-24c145.8 0 264 118.2 264 264c0 13.3-10.7 24-24 24s-24-10.7-24-24c0-119.3-96.7-216-216-216c-13.3 0-24-10.7-24-24m-144 72c26.5 0 48 21.5 48 48v224c0 26.5 21.5 48 48 48s48-21.5 48-48s-21.5-48-48-48c-8.8 0-16-7.2-16-16v-64c0-8.8 7.2-16 16-16c79.5 0 144 64.5 144 144s-64.5 144-144 144S96 511.5 96 432V208c0-26.5 21.5-48 48-48m168 0c92.8 0 168 75.2 168 168c0 13.3-10.7 24-24 24s-24-10.7-24-24c0-66.3-53.7-120-120-120c-13.3 0-24-10.7-24-24s10.7-24 24-24"/>
+          </svg>
+        </a>
+        <a href="mailto:" class="icon-button" aria-label="Email">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+            <path d="M14.608 12.172c0 .84.239 1.175.864 1.175c1.393 0 2.28-1.775 2.28-4.727c0-4.512-3.288-6.672-7.393-6.672c-4.223 0-8.064 2.832-8.064 8.184c0 5.112 3.36 7.896 8.52 7.896c1.752 0 2.928-.192 4.727-.792l.386 1.607c-1.776.577-3.674.744-5.137.744c-6.768 0-10.393-3.72-10.393-9.456c0-5.784 4.201-9.72 9.985-9.72c6.024 0 9.215 3.6 9.215 8.016c0 3.744-1.175 6.6-4.871 6.6c-1.681 0-2.784-.672-2.928-2.161c-.432 1.656-1.584 2.161-3.145 2.161c-2.088 0-3.84-1.609-3.84-4.848c0-3.264 1.537-5.28 4.297-5.28c1.464 0 2.376.576 2.782 1.488l.697-1.272h2.016v7.057zm-2.951-3.168c0-1.319-.985-1.872-1.801-1.872c-.888 0-1.871.719-1.871 2.832c0 1.68.744 2.616 1.871 2.616c.792 0 1.801-.504 1.801-1.896z"/>
+          </svg>
+        </a>
+        <div class="language-selector">
+          <button id="language-toggle" class="icon-button" type="button" aria-label="Switch language" aria-haspopup="true" aria-expanded="false">
+            <svg width="20" height="20" viewBox="0 0 21 21" aria-hidden="true">
+              <path d="M0 0h21v21H0z" fill="none" />
+              <g fill="none" fill-rule="evenodd" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M18.5 10.5v-6a2 2 0 0 0-2-2h-6a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2" />
+                <path d="M6.5 8.503h-2a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h.003l6-.01a2 2 0 0 0 1.997-2V14.5m-5-1.997h-3" />
+                <path d="m9 14l-1 1q-.5.5-2.5 1.5" />
+                <path d="M5.5 12.503q.501 1.75 1.5 2.499C8 15.75 8.5 16 9.5 16.5m4-12l-3 6m3-6l3 6m-1-2h-4" />
+              </g>
+            </svg>
+          </button>
+          <div id="language-dropdown" class="language-dropdown" hidden>
+            <button class="language-option" data-lang="zh">简体中文</button>
+            <button class="language-option" data-lang="en">English</button>
+            <button class="language-option" data-lang="ja">日本語</button>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <div class="workspace">
+      <aside class="side-rail" aria-label="App overview">
+        <p class="eyebrow" data-i18n="eyebrow">专注当下</p>
+        <h1 id="app-title" data-i18n="title">TIMER</h1>
+        <p id="app-subtitle" class="subtitle" data-i18n="subtitle">番茄工作法</p>
+        <div class="rail-divider"></div>
+        <p class="rail-caption" data-i18n="todayLabel">今日专注</p>
+        <strong id="session-count" class="session-count">0</strong>
+        <p class="rail-caption" data-i18n="sessionsLabel">个时段</p>
+        <nav class="rail-nav" aria-label="Timer tools">
+          <div class="rail-item">
+            <button class="rail-link" type="button" data-panel-target="settings-panel" aria-expanded="false"><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M0 0h24v24H0z" fill="none" /><path fill="currentColor" d="M8.86 5.5A1 1 0 0 0 8 5H3v2h4.43l6.71 11.5a1 1 0 0 0 .86.5h6v-2h-5.43zM15 5h6v2h-6z" /></svg><span data-i18n="settings">选项</span></button>
+            <section id="settings-panel" class="panel" hidden><h2 data-i18n="settings">选项</h2><div id="pomodoro-settings" class="settings-grid"><label><span data-i18n="workMinutes">专注时长（分钟）</span><input id="work-minutes" type="number" min="1" max="180" step="1" value="25"></label><label><span data-i18n="breakMinutes">休息时长（分钟）</span><input id="break-minutes" type="number" min="1" max="60" step="1" value="5"></label><label class="toggle-field"><input id="auto-loop" type="checkbox"><span data-i18n="autoLoop">自动循环</span></label></div><div id="stopwatch-settings" class="settings-grid" hidden><label><span data-i18n="stopwatchAutoStop">秒表自动停止（秒）</span><input id="stopwatch-auto-stop" type="number" min="0" max="86400" step="1" value="0"></label><p class="settings-hint" data-i18n="stopwatchAutoStopHint">0 秒表示关闭自动停止</p></div></section>
+          </div>
+          <button class="rail-link" type="button" data-panel-target="history-panel" aria-expanded="false"><span>◷</span><span data-i18n="history">历史记录</span></button>
+        </nav>
+      </aside>
+
+      <section class="timer-stage" aria-label="Timer workspace">
+        <div class="mode-tabs">
+          <button id="tab-pomodoro" class="mode-tab active" type="button" data-i18n="guide">番茄钟</button>
+          <button id="tab-stopwatch" class="mode-tab" type="button" data-i18n="stopwatch">秒表</button>
+        </div>
+
+        <div id="pomodoro-view" class="timer-view">
+        <div class="stage-heading"><span id="timer-mode" data-i18n="ready">准备开始</span><span class="live-dot" aria-hidden="true"></span></div>
+        <output id="remaining-time" class="remaining-time" aria-live="polite">25:00</output>
+        <div class="progress-track" aria-hidden="true"><div id="progress-bar" class="progress-bar"></div></div>
+        <p id="current-task" class="current-task" aria-live="polite"></p>
+          <label class="task-line" for="task-name"><span class="task-icon">↳</span><span class="sr-only" data-i18n="taskLabel">任务名称</span><textarea id="task-name" rows="1" maxlength="30" data-i18n-placeholder="taskPlaceholder" placeholder="准备专注什么？"></textarea></label>
+        <div class="primary-actions">
+          <button id="start-work" class="button button-primary" type="button" data-i18n="startWork">开始专注</button>
+            <button id="start-break" class="button button-success" type="button" data-i18n="startBreak">开始休息</button>
+        </div>
+        <div class="secondary-actions">
+          <button id="pause-resume" class="text-button" type="button" disabled data-i18n="pause">暂停</button>
+          <button id="stop-timer" class="text-button text-danger" type="button" disabled data-i18n="stop">停止</button>
+          <button id="reset-timer" class="text-button" type="button" disabled data-i18n="reset">重置</button>
+          </div>
+        </div>
+
+        <div id="stopwatch-view" class="timer-view" hidden>
+          <div class="stage-heading"><span data-i18n="ready">准备开始</span></div>
+          <output id="stopwatch-time" class="remaining-time" aria-live="polite">00:00:00</output>
+          <div class="progress-track" aria-hidden="true"><div class="progress-bar" style="width: 100%;"></div></div>
+          <p class="current-task" aria-live="polite"></p>
+          <label class="task-line" for="stopwatch-task-name"><span class="task-icon">↳</span><span class="sr-only">任务名称（可选）</span><textarea id="stopwatch-task-name" rows="1" maxlength="30" placeholder="任务名称（可选）"></textarea></label>
+          <div class="primary-actions">
+            <button id="stopwatch-start" class="button button-primary" type="button" data-i18n="stopwatchStart">开始</button>
+            <button id="stopwatch-complete" class="button button-danger-fill" type="button" disabled data-i18n="stopwatchComplete">结束</button>
+          </div>
+          <div class="secondary-actions">
+            <button id="stopwatch-stop" class="text-button" type="button" disabled data-i18n="stopwatchPause">暂停</button>
+            <button id="stopwatch-reset" class="text-button" type="button" data-i18n="stopwatchReset">重置</button>
+          </div>
+        </div>
+      </section>
+
+      <aside class="environment-panel" aria-label="Sound and settings">
+        <div class="panel-label"><span data-i18n="environment">环境</span><span class="panel-line"></span></div>
+        <div class="sound-control">
+          <div class="sound-icon" aria-hidden="true"><span class="sound-glyph sound-icon-rain"></span></div>
+          <div><strong data-i18n="rainSound">雨声</strong><p data-i18n="rainDescription">让背景安静下来</p></div>
+          <label class="switch"><input id="rain-toggle" type="checkbox"><span></span><b class="sr-only" data-i18n="rainSound">雨声</b></label>
+        </div>
+        <label class="volume-control" for="rain-volume"><span data-i18n="volume">音量</span><input id="rain-volume" type="range" min="0" max="1" step="0.01" value="0.35"><output id="rain-volume-value">35%</output></label>
+        <div class="sound-control alert-control"><div class="sound-icon" aria-hidden="true"><span class="sound-glyph sound-icon-alert"></span></div><div><strong data-i18n="alertSound">结束提示音</strong><p data-i18n="alertDescription">计时结束时播放提示音</p></div><label class="switch"><input id="alert-toggle" type="checkbox"><span></span><b class="sr-only" data-i18n="alertSound">结束提示音</b></label></div>
+        <label class="volume-control" for="alert-volume"><span data-i18n="alertVolume">提示音音量</span><input id="alert-volume" type="range" min="0" max="1" step="0.01" value="0.7"><output id="alert-volume-value">70%</output></label>
+        <div class="wallpaper-control" role="group" aria-label="Wallpaper">
+          <span class="wallpaper-label" data-i18n="wallpaper">背景</span>
+          <button id="wallpaper-light" class="wallpaper-option" type="button" aria-pressed="true" data-i18n="lightWallpaper">纯白</button>
+          <button id="wallpaper-dark" class="wallpaper-option" type="button" aria-pressed="false" data-i18n="darkWallpaper">纯黑</button>
+          <button id="wallpaper-rain" class="wallpaper-option" type="button" aria-pressed="false" data-i18n="rainWallpaper">雨景</button>
+        </div>
+        <div class="zen-control">
+          <div class="zen-icon" aria-hidden="true">◉</div>
+          <div><strong data-i18n="zenMode">禅模式</strong><p data-i18n="zenDescription">隐藏侧栏，专注计时</p></div>
+          <label class="switch"><input id="zen-toggle" type="checkbox"><span></span><b class="sr-only" data-i18n="zenMode">禅模式</b></label>
+        </div>
+      </aside>
+    </div>
+
+    <section id="history-panel" class="panel" hidden><div class="panel-heading"><h2 data-i18n="history">历史记录</h2><button id="clear-history" class="text-button text-danger" type="button" data-i18n="clearHistory">清空记录</button></div><ul id="history-list" class="history-list"></ul></section>
+  </main>
+  <button id="zen-exit" class="zen-exit" type="button" aria-pressed="true" data-i18n="exitZenMode">退出禅模式</button>
+  <script type="module" src="./js/main.js"></script>
+</body>
+</html>
