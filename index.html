@@ -11,6 +11,23 @@
   <link rel="apple-touch-icon" sizes="180x180" href="./assets/favicon/apple-touch-icon.png">
   <link rel="manifest" href="./assets/favicon/site.webmanifest">
   <link rel="stylesheet" href="./css/style.css">
+  <script>
+    // 在渲染前应用壁纸设置，避免白屏闪烁
+    (function() {
+      try {
+        const savedState = localStorage.getItem('pomodoro.timer.state');
+        if (savedState) {
+          const state = JSON.parse(savedState);
+          const wallpaper = state.settings?.wallpaper || 'light';
+          if (wallpaper === 'rain') {
+            document.documentElement.classList.add('has-rain-wallpaper');
+          } else if (wallpaper === 'dark') {
+            document.documentElement.classList.add('has-dark-wallpaper');
+          }
+        }
+      } catch (e) {}
+    })();
+  </script>
 </head>
 <body>
   <main class="app-shell" aria-labelledby="app-title">
@@ -24,12 +41,12 @@
             <path fill="currentColor" d="M12 .297c-6.63 0-12 5.373-12 12c0 5.303 3.438 9.8 8.205 11.385c.6.113.82-.258.82-.577c0-.285-.01-1.04-.015-2.04c-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729c1.205.084 1.838 1.236 1.838 1.236c1.07 1.835 2.809 1.305 3.495.998c.108-.776.417-1.305.76-1.605c-2.665-.3-5.466-1.332-5.466-5.93c0-1.31.465-2.38 1.235-3.22c-.135-.303-.54-1.523.105-3.176c0 0 1.005-.322 3.3 1.23c.96-.267 1.98-.399 3-.405c1.02.006 2.04.138 3 .405c2.28-1.552 3.285-1.23 3.285-1.23c.645 1.653.24 2.873.12 3.176c.765.84 1.23 1.91 1.23 3.22c0 4.61-2.805 5.625-5.475 5.92c.42.36.81 1.096.81 2.22c0 1.606-.015 2.896-.015 3.286c0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12" />
           </svg>
         </a>
-        <a href="#" target="_blank" rel="noopener noreferrer" class="icon-button" aria-label="Blog">
+        <a href="https://hoochanlon.github.io" target="_blank" rel="noopener noreferrer" class="icon-button" aria-label="Blog">
           <svg width="20" height="20" viewBox="0 0 640 640" fill="currentColor">
             <path d="M288 88c0-13.3 10.7-24 24-24c145.8 0 264 118.2 264 264c0 13.3-10.7 24-24 24s-24-10.7-24-24c0-119.3-96.7-216-216-216c-13.3 0-24-10.7-24-24m-144 72c26.5 0 48 21.5 48 48v224c0 26.5 21.5 48 48 48s48-21.5 48-48s-21.5-48-48-48c-8.8 0-16-7.2-16-16v-64c0-8.8 7.2-16 16-16c79.5 0 144 64.5 144 144s-64.5 144-144 144S96 511.5 96 432V208c0-26.5 21.5-48 48-48m168 0c92.8 0 168 75.2 168 168c0 13.3-10.7 24-24 24s-24-10.7-24-24c0-66.3-53.7-120-120-120c-13.3 0-24-10.7-24-24s10.7-24 24-24"/>
           </svg>
         </a>
-        <a href="mailto:" class="icon-button" aria-label="Email">
+        <a href="mailto:hoochanlon@outlook.com" class="icon-button" aria-label="Email">
           <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
             <path d="M14.608 12.172c0 .84.239 1.175.864 1.175c1.393 0 2.28-1.775 2.28-4.727c0-4.512-3.288-6.672-7.393-6.672c-4.223 0-8.064 2.832-8.064 8.184c0 5.112 3.36 7.896 8.52 7.896c1.752 0 2.928-.192 4.727-.792l.386 1.607c-1.776.577-3.674.744-5.137.744c-6.768 0-10.393-3.72-10.393-9.456c0-5.784 4.201-9.72 9.985-9.72c6.024 0 9.215 3.6 9.215 8.016c0 3.744-1.175 6.6-4.871 6.6c-1.681 0-2.784-.672-2.928-2.161c-.432 1.656-1.584 2.161-3.145 2.161c-2.088 0-3.84-1.609-3.84-4.848c0-3.264 1.537-5.28 4.297-5.28c1.464 0 2.376.576 2.782 1.488l.697-1.272h2.016v7.057zm-2.951-3.168c0-1.319-.985-1.872-1.801-1.872c-.888 0-1.871.719-1.871 2.832c0 1.68.744 2.616 1.871 2.616c.792 0 1.801-.504 1.801-1.896z"/>
           </svg>
@@ -130,7 +147,14 @@
           <button id="wallpaper-rain" class="wallpaper-option" type="button" aria-pressed="false" data-i18n="rainWallpaper">雨景</button>
         </div>
         <div class="zen-control">
-          <div class="zen-icon" aria-hidden="true">◉</div>
+          <div class="sound-icon" aria-hidden="true">
+            <svg width="20" height="20" viewBox="0 0 24 24">
+              <path d="M0 0h24v24H0z" fill="none" />
+              <path fill="currentColor" d="m19.322 6.756l-1.472 2.28a6.564 6.564 0 0 1-4.796 9.432a6.53 6.53 0 0 1-3.987-.619L6.78 19.32a8.986 8.986 0 0 0 14.188-6.59a9.03 9.03 0 0 0-1.646-5.98h.006z" />
+              <path fill="currentColor" d="M12.013 16.508a4.52 4.52 0 0 0 4.447-3.705a10.3 10.3 0 0 0-8.195 1.704a4.52 4.52 0 0 0 3.748 2.001" />
+              <path fill="currentColor" d="M14.242 11.75q1.157 0 2.292.249a4.524 4.524 0 0 0-8.854-1.302a4.5 4.5 0 0 0-.146 1.91c-.625.46-1.193.99-1.694 1.583a6.562 6.562 0 0 1 5.33-8.67a6.53 6.53 0 0 1 3.77.635l2.277-1.477A8.984 8.984 0 0 0 3.022 11.37a9 9 0 0 0 1.742 5.986c.424-.767.94-1.48 1.535-2.122q.736-.762 1.588-1.392a10.75 10.75 0 0 1 6.359-2.09z" />
+            </svg>
+          </div>
           <div><strong data-i18n="zenMode">禅模式</strong><p data-i18n="zenDescription">隐藏侧栏，专注计时</p></div>
           <label class="switch"><input id="zen-toggle" type="checkbox"><span></span><b class="sr-only" data-i18n="zenMode">禅模式</b></label>
         </div>
@@ -139,6 +163,9 @@
 
     <section id="history-panel" class="panel" hidden><div class="panel-heading"><h2 data-i18n="history">历史记录</h2><button id="clear-history" class="text-button text-danger" type="button" data-i18n="clearHistory">清空记录</button></div><ul id="history-list" class="history-list"></ul></section>
   </main>
+  <footer class="app-footer">
+    <p>Copyright © 2026-<span id="current-year"></span> <a href="https://github.com/hoochanlon" target="_blank" rel="noopener noreferrer">Hoochanlon</a>.<br>All Rights Reserved.</p>
+  </footer>
   <button id="zen-exit" class="zen-exit" type="button" aria-pressed="true" data-i18n="exitZenMode">退出禅模式</button>
   <script type="module" src="./js/main.js"></script>
 </body>

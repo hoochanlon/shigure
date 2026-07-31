@@ -66,3 +66,4 @@ applySettings();
 view.renderSettingsMode('pomodoro');
 render();
 view.renderStopwatch(stopwatch.state, language);
+document.getElementById('current-year').textContent = new Date().getFullYear();

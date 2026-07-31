@@ -8,9 +8,13 @@
 html { min-width: 320px; background: var(--bg); }
 body { min-width: 320px; min-height: 100vh; margin: 0; color: var(--ink); font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", "Microsoft YaHei", sans-serif; background: var(--bg); }
 body::before { display: none; }
+html.has-rain-wallpaper,
 body.has-rain-wallpaper { --ink: #f6f7fb; --muted: rgb(246 247 251 / .72); --faint: rgb(246 247 251 / .48); --line: rgb(255 255 255 / .18); --glass: rgb(14 22 38 / .34); --blue: #a8c7ff; --danger: #ffaaaa; --bg: #2a3f5f; background: linear-gradient(105deg, rgb(15 26 44 / .82), rgb(19 39 61 / .44)), url('../assets/wallpapers/rain.jpg') center / cover fixed; }
+html.has-rain-wallpaper::before,
 body.has-rain-wallpaper::before { display: none; }
+html.has-dark-wallpaper,
 body.has-dark-wallpaper { --ink: #e0e0e0; --muted: #b0b0b0; --faint: #808080; --line: #2a2a2a; --glass: #1a1a1a; --blue: #6ba3ff; --danger: #ff8080; --bg: #000000; background: var(--bg); }
+html.has-dark-wallpaper::before,
 body.has-dark-wallpaper::before { display: none; }
 button, input, textarea { font: inherit; } button { cursor: pointer; } button:disabled { cursor: not-allowed; }
 .app-shell { position: relative; width: min(100% - 96px, 1440px); min-height: 100vh; margin: auto; padding: 42px 0 54px; }
@@ -79,8 +83,14 @@ body.zen-mode .zen-exit { display: inline-flex; align-items: center; }
 .has-rain-wallpaper .zen-exit { background: rgb(14 22 38 / .9); }
 .has-dark-wallpaper .zen-exit { background: #1a1a1a; }
 .zen-control { display: grid; grid-template-columns: auto 1fr auto; gap: 13px; align-items: center; margin-top: 18px; }
-.zen-icon { display: grid; width: 39px; height: 39px; place-items: center; border: 1px solid var(--line); border-radius: 12px; color: var(--blue); background: var(--glass); font-size: 1.2rem; }
-.has-rain-wallpaper .zen-icon { background: rgb(255 255 255 / .08); }
-.has-dark-wallpaper .zen-icon { background: #1a1a1a; }
+.zen-control .sound-icon { display: grid; width: 39px; height: 39px; place-items: center; border: 1px solid var(--line); border-radius: 12px; background: var(--glass); color: var(--blue); }
+.has-rain-wallpaper .zen-control .sound-icon { background: rgb(255 255 255 / .08); }
+.has-dark-wallpaper .zen-control .sound-icon { background: #1a1a1a; }
+.zen-control .sound-icon svg { display: block; }
 .zen-control strong { font-size: .91rem; font-weight: 600; }
 .zen-control p { margin: 4px 0 0; color: var(--muted); font-size: .75rem; }
+.app-footer { width: 100%; margin: 32px 0 0; padding: 24px 0; text-align: center; }
+.app-footer p { margin: 0; padding-top: 24px; color: var(--muted); font-size: .75rem; border-top: 1px solid var(--line); display: inline-block; }
+.app-footer a { color: var(--ink); text-decoration: none; transition: opacity .2s ease; }
+.app-footer a:hover { opacity: .7; }
+body.zen-mode .app-footer { display: none; }

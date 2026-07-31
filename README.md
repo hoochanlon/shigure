@@ -1,24 +1,47 @@
 # Timer
 
-无需构建步骤的静态番茄钟。它支持工作与休息计时、中英文切换、自动循环、任务历史和完成铃声。
+<div align="center">
 
-## 本地运行
+![demo](./assets/screenshots/demo-1.png)
 
-ES Modules 需要通过 HTTP 提供服务，不能直接双击打开 HTML 文件。
+简洁优雅的番茄钟与秒表计时工具，专为专注而生。
+
+[在线体验](https://hoochanlon.github.io/timer)
+
+</div>
+
+## ✨ 特点
+
+- **双模式计时** - 番茄钟与秒表自由切换，工作学习两不误
+- **沉浸式体验** - 三款精美壁纸（纯白/纯黑/雨景）+ 环境白噪音
+- **禅模式** - 隐藏侧栏，极简界面让你全神贯注
+- **智能记录** - 自动保存历史任务，追踪你的专注时光
+- **多语言支持** - 中文/英文/日文无缝切换
+- **零配置** - 单文件部署，打开即用，无需安装
+
+## 🎯 优势
+
+- **原生技术栈** - 纯 HTML/CSS/JavaScript，无框架依赖
+- **轻量高效** - 无构建步骤，加载速度极快
+- **数据本地化** - localStorage 存储，隐私安全
+- **响应式设计** - 完美适配桌面与移动端
+- **渐进增强** - 支持 PWA，可作为应用安装
+
+## 🚀 快速开始
+
+ES Modules 需要通过 HTTP 提供服务：
 
 ```bash
 pnpm dlx serve
 ```
 
-打开命令输出的本地地址即可。
+或使用任何静态服务器打开 `index.html`。
 
-## 技术边界
+## 📸 更多截图
 
-- 原生 HTML、CSS 和 JavaScript ES Modules
-- 浏览器 `localStorage` 保存设置、语言和最近 100 条任务历史
-- 原生 `HTMLAudioElement` 播放本地提醒音效
-- GitHub Actions 将仓库根目录作为静态站点部署至 GitHub Pages
+![demo](./assets/screenshots/demo-2.png)
 
-## 数据兼容
+## 📄 许可
 
-首次加载时，应用会读取旧版 `tomatoData` 并迁移为新格式；旧历史记录不会因此丢失。
+MIT License - Copyright © 2026 [Hoochanlon](https://github.com/hoochanlon)
+
