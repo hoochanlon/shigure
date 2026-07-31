@@ -1,0 +1,263 @@
+/*
+ * 移动端与平板布局
+ *
+ * 这里仅处理窄屏下的布局覆盖，基础视觉样式仍由 style.css 负责。
+ * 断点按可用布局空间划分，而不是绑定具体设备型号。
+ */
+
+/* 触控平板横屏：iPad Pro 等设备虽然 CSS 宽度较大，也不使用桌面三栏 */
+@media (pointer: coarse) and (hover: none) and (min-width: 1200px) and (max-width: 1400px) {
+  html,
+  body {
+    overflow-x: hidden;
+  }
+
+  .app-shell {
+    width: min(100% - 64px, 1280px);
+  }
+
+  .workspace {
+    grid-template-columns: minmax(180px, .8fr) minmax(0, 1.8fr);
+    gap: 44px;
+  }
+
+  .environment-panel {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px 32px;
+    padding-top: 20px;
+  }
+
+  .panel-label {
+    grid-column: 1 / -1;
+  }
+
+  .timer-stage {
+    min-width: 0;
+    padding-inline: 12px;
+  }
+
+  .stopwatch-time {
+    font-size: clamp(2rem, 4vw, 2.6rem);
+  }
+}
+
+/* 平板横屏与窄桌面：保留侧栏，环境区换到下一行 */
+@media (max-width: 1199px) {
+  html,
+  body {
+    overflow-x: hidden;
+  }
+
+  .app-shell {
+    width: min(100% - 48px, 1080px);
+    padding-inline: max(0px, env(safe-area-inset-left)) max(0px, env(safe-area-inset-right));
+  }
+
+  .workspace {
+    grid-template-columns: minmax(160px, .75fr) minmax(0, 1.8fr);
+    gap: 36px;
+  }
+
+  .environment-panel {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px 28px;
+    align-items: center;
+    padding-top: 18px;
+  }
+
+  .panel-label {
+    grid-column: 1 / -1;
+  }
+
+  .environment-note,
+  .quick-settings {
+    margin-top: 0;
+  }
+
+  .timer-stage {
+    min-width: 0;
+    padding-inline: 12px;
+  }
+
+  .remaining-time {
+    font-size: clamp(5.5rem, 12vw, 8.5rem);
+  }
+
+  .stopwatch-time {
+    font-size: clamp(2rem, 5vw, 3.5rem);
+  }
+}
+
+/* 平板竖屏：主内容改为纵向流 */
+@media (max-width: 900px) {
+  .app-shell {
+    width: min(100% - 40px, 680px);
+  }
+
+  .workspace {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 40px;
+  }
+
+  .side-rail {
+    align-self: auto;
+  }
+
+  .rail-divider,
+  .rail-nav,
+  .session-count,
+  .rail-caption {
+    display: none;
+  }
+
+  .timer-stage {
+    order: 1;
+    width: 100%;
+    padding: 0;
+  }
+
+  .environment-panel {
+    display: grid;
+    order: 2;
+    width: 100%;
+    padding: 0;
+  }
+}
+
+/* 手机：压缩纵向间距，确保计时器拥有完整可用宽度 */
+@media (max-width: 640px) {
+  .app-shell {
+    width: min(100% - 32px, 520px);
+    min-height: auto;
+    padding-top: 24px;
+    padding-bottom: calc(32px + env(safe-area-inset-bottom));
+  }
+
+  .app-header {
+    margin-bottom: 40px;
+  }
+
+  .brand {
+    font-size: 1.1rem;
+  }
+
+  .brand-mark svg {
+    width: 21px;
+    height: 21px;
+  }
+
+  .header-actions {
+    gap: 6px;
+  }
+
+  .header-actions .icon-button {
+    padding: 8px 10px;
+  }
+
+  .header-actions .icon-button:nth-child(2) {
+    display: none;
+  }
+
+  .workspace {
+    gap: 40px;
+  }
+
+  .side-rail h1 {
+    max-width: none;
+    font-size: 2.6rem;
+  }
+
+  .subtitle {
+    max-width: none;
+  }
+
+  .mode-tabs {
+    gap: 8px;
+    margin-bottom: 24px;
+  }
+
+  .mode-tab {
+    padding: 9px 18px;
+  }
+
+  .remaining-time {
+    margin: 18px 0 16px;
+    font-size: clamp(4.5rem, 22vw, 7rem);
+    letter-spacing: 0;
+  }
+
+  .stopwatch-time {
+    width: 100%;
+    font-size: clamp(1.6rem, 8vw, 2.7rem);
+    letter-spacing: 0;
+    white-space: nowrap;
+  }
+
+  .progress-track {
+    width: min(100%, 420px);
+  }
+
+  .task-line {
+    width: min(100%, 420px);
+  }
+
+  .primary-actions {
+    gap: 8px;
+  }
+
+  .button {
+    min-width: 0;
+    padding: 12px 14px;
+  }
+
+  .environment-panel {
+    display: block;
+  }
+
+  .sound-control,
+  .zen-control {
+    grid-template-columns: auto minmax(0, 1fr) auto;
+  }
+
+  .wallpaper-control {
+    gap: 6px;
+  }
+
+  .settings-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .panel {
+    max-width: 100%;
+    margin-top: 28px;
+  }
+}
+
+/* 小屏手机：避免设置项与秒表在窄屏中互相挤压 */
+@media (max-width: 400px) {
+  .app-shell {
+    width: min(100% - 24px, 360px);
+  }
+
+  .header-actions .icon-button {
+    padding-inline: 8px;
+  }
+
+  .side-rail h1 {
+    font-size: 2.35rem;
+  }
+
+  .stopwatch-time {
+    font-size: clamp(1.35rem, 7.5vw, 2.2rem);
+  }
+
+  .settings-grid {
+    grid-template-columns: 1fr;
+  }
+}

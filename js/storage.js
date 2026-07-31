@@ -8,7 +8,7 @@ const migrateLegacy = (legacy) => {
   const sessions = Object.values(legacy?.taskList ?? {}).map((task) => ({
     id: String(task.planStartTime),
     task: task.taskName || '',
-    mode: task.taskName === '休息，休息一下^_^' ? 'break' : 'work',
+    mode: task.taskName === '休息一下，^_^' ? 'break' : 'work',
     startedAt: task.planStartTime,
     plannedEndAt: task.planStopTime,
     endedAt: task.stopTime,

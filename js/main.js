@@ -4,6 +4,7 @@ import { translate } from './i18n.js';
 import { Timer } from './timer.js';
 import { Stopwatch } from './stopwatch.js';
 import { createView } from './view.js';
+import { siteConfig } from './config.js';
 
 const state = loadState();
 let language = localStorage.getItem('pomodoro.timer.language') || 'zh';
@@ -14,12 +15,12 @@ const rain = createAudioPlayer('./assets/audio/rain.mp3', { loop: true, volume: 
 const persist = () => saveState(state);
 const getMinutes = (element) => Number(element.value);
 const getSeconds = (element) => Number(element.value);
-const isValidMinutes = (value) => Number.isFinite(value) && value > 0;
+const isValidMinutes = (value) => (value === 0 || (Number.isFinite(value) && value > 0 && value <= 99));
 const isPlaceholder = (value) => value.trim() === '';
 
 const applySettings = () => { elements['work-minutes'].value = state.settings.workMinutes; elements['break-minutes'].value = state.settings.breakMinutes; elements['auto-loop'].checked = state.settings.autoLoop; elements['stopwatch-auto-stop'].value = state.settings.stopwatchAutoStopSeconds; sound.setVolume(state.settings.alertVolume); view.renderAlert(state.settings.alertEnabled, state.settings.alertVolume); view.renderNoise(state.settings.rainEnabled, state.settings.rainVolume); view.renderWallpaper(state.settings.wallpaper); };
 const render = (timerState = timer.state) => { view.applyLanguage(language); view.renderTimer({ ...timerState, remainingMs: timerState.remainingMs ?? state.settings.workMinutes * 60_000 }, language); view.renderHistory(state.sessions, language, deleteHistoryItem); };
-const saveSettings = () => { const workMinutes = getMinutes(elements['work-minutes']); const breakMinutes = getMinutes(elements['break-minutes']); if (!isValidMinutes(workMinutes) || !isValidMinutes(breakMinutes)) { window.alert(translate(language, 'invalidDuration')); applySettings(); return false; } state.settings = { ...state.settings, workMinutes, breakMinutes, autoLoop: elements['auto-loop'].checked }; persist(); applySettings(); return true; };
+const saveSettings = () => { let workMinutes = getMinutes(elements['work-minutes']); let breakMinutes = getMinutes(elements['break-minutes']); if (!isValidMinutes(workMinutes) || !isValidMinutes(breakMinutes)) { window.alert(translate(language, 'invalidDuration')); applySettings(); return false; } if (workMinutes === 0) workMinutes = siteConfig.defaults.workMinutes; if (breakMinutes === 0) breakMinutes = siteConfig.defaults.breakMinutes; state.settings = { ...state.settings, workMinutes, breakMinutes, autoLoop: elements['auto-loop'].checked }; persist(); applySettings(); render(); return true; };
 const saveStopwatchSettings = () => { const stopwatchAutoStopSeconds = getSeconds(elements['stopwatch-auto-stop']); if (!Number.isInteger(stopwatchAutoStopSeconds) || stopwatchAutoStopSeconds < 0) { window.alert(translate(language, 'invalidAutoStop')); applySettings(); return false; } state.settings = { ...state.settings, stopwatchAutoStopSeconds }; persist(); return true; };
 const record = (session) => { state.sessions.unshift(session); state.sessions = state.sessions.slice(0, 100); persist(); view.renderHistory(state.sessions, language, deleteHistoryItem); };
 const deleteHistoryItem = (index) => { state.sessions.splice(index, 1); persist(); view.renderHistory(state.sessions, language, deleteHistoryItem); };
@@ -67,3 +68,24 @@ view.renderSettingsMode('pomodoro');
 render();
 view.renderStopwatch(stopwatch.state, language);
 document.getElementById('current-year').textContent = new Date().getFullYear();
+
+// 应用配置
+const brandLink = document.getElementById('brand-link');
+const brandName = document.getElementById('brand-name');
+if (brandLink && brandName) {
+  brandLink.href = siteConfig.brand.url;
+  brandLink.setAttribute('aria-label', siteConfig.brand.name);
+  brandName.textContent = siteConfig.brand.name;
+}
+
+// 应用社交链接
+document.querySelector('a[aria-label="GitHub"]').href = siteConfig.social.github;
+document.querySelector('a[aria-label="Blog"]').href = siteConfig.social.blog;
+document.querySelector('a[aria-label="Email"]').href = `mailto:${siteConfig.social.email}`;
+
+// 应用页脚信息
+const footerLink = document.querySelector('.app-footer a');
+if (footerLink) {
+  footerLink.href = siteConfig.footer.authorUrl;
+  footerLink.textContent = siteConfig.footer.author;
+}

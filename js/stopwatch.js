@@ -4,6 +4,7 @@ export class Stopwatch {
     this.onAutoStop = onAutoStop;
     this.state = { status: 'idle', elapsedMs: 0, startedAt: null, task: '' };
     this.intervalId = null;
+    this.MAX_TIME_MS = (99 * 3600 + 59 * 60 + 59) * 1000; // 99:59:59
   }
 
   start({ autoStopSeconds = 0 } = {}) {
@@ -13,6 +14,15 @@ export class Stopwatch {
     this.state = { status: 'running', elapsedMs: this.state.elapsedMs, startedAt: now - this.state.elapsedMs, task: this.state.task, sessionStartedAt: this.state.sessionStartedAt || now, autoStopMs };
     this.intervalId = window.setInterval(() => {
       this.state.elapsedMs = Date.now() - this.state.startedAt;
+      
+      // 达到最大时间限制
+      if (this.state.elapsedMs >= this.MAX_TIME_MS) {
+        this.state.elapsedMs = this.MAX_TIME_MS;
+        this.stop();
+        this.onAutoStop();
+        return;
+      }
+      
       if (this.state.autoStopMs && this.state.elapsedMs >= this.state.autoStopMs) {
         this.state.elapsedMs = this.state.autoStopMs;
         this.stop();
