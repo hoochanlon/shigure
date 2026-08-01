@@ -1,4 +1,4 @@
-# Timer
+# Shigure 時雨
 
 <div align="center">
 
@@ -6,7 +6,7 @@
 
 集中力を高めるためのミニマルでエレガントなポモドーロタイマーとストップウォッチ。
 
-[ライブデモ](https://hoochanlon.github.io/timer) | [GitHub](https://github.com/hoochanlon/tomato)
+[ライブデモ](https://hoochanlon.github.io/timer)
 
 **言語:** [中文](./README.md) | [English](./README.en.md) | 日本語
 

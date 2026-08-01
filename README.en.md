@@ -1,4 +1,4 @@
-# Timer
+# Shigure
 
 <div align="center">
 
@@ -6,7 +6,7 @@
 
 A minimalist and elegant Pomodoro timer and stopwatch designed for focus.
 
-[Live Demo](https://hoochanlon.github.io/timer) | [GitHub](https://github.com/hoochanlon/tomato)
+[Live Demo](https://hoochanlon.github.io/timer)
 
 **Languages:** [中文](./README.md) | English | [日本語](./README.ja.md)
 

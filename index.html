@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Timer - 简洁专注的番茄钟与秒表计时工具">
-  <title>Timer - 专注计时工具</title>
+  <meta name="description" content="Shigure 时雨 - 简洁专注的番茄钟与秒表计时工具">
+  <title>时雨 Shigure - 专注计时工具</title>
   <link rel="icon" type="image/svg+xml" href="./assets/icons/hourglass.svg">
   <link rel="icon" type="image/png" sizes="32x32" href="./assets/favicon/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="./assets/favicon/favicon-16x16.png">
@@ -17,8 +17,8 @@
     import { siteConfig } from './js/config.js';
     
     // 应用页面标题和描述
-    document.title = siteConfig.title.default;
-    document.querySelector('meta[name="description"]').content = siteConfig.meta.description;
+    document.title = siteConfig.title.zh;
+    document.querySelector('meta[name="description"]').content = siteConfig.meta.zh;
     
     // 应用品牌图标
     const iconLink = document.querySelector('link[rel="icon"][type="image/svg+xml"]');
@@ -27,7 +27,7 @@
     }
   </script>
   <script>
-    // 在渲染前应用壁纸设置，避免白屏闪烁
+    // 在渲染前应用壁纸和禅模式设置，避免白屏闪烁
     (function() {
       try {
         const savedState = localStorage.getItem('pomodoro.timer.state');
@@ -42,6 +42,10 @@
           } else if (wallpaper === 'dark') {
             document.documentElement.classList.add('has-dark-wallpaper');
           }
+          // 应用禅模式
+          if (state.settings?.zenMode) {
+            document.documentElement.classList.add('zen-mode-preload');
+          }
         }
       } catch (e) {}
     })();
@@ -51,7 +55,7 @@
   <main class="app-shell" aria-labelledby="app-title">
     <div class="background-glow" aria-hidden="true"></div>
     <header class="app-header">
-      <a id="brand-link" class="brand" href="./" aria-label="Timer">
+      <a id="brand-link" class="brand" href="./" aria-label="Shigure">
         <span class="brand-mark" id="brand-icon">
           <svg width="20" height="20" viewBox="0 0 24 24">
             <path d="M0 0h24v24H0z" fill="none" />
@@ -59,7 +63,7 @@
             <path fill="currentColor" d="M5.198 20.7C5.8 22 7.867 22 12 22s6.2 0 6.802-1.3a2.5 2.5 0 0 0 .13-.346c.41-1.387-1.052-2.995-3.974-6.21L13 12h-2l-1.958 2.143c-2.922 3.216-4.383 4.824-3.974 6.21q.052.18.13.348" opacity=".5" />
           </svg>
         </span>
-        <span id="brand-name">Timer</span>
+        <span id="brand-name">Shigure</span>
       </a>
       <div class="header-actions">
         <a href="https://github.com/hoochanlon/tomato" target="_blank" rel="noopener noreferrer" class="icon-button" aria-label="GitHub">
@@ -198,7 +202,14 @@
 
     <section id="history-panel" class="panel" hidden><div class="panel-heading"><h2 data-i18n="history">历史记录</h2><button id="clear-history" class="text-button text-danger" type="button" data-i18n="clearHistory">清空记录</button></div><ul id="history-list" class="history-list"></ul></section>
   </main>
-  <button id="zen-exit" class="zen-exit" type="button" aria-pressed="true" data-i18n="exitZenMode">退出禅模式</button>
+  <button id="zen-exit" class="zen-exit" type="button" aria-label="退出禅模式">
+    <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M0 0h24v24H0z" fill="none" />
+      <path fill="currentColor" d="m19.322 6.756l-1.472 2.28a6.564 6.564 0 0 1-4.796 9.432a6.53 6.53 0 0 1-3.987-.619L6.78 19.32a8.986 8.986 0 0 0 14.188-6.59a9.03 9.03 0 0 0-1.646-5.98h.006z" />
+      <path fill="currentColor" d="M12.013 16.508a4.52 4.52 0 0 0 4.447-3.705a10.3 10.3 0 0 0-8.195 1.704a4.52 4.52 0 0 0 3.748 2.001" />
+      <path fill="currentColor" d="M14.242 11.75q1.157 0 2.292.249a4.524 4.524 0 0 0-8.854-1.302a4.5 4.5 0 0 0-.146 1.91c-.625.46-1.193.99-1.694 1.583a6.562 6.562 0 0 1 5.33-8.67a6.53 6.53 0 0 1 3.77.635l2.277-1.477A8.984 8.984 0 0 0 3.022 11.37a9 9 0 0 0 1.742 5.986c.424-.767.94-1.48 1.535-2.122q.736-.762 1.588-1.392a10.75 10.75 0 0 1 6.359-2.09z" />
+    </svg>
+  </button>
   <script type="module" src="./js/main.js"></script>
 </body>
 </html>

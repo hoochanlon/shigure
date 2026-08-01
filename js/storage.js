@@ -1,7 +1,7 @@
 const STORAGE_KEY = 'pomodoro.timer.state';
 const LEGACY_KEY = 'tomatoData';
 
-const defaultState = () => ({ version: 1, settings: { workMinutes: 25, breakMinutes: 5, autoLoop: false, stopwatchAutoStopSeconds: 0, rainEnabled: false, rainVolume: 0.35, alertEnabled: true, alertVolume: 0.7, wallpaper: 'light', themeMode: 'manual', enterToStart: false }, sessions: [] });
+const defaultState = () => ({ version: 1, settings: { workMinutes: 25, breakMinutes: 5, autoLoop: false, stopwatchAutoStopSeconds: 0, rainEnabled: false, rainVolume: 0.35, alertEnabled: true, alertVolume: 0.7, wallpaper: 'light', themeMode: 'manual', enterToStart: false, zenMode: false }, sessions: [], activeTimer: null, activeStopwatch: null });
 const isRecord = (value) => value && typeof value === 'object';
 
 const migrateLegacy = (legacy) => {

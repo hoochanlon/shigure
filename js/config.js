@@ -2,22 +2,24 @@
 export const siteConfig = {
   // 品牌信息
   brand: {
-    name: 'Timer',
+    name: 'Shigure',
     icon: '⏳', // 可以是 emoji 或留空使用 SVG
     iconSvg: './assets/icons/hourglass.svg', // SVG 图标路径
     url: './'
   },
   
-  // 页面标题
+  // 页面标题 - 现在由 i18n 管理多语言
   title: {
-    default: 'Timer - 专注计时工具',
-    work: 'Timer - 工作中',
-    break: 'Timer - 休息中'
+    zh: '时雨 Shigure - 专注计时工具',
+    en: 'Shigure - Focus Timer',
+    ja: '時雨 Shigure - 集中タイマー'
   },
   
   // 元信息
   meta: {
-    description: 'Timer - 简洁专注的番茄钟与秒表计时工具'
+    zh: 'Shigure 时雨 - 简洁专注的番茄钟与秒表计时工具',
+    en: 'Shigure - Minimalist Pomodoro and Stopwatch Timer',
+    ja: 'Shigure 時雨 - シンプルなポモドーロとストップウォッチタイマー'
   },
   
   // 时间限制
@@ -34,7 +36,7 @@ export const siteConfig = {
   
   // 社交链接
   social: {
-    github: 'https://github.com/hoochanlon/tomato',
+    github: 'https://github.com/hoochanlon/timer',
     blog: 'https://hoochanlon.github.io',
     email: 'hoochanlon@outlook.com'
   },
