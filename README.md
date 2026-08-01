@@ -34,8 +34,13 @@
 ES Modules 需要通过 HTTP 提供服务：
 
 ```bash
-pnpm dlx serve
+npx serve -p 8000
 ```
+
+```bash
+python3 -m http.server 8000
+```
+
 
 或使用任何静态服务器打开 `index.html`。
 
