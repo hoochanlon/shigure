@@ -1,7 +1,7 @@
 const STORAGE_KEY = 'pomodoro.timer.state';
 const LEGACY_KEY = 'tomatoData';
 
-const defaultState = () => ({ version: 1, settings: { workMinutes: 25, breakMinutes: 5, autoLoop: false, stopwatchAutoStopSeconds: 0, stopwatchTimeFormat: 'smart', rainEnabled: false, rainVolume: 0.35, alertEnabled: true, alertVolume: 0.7, wallpaper: 'light', themeMode: 'manual', enterToStart: false, zenMode: false }, sessions: [], activeTimer: null, activeStopwatch: null, pomodoroResetAt: null });
+const defaultState = () => ({ version: 1, settings: { workMinutes: 25, breakMinutes: 5, autoLoop: false, stopwatchAutoStopSeconds: 0, stopwatchTimeFormat: 'smart', rainEnabled: false, rainVolume: 0.35, alertEnabled: true, alertVolume: 0.7, pomodoroAlertEnabled: true, breakAlertEnabled: true, workAlertSound: 'ring.mp3', breakAlertSound: 'ring.mp3', stopwatchAlertEnabled: true, stopwatchAlertSound: 'nokia.mp3', tickingEnabled: false, wallpaper: 'light', themeMode: 'manual', enterToStart: false, zenMode: false }, sessions: [], activeTimer: null, activeStopwatch: null, pomodoroResetAt: null });
 const isRecord = (value) => value && typeof value === 'object';
 
 const migrateLegacy = (legacy) => {
@@ -17,10 +17,28 @@ const migrateLegacy = (legacy) => {
   return { ...defaultState(), sessions };
 };
 
+const validPomodoroAlertSounds = new Set(['ring.mp3', 'nokia.mp3', 'ringtone.mp3', 'Westminster-chimes.mp3', 'school-bell-for-recess.mp3']);
+
 export const loadState = () => {
   try {
     const stored = JSON.parse(localStorage.getItem(STORAGE_KEY));
-    if (isRecord(stored) && stored.version === 1) return { ...defaultState(), ...stored, settings: { ...defaultState().settings, ...stored.settings } };
+    if (isRecord(stored) && stored.version === 1) {
+      const state = { ...defaultState(), ...stored, settings: { ...defaultState().settings, ...stored.settings } };
+      if (typeof stored.settings?.breakAlertEnabled !== 'boolean') {
+        state.settings.breakAlertEnabled = state.settings.pomodoroAlertEnabled;
+      }
+      const legacyAlertSound = validPomodoroAlertSounds.has(stored.settings?.pomodoroAlertSound) ? stored.settings.pomodoroAlertSound : null;
+      if (legacyAlertSound && !stored.settings?.workAlertSound) state.settings.workAlertSound = legacyAlertSound;
+      if (legacyAlertSound && !stored.settings?.breakAlertSound) state.settings.breakAlertSound = legacyAlertSound;
+      if (!validPomodoroAlertSounds.has(state.settings.workAlertSound)) {
+        state.settings.workAlertSound = defaultState().settings.workAlertSound;
+      }
+      if (!validPomodoroAlertSounds.has(state.settings.breakAlertSound)) {
+        state.settings.breakAlertSound = defaultState().settings.breakAlertSound;
+      }
+      delete state.settings.pomodoroAlertSound;
+      return state;
+    }
     const legacy = JSON.parse(localStorage.getItem(LEGACY_KEY));
     if (isRecord(legacy)) {
       const migrated = migrateLegacy(legacy);
@@ -32,3 +50,4 @@ export const loadState = () => {
 };
 
 export const saveState = (state) => localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+export const getDefaultSettings = () => defaultState().settings;

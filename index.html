@@ -115,9 +115,31 @@
         <nav class="rail-nav" aria-label="Timer tools">
           <div class="rail-item">
             <button class="rail-link" type="button" data-panel-target="settings-panel" aria-expanded="false"><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M0 0h24v24H0z" fill="none" /><path fill="currentColor" d="M8.86 5.5A1 1 0 0 0 8 5H3v2h4.43l6.71 11.5a1 1 0 0 0 .86.5h6v-2h-5.43zM15 5h6v2h-6z" /></svg><span data-i18n="settings">选项</span></button>
-            <section id="settings-panel" class="panel" hidden><h2 data-i18n="settings">选项</h2><div id="pomodoro-settings" class="settings-grid"><label><span data-i18n="workMinutes">专注时长（分钟）</span><input id="work-minutes" type="number" min="0" max="99" step="1" value="25"><small class="input-hint">0 = 默认 25 分钟</small></label><label><span data-i18n="breakMinutes">休息时长（分钟）</span><input id="break-minutes" type="number" min="0" max="99" step="1" value="5"><small class="input-hint">0 = 默认 5 分钟</small></label><label class="toggle-field"><input id="auto-loop" type="checkbox"><span data-i18n="autoLoop">自动循环</span></label></div><div id="stopwatch-settings" class="settings-grid" hidden><label><span data-i18n="stopwatchAutoStop">秒表自动停止（秒）</span><input id="stopwatch-auto-stop" type="number" min="0" max="359999" step="1" value="0"></label><p class="settings-hint" data-i18n="stopwatchAutoStopMaxHint">0 = 关闭，最大 359999 秒（99:59:59）</p><label><span data-i18n="stopwatchTimeFormat">时长显示格式</span><select id="stopwatch-time-format"><option value="smart" data-i18n="stopwatchTimeFormatSmart">智能格式（1h15m）</option><option value="precise" data-i18n="stopwatchTimeFormatPrecise">精确格式（01:15:23）</option></select></label></div></section>
+            <section id="settings-panel" class="panel" hidden><h2 data-i18n="settings">选项</h2><div id="pomodoro-settings" class="settings-grid"><label><span data-i18n="workMinutes">专注时长（分钟）</span><input id="work-minutes" type="number" min="0" max="99" step="1" value="25"><small class="input-hint">0 = 默认 25 分钟</small></label><label><span data-i18n="breakMinutes">休息时长（分钟）</span><input id="break-minutes" type="number" min="0" max="99" step="1" value="5"><small class="input-hint">0 = 默认 5 分钟</small></label><label class="toggle-field"><input id="auto-loop" type="checkbox"><span data-i18n="autoLoop">自动循环</span></label></div><div id="stopwatch-settings" class="settings-grid" hidden><label><span data-i18n="stopwatchAutoStop">秒表自动停止（秒）</span><input id="stopwatch-auto-stop" type="number" min="0" max="5999" step="1" value="0"></label><p class="settings-hint" data-i18n="stopwatchAutoStopMaxHint">0 = 关闭，最大 5999 秒（99:59.99）</p><label><span data-i18n="stopwatchTimeFormat">时长显示格式</span><select id="stopwatch-time-format"><option value="smart" data-i18n="stopwatchTimeFormatSmart">智能格式（1h15m）</option><option value="precise" data-i18n="stopwatchTimeFormatPrecise">精确格式（01:15:23）</option></select></label></div></section>
           </div>
-          <button class="rail-link" type="button" data-panel-target="history-panel" aria-expanded="false"><span>◷</span><span data-i18n="history">历史记录</span></button>
+          <div class="rail-item">
+            <button class="rail-link" type="button" data-panel-target="restore-panel" aria-expanded="false">
+              <svg width="18" height="18" viewBox="0 0 512 512" aria-hidden="true">
+                <path d="M0 0h512v512H0z" fill="none" />
+                <path fill="currentColor" fill-rule="evenodd" d="M426.667 106.667v42.666L358 149.33c36.077 31.659 58.188 77.991 58.146 128.474c-.065 78.179-53.242 146.318-129.062 165.376s-154.896-15.838-191.92-84.695C58.141 289.63 72.637 204.42 130.347 151.68a85.33 85.33 0 0 0 33.28 30.507a124.59 124.59 0 0 0-46.294 97.066c1.05 69.942 58.051 126.088 128 126.08c64.072 1.056 118.71-46.195 126.906-109.749c6.124-47.483-15.135-92.74-52.236-118.947L320 256h-42.667V106.667zM202.667 64c23.564 0 42.666 19.103 42.666 42.667s-19.102 42.666-42.666 42.666S160 130.231 160 106.667S179.103 64 202.667 64" />
+              </svg>
+              <span data-i18n="systemRestore">系统还原</span>
+            </button>
+            <section id="restore-panel" class="panel" hidden>
+              <h2 data-i18n="systemRestore">系统还原</h2>
+              <div class="settings-grid">
+                <button id="restore-options-main" class="restore-option" type="button" data-i18n="restoreOptions">还原选项设置</button>
+                <button id="restore-environment-main" class="restore-option" type="button" data-i18n="restoreEnvironment">还原环境设置</button>
+              </div>
+            </section>
+          </div>
+          <button class="rail-link" type="button" data-panel-target="history-panel" aria-expanded="false">
+            <svg class="rail-link-icon" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M0 0h24v24H0z" fill="none" />
+              <path fill="currentColor" d="M12 21q-3.15 0-5.575-1.912T3.275 14.2q-.1-.375.15-.687t.675-.363q.4-.05.725.15t.45.6q.6 2.25 2.475 3.675T12 19q2.925 0 4.963-2.037T19 12t-2.037-4.962T12 5q-1.725 0-3.225.8T6.25 8H8q.425 0 .713.288T9 9t-.288.713T8 10H4q-.425 0-.712-.288T3 9V5q0-.425.288-.712T4 4t.713.288T5 5v1.35q1.275-1.6 3.113-2.475T12 3q1.875 0 3.513.713t2.85 1.924t1.925 2.85T21 12t-.712 3.513t-1.925 2.85t-2.85 1.925T12 21m1-9.4l2.5 2.5q.275.275.275.7t-.275.7t-.7.275t-.7-.275l-2.8-2.8q-.15-.15-.225-.337T11 11.975V8q0-.425.288-.712T12 7t.713.288T13 8z" />
+            </svg>
+            <span data-i18n="history">历史记录</span>
+          </button>
         </nav>
       </aside>
 
@@ -132,6 +154,7 @@
         <output id="remaining-time" class="remaining-time" aria-live="polite">25:00</output>
         <div class="progress-track" aria-hidden="true"><div id="progress-bar" class="progress-bar"></div></div>
         <p id="current-task" class="current-task" aria-live="polite"></p>
+        <output id="audio-status" class="current-task" aria-live="polite"></output>
           <label class="task-line" for="task-name"><span class="task-icon">↳</span><span class="sr-only" data-i18n="taskLabel">任务名称</span><textarea id="task-name" rows="1" maxlength="30" data-i18n-placeholder="taskPlaceholder" placeholder="准备专注什么？"></textarea></label>
         <div class="primary-actions">
           <button id="start-work" class="button button-primary" type="button" data-i18n="startWork">开始专注</button>
@@ -175,13 +198,10 @@
                 <path fill="currentColor" d="M19.14 12.94c.04-.3.06-.61.06-.94c0-.32-.02-.64-.07-.94l2.03-1.58a.49.49 0 0 0 .12-.61l-1.92-3.32a.488.488 0 0 0-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54a.484.484 0 0 0-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58a.49.49 0 0 0-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6s3.6 1.62 3.6 3.6s-1.62 3.6-3.6 3.6" />
               </svg>
             </button>
-            <button id="zen-restore-settings" class="zen-action-button" type="button" data-i18n-aria="restoreSettings">
-              <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">
-                <g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5">
-                  <path d="M2.5 4v1c0 1.414 0 2.121.44 2.56C3.378 8 4.085 8 5.5 8h1" />
-                  <path d="M2.5 12A9.5 9.5 0 1 0 12 2.5c-3.919 0-6.955 2.1-8.59 4.76" />
-                  <path d="M16 17a3.764 3.764 0 0 0-3.502-3.467L12 13.5a23 23 0 0 0-.5.019C9.65 13.609 8.142 15.153 8 17m6-8a2 2 0 1 1-4 0a2 2 0 0 1 4 0" />
-                </g>
+            <button id="zen-restore-settings" class="zen-action-button" type="button" data-i18n-aria="restoreAll">
+              <svg width="18" height="18" viewBox="0 0 512 512" aria-hidden="true">
+                <path d="M0 0h512v512H0z" fill="none" />
+                <path fill="currentColor" fill-rule="evenodd" d="M426.667 106.667v42.666L358 149.33c36.077 31.659 58.188 77.991 58.146 128.474c-.065 78.179-53.242 146.318-129.062 165.376s-154.896-15.838-191.92-84.695C58.141 289.63 72.637 204.42 130.347 151.68a85.33 85.33 0 0 0 33.28 30.507a124.59 124.59 0 0 0-46.294 97.066c1.05 69.942 58.051 126.088 128 126.08c64.072 1.056 118.71-46.195 126.906-109.749c6.124-47.483-15.135-92.74-52.236-118.947L320 256h-42.667V106.667zM202.667 64c23.564 0 42.666 19.103 42.666 42.667s-19.102 42.666-42.666 42.666S160 130.231 160 106.667S179.103 64 202.667 64" />
               </svg>
             </button>
           </div>
@@ -207,9 +227,9 @@
               <h3 data-i18n="stopwatch">秒表</h3>
               <label>
                 <span data-i18n="stopwatchAutoStop">自动停止（秒）</span>
-                <input id="zen-stopwatch-auto-stop" type="number" min="0" max="359999" step="1" value="0">
+                <input id="zen-stopwatch-auto-stop" type="number" min="0" max="5999" step="1" value="0">
               </label>
-              <small class="zen-settings-hint" data-i18n="stopwatchAutoStopMaxHint">0 = 关闭，最大 359999 秒（99:59:59）</small>
+              <small class="zen-settings-hint" data-i18n="stopwatchAutoStopMaxHint">0 = 关闭，最大 5999 秒（99:59.99）</small>
               <label>
                 <span data-i18n="stopwatchTimeFormat">时长显示格式</span>
                 <select id="zen-stopwatch-time-format">
@@ -233,17 +253,63 @@
         <div class="panel-label"><span data-i18n="environment">环境</span><span class="panel-line"></span></div>
         <div class="sound-control">
           <div class="sound-icon" aria-hidden="true"><span class="sound-glyph sound-icon-rain"></span></div>
-          <div><strong data-i18n="rainSound">雨声</strong><p data-i18n="rainDescription">让背景安静下来</p></div>
+          <div><strong data-i18n="rainSound">雨声</strong><p data-i18n="rainDescription">淅沥的雨声填充背景</p></div>
           <label class="switch"><input id="rain-toggle" type="checkbox"><span></span><b class="sr-only" data-i18n="rainSound">雨声</b></label>
         </div>
         <label class="volume-control" for="rain-volume"><span class="sound-icon" aria-hidden="true"><span class="sound-glyph sound-icon-volume"></span></span><span class="sr-only" data-i18n="volume">音量</span><input id="rain-volume" type="range" min="0" max="1" step="0.01" value="0.35"><output id="rain-volume-value">35%</output></label>
-        <div class="sound-control alert-control"><div class="sound-icon" aria-hidden="true"><span class="sound-glyph sound-icon-alert"></span></div><div><strong data-i18n="alertSound">结束提示音</strong><p data-i18n="alertDescription">计时结束时播放提示音</p></div><label class="switch"><input id="alert-toggle" type="checkbox"><span></span><b class="sr-only" data-i18n="alertSound">结束提示音</b></label></div>
-        <label class="volume-control" for="alert-volume"><span class="sound-icon" aria-hidden="true"><span class="sound-glyph sound-icon-volume"></span></span><span class="sr-only" data-i18n="alertVolume">提示音音量</span><input id="alert-volume" type="range" min="0" max="1" step="0.01" value="0.7"><output id="alert-volume-value">70%</output></label>
-        <div class="sound-control wallpaper-control">
-          <div class="sound-icon" aria-hidden="true"><span class="sound-glyph sound-icon-wallpaper"></span></div>
-          <div><strong data-i18n="wallpaper">墙纸</strong><p data-i18n="wallpaperDescription">给网页换不同的色彩</p></div>
-          <label class="switch"><input id="system-theme-toggle" type="checkbox"><span></span><b class="sr-only" data-i18n="followSystemTheme">跟随系统</b></label>
+        <div class="sound-control pomodoro-alert-control">
+          <div class="sound-icon" aria-hidden="true"><span class="sound-glyph sound-icon-alert"></span></div>
+          <div class="sound-control-content">
+            <strong data-i18n="workAlertSound">专注完成提示音</strong>
+            <div class="custom-select-wrapper">
+              <button type="button" class="custom-select-trigger" id="pomodoro-work-sound-trigger" aria-expanded="false">
+                <span id="pomodoro-work-sound-label" data-i18n="soundRing">铃声</span>
+                <svg width="10" height="6" viewBox="0 0 10 6" fill="none"><path d="M1 1L5 5L9 1" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </button>
+              <div class="custom-select-dropdown" id="pomodoro-work-sound-dropdown" hidden>
+                <div class="custom-select-option" data-value="ring.mp3" data-label-key="soundRing"><span data-i18n="soundRing">铃声</span><button type="button" class="option-preview-btn" data-sound="ring.mp3" aria-label="试听">▶</button></div>
+                <div class="custom-select-option" data-value="nokia.mp3" data-label-key="soundNokia"><span data-i18n="soundNokia">诺基亚</span><button type="button" class="option-preview-btn" data-sound="nokia.mp3" aria-label="试听">▶</button></div>
+                <div class="custom-select-option" data-value="ringtone.mp3" data-label-key="soundRingtone"><span data-i18n="soundRingtone">手机铃</span><button type="button" class="option-preview-btn" data-sound="ringtone.mp3" aria-label="试听">▶</button></div>
+                <div class="custom-select-option" data-value="Westminster-chimes.mp3" data-label-key="soundWestminster"><span data-i18n="soundWestminster">西敏寺钟声</span><button type="button" class="option-preview-btn" data-sound="Westminster-chimes.mp3" aria-label="试听">▶</button></div>
+                <div class="custom-select-option" data-value="school-bell-for-recess.mp3" data-label-key="soundSchoolBell"><span data-i18n="soundSchoolBell">校园铃</span><button type="button" class="option-preview-btn" data-sound="school-bell-for-recess.mp3" aria-label="试听">▶</button></div>
+              </div>
+              <input type="hidden" id="pomodoro-work-alert-sound" value="ring.mp3">
+            </div>
+          </div>
+          <label class="switch"><input id="pomodoro-alert-toggle" type="checkbox"><span></span><b class="sr-only" data-i18n="workAlertSound">专注完成提示音</b></label>
         </div>
+        <div class="sound-control pomodoro-alert-control">
+          <div class="sound-icon" aria-hidden="true"><span class="sound-glyph sound-icon-alert"></span></div>
+          <div class="sound-control-content">
+            <strong data-i18n="breakAlertSound">休息完成提示音</strong>
+            <div class="custom-select-wrapper">
+              <button type="button" class="custom-select-trigger" id="pomodoro-break-sound-trigger" aria-expanded="false">
+                <span id="pomodoro-break-sound-label" data-i18n="soundRing">铃声</span>
+                <svg width="10" height="6" viewBox="0 0 10 6" fill="none"><path d="M1 1L5 5L9 1" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </button>
+              <div class="custom-select-dropdown" id="pomodoro-break-sound-dropdown" hidden>
+                <div class="custom-select-option" data-value="ring.mp3" data-label-key="soundRing"><span data-i18n="soundRing">铃声</span><button type="button" class="option-preview-btn" data-sound="ring.mp3" aria-label="试听">▶</button></div>
+                <div class="custom-select-option" data-value="nokia.mp3" data-label-key="soundNokia"><span data-i18n="soundNokia">诺基亚</span><button type="button" class="option-preview-btn" data-sound="nokia.mp3" aria-label="试听">▶</button></div>
+                <div class="custom-select-option" data-value="ringtone.mp3" data-label-key="soundRingtone"><span data-i18n="soundRingtone">手机铃</span><button type="button" class="option-preview-btn" data-sound="ringtone.mp3" aria-label="试听">▶</button></div>
+                <div class="custom-select-option" data-value="Westminster-chimes.mp3" data-label-key="soundWestminster"><span data-i18n="soundWestminster">西敏寺钟声</span><button type="button" class="option-preview-btn" data-sound="Westminster-chimes.mp3" aria-label="试听">▶</button></div>
+                <div class="custom-select-option" data-value="school-bell-for-recess.mp3" data-label-key="soundSchoolBell"><span data-i18n="soundSchoolBell">校园铃</span><button type="button" class="option-preview-btn" data-sound="school-bell-for-recess.mp3" aria-label="试听">▶</button></div>
+              </div>
+              <input type="hidden" id="pomodoro-break-alert-sound" value="ring.mp3">
+            </div>
+          </div>
+          <label class="switch"><input id="break-alert-toggle" type="checkbox"><span></span><b class="sr-only" data-i18n="breakAlertSound">休息完成提示音</b></label>
+        </div>
+        <div class="sound-control stopwatch-alert-control">
+          <div class="sound-icon" aria-hidden="true"><span class="sound-glyph sound-icon-stopwatch"></span></div>
+          <div><strong data-i18n="stopwatchAlert">秒表提示音</strong></div>
+          <label class="switch"><input id="stopwatch-alert-toggle" type="checkbox"><span></span><b class="sr-only" data-i18n="stopwatchAlert">秒表提示音</b></label>
+        </div>
+        <div class="sound-control ticking-control">
+          <div class="sound-icon" aria-hidden="true"><span class="sound-glyph sound-icon-ticking"></span></div>
+          <div><strong data-i18n="tickingSound">计时滴答声</strong></div>
+          <label class="switch"><input id="ticking-toggle" type="checkbox"><span></span><b class="sr-only" data-i18n="tickingSound">计时滴答声</b></label>
+        </div>
+        <label class="volume-control" for="alert-volume"><span class="sound-icon" aria-hidden="true"><span class="sound-glyph sound-icon-volume"></span></span><span class="sr-only" data-i18n="alertVolume">提示音音量</span><input id="alert-volume" type="range" min="0" max="1" step="0.01" value="0.7"><output id="alert-volume-value">70%</output></label>
         <div class="wallpaper-theme-control">
           <div class="sound-icon" aria-hidden="true"><span class="sound-glyph sound-icon-color-swatch"></span></div>
           <div class="wallpaper-options" role="group" aria-label="Wallpaper themes">
@@ -268,7 +334,15 @@
       </aside>
     </div>
 
-    <section id="history-panel" class="panel" hidden><div class="panel-heading"><h2 data-i18n="history">历史记录</h2><button id="clear-history" class="text-button text-danger" type="button" data-i18n="clearHistory">清空记录</button></div><ul id="history-list" class="history-list"></ul></section>
+    <section id="history-panel" class="panel" hidden>
+      <div class="panel-heading">
+        <h2 data-i18n="history">历史记录</h2>
+        <div class="panel-actions">
+          <button id="clear-history" class="text-button text-danger" type="button" data-i18n="clearHistory">清空记录</button>
+        </div>
+      </div>
+      <ul id="history-list" class="history-list"></ul>
+    </section>
   </main>
   <button id="zen-exit" class="zen-exit" type="button" aria-label="退出禅模式">
     <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true">
