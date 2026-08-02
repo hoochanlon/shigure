@@ -155,7 +155,7 @@
         <div class="progress-track" aria-hidden="true"><div id="progress-bar" class="progress-bar"></div></div>
         <p id="current-task" class="current-task" aria-live="polite"></p>
         <output id="audio-status" class="current-task" aria-live="polite"></output>
-          <label class="task-line" for="task-name"><span class="task-icon">↳</span><span class="sr-only" data-i18n="taskLabel">任务名称</span><textarea id="task-name" rows="1" maxlength="30" data-i18n-placeholder="taskPlaceholder" placeholder="准备专注什么？"></textarea></label>
+          <label class="task-line" for="task-name"><span class="task-icon">↳</span><span class="sr-only" data-i18n="taskLabel">任务名称</span><textarea id="task-name" rows="1" maxlength="30" data-i18n-placeholder="taskPlaceholder" placeholder="准备专注什么？（可选）"></textarea></label>
         <div class="primary-actions">
           <button id="start-work" class="button button-primary" type="button" data-i18n="startWork">开始专注</button>
             <button id="start-break" class="button button-success" type="button" data-i18n="startBreak">开始休息</button>
@@ -263,7 +263,7 @@
             <strong data-i18n="workAlertSound">专注完成提示音</strong>
             <div class="custom-select-wrapper">
               <button type="button" class="custom-select-trigger" id="pomodoro-work-sound-trigger" aria-expanded="false">
-                <span id="pomodoro-work-sound-label" data-i18n="soundRing">铃声</span>
+                <span id="pomodoro-work-sound-label" data-i18n="soundWestminster">西敏寺钟声</span>
                 <svg width="10" height="6" viewBox="0 0 10 6" fill="none"><path d="M1 1L5 5L9 1" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
               </button>
               <div class="custom-select-dropdown" id="pomodoro-work-sound-dropdown" hidden>
@@ -273,7 +273,7 @@
                 <div class="custom-select-option" data-value="Westminster-chimes.mp3" data-label-key="soundWestminster"><span data-i18n="soundWestminster">西敏寺钟声</span><button type="button" class="option-preview-btn" data-sound="Westminster-chimes.mp3" aria-label="试听">▶</button></div>
                 <div class="custom-select-option" data-value="school-bell-for-recess.mp3" data-label-key="soundSchoolBell"><span data-i18n="soundSchoolBell">校园铃</span><button type="button" class="option-preview-btn" data-sound="school-bell-for-recess.mp3" aria-label="试听">▶</button></div>
               </div>
-              <input type="hidden" id="pomodoro-work-alert-sound" value="ring.mp3">
+              <input type="hidden" id="pomodoro-work-alert-sound" value="Westminster-chimes.mp3">
             </div>
           </div>
           <label class="switch"><input id="pomodoro-alert-toggle" type="checkbox"><span></span><b class="sr-only" data-i18n="workAlertSound">专注完成提示音</b></label>

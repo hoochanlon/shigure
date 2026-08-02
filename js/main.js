@@ -262,8 +262,22 @@ document.querySelectorAll('[data-panel-target]').forEach((button) => button.addE
 ['work-minutes', 'break-minutes', 'auto-loop'].forEach((id) => elements[id].addEventListener('change', saveSettings));
 elements['stopwatch-auto-stop'].addEventListener('change', saveStopwatchSettings);
 elements['stopwatch-time-format'].addEventListener('change', saveStopwatchSettings);
-elements['pomodoro-alert-toggle'].addEventListener('change', () => updateAlert({ pomodoroEnabled: elements['pomodoro-alert-toggle'].checked }));
-elements['break-alert-toggle'].addEventListener('change', () => updateAlert({ breakEnabled: elements['break-alert-toggle'].checked }));
+elements['pomodoro-alert-toggle'].addEventListener('change', () => {
+  const pomodoroEnabled = elements['pomodoro-alert-toggle'].checked;
+  updateAlert({ pomodoroEnabled });
+  if (!pomodoroEnabled) {
+    workAlertPlayer.stop();
+    view.renderAudioStatus('');
+  }
+});
+elements['break-alert-toggle'].addEventListener('change', () => {
+  const breakEnabled = elements['break-alert-toggle'].checked;
+  updateAlert({ breakEnabled });
+  if (!breakEnabled) {
+    breakAlertPlayer.stop();
+    view.renderAudioStatus('');
+  }
+});
 elements['stopwatch-alert-toggle'].addEventListener('change', () => updateAlert({ stopwatchEnabled: elements['stopwatch-alert-toggle'].checked }));
 elements['ticking-toggle'].addEventListener('change', () => updateAlert({ tickingEnabled: elements['ticking-toggle'].checked }));
 elements['alert-volume'].addEventListener('input', () => updateAlert({ volume: elements['alert-volume'].value }));

@@ -1,7 +1,7 @@
 const STORAGE_KEY = 'pomodoro.timer.state';
 const LEGACY_KEY = 'tomatoData';
 
-const defaultState = () => ({ version: 1, settings: { workMinutes: 25, breakMinutes: 5, autoLoop: false, stopwatchAutoStopSeconds: 0, stopwatchTimeFormat: 'smart', rainEnabled: false, rainVolume: 0.35, alertEnabled: true, alertVolume: 0.7, pomodoroAlertEnabled: true, breakAlertEnabled: true, workAlertSound: 'ring.mp3', breakAlertSound: 'ring.mp3', stopwatchAlertEnabled: true, stopwatchAlertSound: 'nokia.mp3', tickingEnabled: false, wallpaper: 'light', themeMode: 'manual', enterToStart: false, zenMode: false }, sessions: [], activeTimer: null, activeStopwatch: null, pomodoroResetAt: null });
+const defaultState = () => ({ version: 1, settings: { workMinutes: 25, breakMinutes: 5, autoLoop: false, stopwatchAutoStopSeconds: 0, stopwatchTimeFormat: 'smart', rainEnabled: false, rainVolume: 0.35, alertEnabled: true, alertVolume: 0.7, pomodoroAlertEnabled: true, breakAlertEnabled: true, workAlertSound: 'Westminster-chimes.mp3', breakAlertSound: 'ring.mp3', stopwatchAlertEnabled: true, stopwatchAlertSound: 'nokia.mp3', tickingEnabled: false, wallpaper: 'light', themeMode: 'manual', enterToStart: false, zenMode: false }, sessions: [], activeTimer: null, activeStopwatch: null, pomodoroResetAt: null });
 const isRecord = (value) => value && typeof value === 'object';
 
 const migrateLegacy = (legacy) => {
