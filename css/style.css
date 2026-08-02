@@ -174,7 +174,12 @@ body.zen-mode .zen-settings { display: block; }
 .has-rain-wallpaper .zen-history-panel { background: rgb(14 22 38 / .95); backdrop-filter: blur(24px); box-shadow: 0 8px 24px rgb(0 0 0 / .4); }
 .has-dark-wallpaper .zen-history-panel { background: #1a1a1a; box-shadow: 0 8px 24px rgb(0 0 0 / .6); }
 .zen-history-panel[hidden] { display: none; }
-.zen-history-panel h3 { margin: 0 0 16px; color: var(--ink); font-size: 1rem; font-weight: 600; text-align: center; }
+.zen-history-heading { display: flex; justify-content: space-between; align-items: center; gap: 16px; margin-bottom: 16px; }
+.zen-history-panel h3 { margin: 0; color: var(--ink); font-size: 1rem; font-weight: 600; }
+.zen-clear-button { padding: 4px 10px; border: 1px solid var(--line); border-radius: 6px; color: var(--danger); background: var(--glass); font-size: .72rem; white-space: nowrap; transition: opacity .2s ease; cursor: pointer; }
+.zen-clear-button:hover { opacity: .7; }
+.has-rain-wallpaper .zen-clear-button { background: rgb(255 255 255 / .05); }
+.has-dark-wallpaper .zen-clear-button { background: #1a1a1a; }
 .zen-history-list { margin: 0; padding: 0; list-style: none; }
 .zen-history-list li { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 10px 12px; margin-bottom: 8px; border-radius: 8px; border-left: 3px solid transparent; color: var(--muted); background: var(--glass); border: 1px solid var(--line); font-size: .82rem; line-height: 1.4; }
 .has-rain-wallpaper .zen-history-list li { background: rgb(255 255 255 / .08); border-color: rgb(255 255 255 / .18); }
@@ -184,5 +189,10 @@ body.zen-mode .zen-settings { display: block; }
 .has-dark-wallpaper .zen-history-list li .history-icon { background: #1a1a1a; }
 .zen-history-list li .history-icon svg { display: block; width: 18px; height: 18px; }
 .zen-history-list li .history-text { display: flex; align-items: center; gap: 8px; flex: 1; min-width: 0; word-break: break-word; }
+.zen-history-list li .zen-history-content { display: flex; align-items: center; gap: 8px; flex: 1; min-width: 0; }
+.zen-history-list li .zen-history-delete { padding: 4px 10px; border: 1px solid var(--line); border-radius: 6px; color: var(--danger); background: var(--glass); font-size: .72rem; white-space: nowrap; transition: opacity .2s ease; }
+.zen-history-list li .zen-history-delete:hover { opacity: .7; }
+.has-rain-wallpaper .zen-history-delete { background: rgb(255 255 255 / .05); }
+.has-dark-wallpaper .zen-history-delete { background: #1a1a1a; }
 .zen-history-list li.completed { opacity: 1; }
 .zen-history-list li.stopped { opacity: .7; }

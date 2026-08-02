@@ -8,7 +8,7 @@ import { siteConfig } from './config.js';
 
 const state = loadState();
 let language = localStorage.getItem('pomodoro.timer.language') || 'zh';
-const view = createView();
+const view = createView(document, () => state.pomodoroResetAt);
 const { elements } = view;
 const sound = createAudioPlayer('./assets/audio/ring.mp3');
 const rain = createAudioPlayer('./assets/audio/rain.mp3', { loop: true, volume: state.settings.rainVolume });
@@ -27,8 +27,8 @@ const saveSettings = () => { let workMinutes = getMinutes(elements['work-minutes
 const saveZenPomodoroSettings = () => { let workMinutes = getMinutes(elements['zen-work-minutes']); let breakMinutes = getMinutes(elements['zen-break-minutes']); if (!isValidMinutes(workMinutes) || !isValidMinutes(breakMinutes)) { window.alert(translate(language, 'invalidDuration')); applySettings(); return false; } if (workMinutes === 0) workMinutes = siteConfig.defaults.workMinutes; if (breakMinutes === 0) breakMinutes = siteConfig.defaults.breakMinutes; state.settings = { ...state.settings, workMinutes, breakMinutes, autoLoop: elements['zen-auto-loop'].checked }; persist(); applySettings(); render(); return true; };
 const saveZenStopwatchSettings = () => { const stopwatchAutoStopSeconds = getSeconds(elements['zen-stopwatch-auto-stop']); if (!Number.isInteger(stopwatchAutoStopSeconds) || stopwatchAutoStopSeconds < 0) { window.alert(translate(language, 'invalidAutoStop')); applySettings(); return false; } state.settings = { ...state.settings, stopwatchAutoStopSeconds }; persist(); applySettings(); return true; };
 const saveStopwatchSettings = () => { const stopwatchAutoStopSeconds = getSeconds(elements['stopwatch-auto-stop']); if (!Number.isInteger(stopwatchAutoStopSeconds) || stopwatchAutoStopSeconds < 0) { window.alert(translate(language, 'invalidAutoStop')); applySettings(); return false; } state.settings = { ...state.settings, stopwatchAutoStopSeconds }; persist(); return true; };
-const record = (session) => { state.sessions.unshift(session); state.sessions = state.sessions.slice(0, 100); persist(); view.renderHistory(state.sessions, language, deleteHistoryItem); if (!elements['zen-history-panel'].hidden) { view.renderZenHistory(state.sessions, language); } };
-const deleteHistoryItem = (index) => { state.sessions.splice(index, 1); persist(); view.renderHistory(state.sessions, language, deleteHistoryItem); };
+const record = (session) => { state.sessions.unshift(session); state.sessions = state.sessions.slice(0, 100); persist(); view.renderHistory(state.sessions, language, deleteHistoryItem); if (!elements['zen-history-panel'].hidden) { view.renderZenHistory(state.sessions, language, deleteHistoryItem); } };
+const deleteHistoryItem = (index) => { state.sessions.splice(index, 1); persist(); view.renderHistory(state.sessions, language, deleteHistoryItem); if (!elements['zen-history-panel'].hidden) { view.renderZenHistory(state.sessions, language, deleteHistoryItem); } };
 const updateRain = (enabled, volume = state.settings.rainVolume) => { state.settings = { ...state.settings, rainEnabled: enabled, rainVolume: Number(volume) }; rain.setVolume(state.settings.rainVolume); if (enabled) rain.play(); else rain.stop(); persist(); view.renderNoise(enabled, state.settings.rainVolume); };
 const updateAlert = (enabled, volume = state.settings.alertVolume) => { state.settings = { ...state.settings, alertEnabled: enabled, alertVolume: Number(volume) }; sound.setVolume(state.settings.alertVolume); persist(); view.renderAlert(enabled, state.settings.alertVolume); };
 const updateWallpaper = (wallpaper) => { state.settings = { ...state.settings, wallpaper, themeMode: 'manual' }; persist(); view.renderWallpaper(wallpaper, 'manual'); };
@@ -47,11 +47,12 @@ elements['start-work'].addEventListener('click', () => start('work'));
 elements['start-break'].addEventListener('click', () => start('break'));
 elements['pause-resume'].addEventListener('click', () => { if (timer.state.status === 'running') timer.pause(); else timer.resume(); });
 elements['stop-timer'].addEventListener('click', () => { const session = timer.stop(); if (session) record(session); });
-elements['reset-timer'].addEventListener('click', () => timer.reset());
+elements['reset-timer'].addEventListener('click', () => { if (window.confirm(translate(language, 'resetPomodoroConfirm'))) { timer.reset(); state.pomodoroResetAt = Date.now(); persist(); view.renderHistory(state.sessions, language, deleteHistoryItem); if (!elements['zen-history-panel'].hidden) { view.renderZenHistory(state.sessions, language); } } });
 elements['language-toggle'].addEventListener('click', () => { const dropdown = document.getElementById('language-dropdown'); const isOpen = dropdown.hidden; document.querySelectorAll('.language-dropdown').forEach(d => d.hidden = true); dropdown.hidden = !isOpen; elements['language-toggle'].setAttribute('aria-expanded', String(!isOpen)); });
 document.querySelectorAll('.language-option').forEach(option => { option.addEventListener('click', () => { language = option.dataset.lang; localStorage.setItem('pomodoro.timer.language', language); document.getElementById('language-dropdown').hidden = true; elements['language-toggle'].setAttribute('aria-expanded', 'false'); render(); }); });
 document.addEventListener('click', (e) => { if (!e.target.closest('.language-selector')) { document.getElementById('language-dropdown').hidden = true; elements['language-toggle'].setAttribute('aria-expanded', 'false'); } });
-elements['clear-history'].addEventListener('click', () => { if (window.confirm(translate(language, 'clearConfirm'))) { state.sessions = []; persist(); view.renderHistory([], language, deleteHistoryItem); } });
+elements['clear-history'].addEventListener('click', () => { if (window.confirm(translate(language, 'clearConfirm'))) { state.sessions = []; persist(); view.renderHistory([], language, deleteHistoryItem); if (!elements['zen-history-panel'].hidden) { view.renderZenHistory([], language, deleteHistoryItem); } } });
+elements['zen-clear-history'].addEventListener('click', () => { if (window.confirm(translate(language, 'clearConfirm'))) { state.sessions = []; persist(); view.renderHistory([], language, deleteHistoryItem); view.renderZenHistory([], language, deleteHistoryItem); } });
 elements['rain-toggle'].addEventListener('change', () => updateRain(elements['rain-toggle'].checked));
 elements['rain-volume'].addEventListener('input', () => updateRain(elements['rain-toggle'].checked, elements['rain-volume'].value));
 elements['wallpaper-light'].addEventListener('click', () => updateWallpaper('light'));
@@ -75,7 +76,7 @@ elements['zen-history-toggle'].addEventListener('click', () => {
   panel.hidden = true;
   historyPanel.hidden = !historyPanel.hidden;
   if (!historyPanel.hidden) {
-    view.renderZenHistory(state.sessions, language);
+    view.renderZenHistory(state.sessions, language, deleteHistoryItem);
   }
 });
 // 点击其他区域关闭禅模式设置面板
