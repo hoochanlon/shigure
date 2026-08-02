@@ -36,7 +36,7 @@ export const siteConfig = {
   
   // 社交链接
   social: {
-    github: 'https://github.com/hoochanlon/timer',
+    github: 'https://github.com/hoochanlon/shigure',
     blog: 'https://hoochanlon.github.io',
     email: 'hoochanlon@outlook.com'
   },

@@ -66,19 +66,56 @@ elements['zen-exit'].addEventListener('click', () => { elements['zen-toggle'].ch
 elements['zen-settings-toggle'].addEventListener('click', () => {
   const panel = elements['zen-settings-panel'];
   const historyPanel = elements['zen-history-panel'];
+  const restorePanel = elements['zen-restore-panel'];
   historyPanel.hidden = true;
+  if (restorePanel) restorePanel.hidden = true;
   panel.hidden = !panel.hidden;
 });
 // 禅模式历史记录切换
 elements['zen-history-toggle'].addEventListener('click', () => {
   const panel = elements['zen-settings-panel'];
   const historyPanel = elements['zen-history-panel'];
+  const restorePanel = elements['zen-restore-panel'];
   panel.hidden = true;
+  if (restorePanel) restorePanel.hidden = true;
   historyPanel.hidden = !historyPanel.hidden;
   if (!historyPanel.hidden) {
     view.renderZenHistory(state.sessions, language, deleteHistoryItem);
   }
 });
+// 禅模式还原设置按钮
+if (elements['zen-restore-settings']) {
+  elements['zen-restore-settings'].addEventListener('click', () => {
+    if (window.confirm(translate(language, 'restoreConfirm'))) {
+      // 还原所有设置为默认值，但保留历史记录
+      const sessions = state.sessions; // 保留历史记录
+      state.settings = {
+        workMinutes: siteConfig.defaults.workMinutes,
+        breakMinutes: siteConfig.defaults.breakMinutes,
+        autoLoop: false,
+        stopwatchAutoStopSeconds: 0,
+        rainEnabled: false,
+        rainVolume: 0.35,
+        alertEnabled: true,
+        alertVolume: 0.7,
+        wallpaper: 'light',
+        themeMode: 'manual',
+        enterToStart: false,
+        zenMode: state.settings.zenMode // 保持当前禅模式状态
+      };
+      state.sessions = sessions; // 恢复历史记录
+      persist();
+      applySettings();
+      render();
+      
+      // 关闭所有弹出面板
+      const panel = elements['zen-settings-panel'];
+      const historyPanel = elements['zen-history-panel'];
+      panel.hidden = true;
+      historyPanel.hidden = true;
+    }
+  });
+}
 // 点击其他区域关闭禅模式设置面板
 document.addEventListener('click', (e) => {
   if (!e.target.closest('#zen-settings')) {
