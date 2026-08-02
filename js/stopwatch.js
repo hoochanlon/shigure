@@ -49,7 +49,7 @@ export class Stopwatch {
     if (this.state.status === 'idle') return null;
     const wasRunning = this.state.status === 'running';
     if (wasRunning) this.stop();
-    const session = { task: task || this.state.task || '秒表计时', mode: 'stopwatch', startedAt: this.state.sessionStartedAt, plannedEndAt: Date.now(), durationMs: this.state.elapsedMs, status: 'completed' };
+    const session = { task: task || this.state.task || '', mode: 'stopwatch', startedAt: this.state.sessionStartedAt, plannedEndAt: Date.now(), durationMs: this.state.elapsedMs, status: 'completed' };
     this.state = { status: 'idle', elapsedMs: 0, startedAt: null, task: '', sessionStartedAt: null };
     this.#persistState();
     this.onTick(this.state);

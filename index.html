@@ -115,7 +115,7 @@
         <nav class="rail-nav" aria-label="Timer tools">
           <div class="rail-item">
             <button class="rail-link" type="button" data-panel-target="settings-panel" aria-expanded="false"><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M0 0h24v24H0z" fill="none" /><path fill="currentColor" d="M8.86 5.5A1 1 0 0 0 8 5H3v2h4.43l6.71 11.5a1 1 0 0 0 .86.5h6v-2h-5.43zM15 5h6v2h-6z" /></svg><span data-i18n="settings">选项</span></button>
-            <section id="settings-panel" class="panel" hidden><h2 data-i18n="settings">选项</h2><div id="pomodoro-settings" class="settings-grid"><label><span data-i18n="workMinutes">专注时长（分钟）</span><input id="work-minutes" type="number" min="0" max="99" step="1" value="25"><small class="input-hint">0 = 默认 25 分钟</small></label><label><span data-i18n="breakMinutes">休息时长（分钟）</span><input id="break-minutes" type="number" min="0" max="99" step="1" value="5"><small class="input-hint">0 = 默认 5 分钟</small></label><label class="toggle-field"><input id="auto-loop" type="checkbox"><span data-i18n="autoLoop">自动循环</span></label></div><div id="stopwatch-settings" class="settings-grid" hidden><label><span data-i18n="stopwatchAutoStop">秒表自动停止（秒）</span><input id="stopwatch-auto-stop" type="number" min="0" max="86400" step="1" value="0"></label><p class="settings-hint" data-i18n="stopwatchAutoStopHint">0 秒表示关闭自动停止</p></div></section>
+            <section id="settings-panel" class="panel" hidden><h2 data-i18n="settings">选项</h2><div id="pomodoro-settings" class="settings-grid"><label><span data-i18n="workMinutes">专注时长（分钟）</span><input id="work-minutes" type="number" min="0" max="99" step="1" value="25"><small class="input-hint">0 = 默认 25 分钟</small></label><label><span data-i18n="breakMinutes">休息时长（分钟）</span><input id="break-minutes" type="number" min="0" max="99" step="1" value="5"><small class="input-hint">0 = 默认 5 分钟</small></label><label class="toggle-field"><input id="auto-loop" type="checkbox"><span data-i18n="autoLoop">自动循环</span></label></div><div id="stopwatch-settings" class="settings-grid" hidden><label><span data-i18n="stopwatchAutoStop">秒表自动停止（秒）</span><input id="stopwatch-auto-stop" type="number" min="0" max="359999" step="1" value="0"></label><p class="settings-hint" data-i18n="stopwatchAutoStopMaxHint">0 = 关闭，最大 359999 秒（99:59:59）</p></div></section>
           </div>
           <button class="rail-link" type="button" data-panel-target="history-panel" aria-expanded="false"><span>◷</span><span data-i18n="history">历史记录</span></button>
         </nav>
@@ -157,6 +157,55 @@
           <div class="secondary-actions">
             <button id="stopwatch-stop" class="text-button" type="button" disabled data-i18n="stopwatchPause">暂停</button>
             <button id="stopwatch-reset" class="text-button" type="button" data-i18n="stopwatchReset">重置</button>
+          </div>
+        </div>
+
+        <!-- 禅模式设置 -->
+        <div id="zen-settings" class="zen-settings" hidden>
+          <div class="zen-actions">
+            <button id="zen-history-toggle" class="zen-action-button" type="button" aria-label="历史记录">
+              <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M0 0h24v24H0z" fill="none" />
+                <path fill="currentColor" d="M13 3a9 9 0 0 0-9 9H1l3.89 3.89l.07.14L9 12H6c0-3.87 3.13-7 7-7s7 3.13 7 7s-7 3.13-7 7c-1.93 0-3.68-.79-4.94-2.06l-1.42 1.42A8.95 8.95 0 0 0 13 21a9 9 0 0 0 0-18m-1 5v5l4.25 2.52l.77-1.28l-3.52-2.09V8z"/>
+              </svg>
+            </button>
+            <button id="zen-settings-toggle" class="zen-action-button" type="button" aria-label="设置">
+              <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M0 0h24v24H0z" fill="none" />
+                <path fill="currentColor" d="M19.14 12.94c.04-.3.06-.61.06-.94c0-.32-.02-.64-.07-.94l2.03-1.58a.49.49 0 0 0 .12-.61l-1.92-3.32a.488.488 0 0 0-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54a.484.484 0 0 0-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58a.49.49 0 0 0-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6s3.6 1.62 3.6 3.6s-1.62 3.6-3.6 3.6" />
+              </svg>
+            </button>
+          </div>
+          <div id="zen-settings-panel" class="zen-settings-panel" hidden>
+            <div id="zen-pomodoro-settings" class="zen-settings-content">
+              <h3 data-i18n="guide">番茄钟</h3>
+              <label>
+                <span data-i18n="workMinutes">专注时长（分钟）</span>
+                <input id="zen-work-minutes" type="number" min="0" max="99" step="1" value="25">
+              </label>
+              <small class="zen-settings-hint" data-i18n="workMinutesHint">0 = 默认 25 分钟，最大 99 分钟</small>
+              <label>
+                <span data-i18n="breakMinutes">休息时长（分钟）</span>
+                <input id="zen-break-minutes" type="number" min="0" max="99" step="1" value="5">
+              </label>
+              <small class="zen-settings-hint" data-i18n="breakMinutesHint">0 = 默认 5 分钟，最大 99 分钟</small>
+              <label class="zen-toggle-field">
+                <input id="zen-auto-loop" type="checkbox">
+                <span data-i18n="autoLoop">自动循环</span>
+              </label>
+            </div>
+            <div id="zen-stopwatch-settings" class="zen-settings-content" hidden>
+              <h3 data-i18n="stopwatch">秒表</h3>
+              <label>
+                <span data-i18n="stopwatchAutoStop">自动停止（秒）</span>
+                <input id="zen-stopwatch-auto-stop" type="number" min="0" max="359999" step="1" value="0">
+              </label>
+              <small class="zen-settings-hint" data-i18n="stopwatchAutoStopMaxHint">0 = 关闭，最大 359999 秒（99:59:59）</small>
+            </div>
+          </div>
+          <div id="zen-history-panel" class="zen-history-panel" hidden>
+            <h3 data-i18n="history">历史记录</h3>
+            <ul id="zen-history-list" class="zen-history-list"></ul>
           </div>
         </div>
       </section>
