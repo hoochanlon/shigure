@@ -6,7 +6,8 @@
 
 简洁优雅的番茄钟与秒表计时工具，专为专注而生。
 
-[在线体验](https://hoochanlon.github.io/timer)
+* 在线体验：https://hoochanlon.github.io/shigure
+* 项目地址：https://github.com/hoochanlon/shigure
 
 **语言:** 中文 | [English](./README.en.md) | [日本語](./README.ja.md)
 
