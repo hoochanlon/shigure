@@ -2,6 +2,10 @@
 
 .icon-button { padding: 9px 14px; border: 1px solid var(--line); border-radius: 8px; color: var(--ink); background: var(--glass); transition: opacity .2s ease; }
 
+.mobile-todo-link { display: none; text-decoration: none; font-weight: 700; line-height: 1; }
+
+.todo-page-link { text-decoration: none; }
+
 .icon-button:hover { opacity: .75; }
 
 .icon-button svg { display: block; }
@@ -92,11 +96,13 @@
 
 .sound-control p { margin: 4px 0 0; color: var(--muted); font-size: .75rem; }
 
-.sound-control-content { display: flex; align-items: center; gap: 12px; }
+.sound-control-content { display: grid; grid-template-columns: 92px minmax(0, 160px); gap: 12px; align-items: center; }
+
+.sound-control-content strong { min-width: 0; }
 
 .custom-select-wrapper { position: relative; }
 
-.custom-select-trigger { display: flex; align-items: center; justify-content: space-between; width: auto; min-width: 110px; max-width: 160px; padding: 4px 8px; border: 1px solid var(--line); border-radius: 6px; color: var(--ink); background: var(--glass); font-size: .8rem; cursor: pointer; transition: border-color .2s ease; }
+.custom-select-trigger { display: flex; align-items: center; justify-content: space-between; width: min(160px, 100%); padding: 4px 8px; border: 1px solid var(--line); border-radius: 6px; color: var(--ink); background: var(--glass); font-size: .8rem; cursor: pointer; transition: border-color .2s ease; }
 
 .custom-select-trigger:hover { border-color: var(--muted); }
 
@@ -275,3 +281,99 @@
 .stopwatch-actions { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
 
 .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+
+/* 简单去做：事项按决策优先级组织，不和计时状态共享数据。 */
+/* 简单去做独占中部工作区，环境设置仅服务于计时模式。 */
+.workspace.is-simple-do { grid-template-columns: minmax(180px, .7fr) minmax(0, 1.8fr); }
+
+.workspace.is-simple-do .environment-panel { display: none; }
+
+.workspace.is-simple-do .timer-stage { padding-right: 0; }
+
+@media (min-width: 901px) {
+  .workspace.is-simple-do { display: block; position: relative; }
+
+  .workspace.is-simple-do .side-rail { position: absolute; top: 10px; left: 0; width: 180px; }
+
+  .workspace.is-simple-do .timer-stage { width: min(100%, 720px); margin-inline: auto; padding: 0; }
+}
+
+.simple-do-view { text-align: left; }
+
+.simple-do-intro { margin-bottom: 14px; text-align: center; }
+
+.simple-do-intro-heading { display: flex; align-items: center; justify-content: center; gap: 14px; }
+
+.simple-do-intro h2 { margin: 0; font-size: 1.25rem; }
+
+.simple-do-history-toggle { min-height: 34px; padding: 6px 10px; border: 1px solid var(--line); border-radius: 7px; color: var(--muted); background: var(--glass); font-size: .78rem; }
+
+.simple-do-intro p { margin: 7px 0 0; color: var(--muted); font-size: .86rem; }
+
+.simple-do-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); grid-auto-rows: minmax(280px, auto); gap: 18px; }
+
+.simple-do-quadrant { display: flex; flex-direction: column; min-height: 0; height: 100%; padding: 14px; border: 1px solid var(--line); border-top: 4px solid var(--quadrant-color); border-radius: 14px; background: var(--glass); }
+
+.simple-do-quadrant.q1 { --quadrant-color: #ef4444; }
+.simple-do-quadrant.q2 { --quadrant-color: #10b981; }
+.simple-do-quadrant.q3 { --quadrant-color: #f59e0b; }
+.simple-do-quadrant.q4 { --quadrant-color: #94a3b8; }
+
+.simple-do-heading { display: flex; flex: 0 0 auto; align-items: flex-start; justify-content: space-between; gap: 10px; }
+
+.simple-do-heading-actions { display: flex; align-items: center; gap: 8px; }
+
+.simple-do-clear-quadrant { min-height: 28px; padding: 4px 8px; border: 1px solid var(--line); border-radius: 6px; color: var(--danger); background: var(--glass); font-size: .72rem; white-space: nowrap; }
+
+.simple-do-clear-quadrant:hover:not(:disabled) { opacity: .72; }
+
+.simple-do-clear-quadrant:disabled { cursor: not-allowed; opacity: .42; }
+
+.simple-do-heading h2 { margin: 0; font-size: 1rem; }
+
+.simple-do-heading p { margin: 5px 0 0; color: var(--muted); font-size: .8rem; }
+
+.simple-do-count { display: grid; width: 26px; height: 26px; place-items: center; border-radius: 50%; color: var(--quadrant-color); background: color-mix(in srgb, var(--quadrant-color) 12%, transparent); font-size: .76rem; font-weight: 700; }
+
+.simple-do-list { display: grid; flex: 1; min-height: 0; gap: 6px; margin: 10px 0; padding: 0 4px 0 0; overflow-y: auto; scrollbar-width: thin; scrollbar-color: var(--line) transparent; list-style: none; }
+
+.simple-do-list::-webkit-scrollbar { width: 7px; }
+
+.simple-do-list::-webkit-scrollbar-thumb { border-radius: 999px; background: var(--line); }
+
+.simple-do-list::-webkit-scrollbar-thumb:hover { background: var(--muted); }
+
+.simple-do-item { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 10px; align-items: center; width: 100%; height: 46px; padding: 6px 10px; border: 1px solid var(--line); border-radius: 10px; background: color-mix(in srgb, var(--glass) 86%, var(--line)); overflow: hidden; }
+
+.simple-do-item.completed { opacity: .64; }
+
+.simple-do-item.completed .simple-do-item-title { text-decoration: line-through; }
+
+.simple-do-check { display: grid; width: 22px; height: 22px; place-items: center; padding: 0; border: 1px solid var(--muted); border-radius: 50%; color: white; background: transparent; font-size: .8rem; }
+
+.simple-do-item.completed .simple-do-check { border-color: var(--blue); background: var(--blue); }
+
+.simple-do-item-title { display: -webkit-box; min-width: 0; overflow: hidden; overflow-wrap: anywhere; font-size: .9rem; line-height: 1.45; -webkit-box-orient: vertical; -webkit-line-clamp: 1; }
+
+.simple-do-item-actions { display: flex; gap: 8px; align-items: center; }
+
+.simple-do-item-actions button, .simple-do-move { min-height: 28px; padding: 4px 8px; border: 1px solid var(--line); border-radius: 6px; color: var(--muted); background: var(--glass); font-size: .78rem; }
+
+.simple-do-focus { color: var(--blue) !important; }
+.simple-do-delete:hover { color: var(--danger); }
+
+.simple-do-move { min-width: 88px; max-width: 132px; }
+
+.simple-do-empty { padding: 12px 0; color: var(--faint); font-size: .84rem; }
+
+.simple-do-add { display: flex; gap: 8px; margin-top: auto; }
+
+.simple-do-add input { min-width: 0; flex: 1; min-height: 34px; padding: 7px 10px; border: 1px solid var(--line); border-radius: 7px; color: var(--ink); background: transparent; font-size: .84rem; }
+
+.simple-do-add button, .simple-do-completed-toggle { min-height: 34px; padding: 7px 10px; border: 1px solid var(--line); border-radius: 7px; color: var(--blue); background: var(--glass); font-size: .8rem; white-space: nowrap; }
+
+.simple-do-history-item { display: grid !important; grid-template-columns: minmax(0, 1fr) auto auto auto; gap: 12px; align-items: center; padding: 12px; border: 1px solid var(--line); border-radius: 8px; }
+
+.simple-do-history-meta { color: var(--faint); font-size: .8rem; white-space: nowrap; }
+
+.simple-do-history-restore { min-height: 32px; padding: 5px 9px; border: 1px solid var(--line); border-radius: 6px; color: var(--blue); background: var(--glass); }

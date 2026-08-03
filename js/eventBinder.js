@@ -1,7 +1,7 @@
 import { translate } from './i18n.js';
 import { getDefaultSettings } from './storage.js';
 
-export const createEventBinder = ({ state, elements, view, getLanguage, setLanguage, getMode, switchMode, timer, stopwatch, settings, sessions, audio, wallpaper, persist, render }) => {
+export const createEventBinder = ({ state, elements, view, getLanguage, setLanguage, getMode, switchMode, switchScreen, timer, stopwatch, settings, sessions, audio, wallpaper, persist, render }) => {
   const removers = [];
   const listen = (target, type, handler, options) => {
     if (!target) return;
@@ -69,6 +69,8 @@ export const createEventBinder = ({ state, elements, view, getLanguage, setLangu
   listen(elements['stopwatch-reset'], 'click', () => stopwatch.reset());
   listen(document.getElementById('tab-pomodoro'), 'click', () => switchMode('pomodoro'));
   listen(document.getElementById('tab-stopwatch'), 'click', () => switchMode('stopwatch'));
+  ['simple-do-toggle', 'simple-do-rail-toggle'].forEach((id) => listen(document.getElementById(id), 'click', () => switchScreen('todo')));
+  listen(document.getElementById('simple-do-exit'), 'click', () => switchScreen('timer'));
 
   ['work-minutes', 'break-minutes', 'cycle-mode'].forEach((id) => listen(elements[id], 'change', () => {
     if (settings.saveSettings(language())) render();
@@ -150,6 +152,7 @@ export const createEventBinder = ({ state, elements, view, getLanguage, setLangu
   document.querySelectorAll('[data-panel-target]').forEach((button) => listen(button, 'click', (event) => {
     event.stopPropagation();
     togglePanel(button);
+    if (button.dataset.panelTarget === 'history-panel' && !document.getElementById('history-panel').hidden) sessions.render();
   }));
 
   const soundSelectors = ['work', 'break'].map((mode) => ({

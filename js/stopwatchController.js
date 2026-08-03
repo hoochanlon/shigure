@@ -3,6 +3,7 @@ import { saveState } from './storage.js';
 
 export const createStopwatchController = ({ state, view, getLanguage, onAutoStop, onRunningChange }) => {
   let lastStatus = null;
+  let completedSessionStartedAt = null;
   const persistState = (stopwatchState) => {
     state.activeStopwatch = stopwatchState;
     saveState(state);
@@ -16,10 +17,20 @@ export const createStopwatchController = ({ state, view, getLanguage, onAutoStop
       }
       view.renderStopwatch(stopwatchState, getLanguage(), state.settings.stopwatchTimeFormat);
     },
-    onAutoStop,
+    (session) => {
+      if (session.startedAt !== completedSessionStartedAt) {
+        completedSessionStartedAt = session.startedAt;
+        onAutoStop(session);
+      }
+    },
     persistState,
     (stopwatchState) => view.renderStopwatchTitle(stopwatchState, getLanguage())
   );
+
+  // 初始化时标记已存在的已完成会话，防止重复触发
+  if (state.activeStopwatch?.sessionStartedAt) {
+    completedSessionStartedAt = state.activeStopwatch.sessionStartedAt;
+  }
 
   return {
     get state() { return stopwatch.state; },
