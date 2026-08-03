@@ -52,7 +52,6 @@ export const createSettingsController = (state, view, elements, audioController,
       state.settings.workAlertSound,
       state.settings.breakAlertSound,
       state.settings.stopwatchAlertEnabled,
-      state.settings.tickingEnabled,
       state.settings.alertVolume
     );
     onWallpaperChange();
@@ -195,7 +194,6 @@ export const createSettingsController = (state, view, elements, audioController,
         workAlertSound: defaults.workAlertSound,
         breakAlertSound: defaults.breakAlertSound,
         stopwatchAlertEnabled: defaults.stopwatchAlertEnabled,
-        tickingEnabled: defaults.tickingEnabled,
         alertVolume: defaults.alertVolume,
         wallpaper: defaults.wallpaper,
         themeMode: defaults.themeMode
@@ -207,7 +205,6 @@ export const createSettingsController = (state, view, elements, audioController,
         workSound: defaults.workAlertSound,
         breakSound: defaults.breakAlertSound,
         stopwatchEnabled: defaults.stopwatchAlertEnabled,
-        tickingEnabled: defaults.tickingEnabled,
         volume: defaults.alertVolume
       });
       updateWallpaper(defaults.wallpaper);
@@ -227,7 +224,6 @@ export const createSettingsController = (state, view, elements, audioController,
         workSound: defaults.workAlertSound,
         breakSound: defaults.breakAlertSound,
         stopwatchEnabled: defaults.stopwatchAlertEnabled,
-        tickingEnabled: defaults.tickingEnabled,
         volume: defaults.alertVolume
       });
       updateWallpaper(defaults.wallpaper);

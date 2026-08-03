@@ -21,12 +21,7 @@ const getMode = () => mode;
 
 let timer;
 let stopwatch;
-const audio = createAudioController({
-  state,
-  elements,
-  view,
-  isTickingActive: () => timer?.state.status === 'running' || stopwatch?.state.status === 'running'
-});
+const audio = createAudioController({ state, elements, view });
 const wallpaper = createWallpaperController({ state, view });
 const settings = createSettingsController(state, view, elements, audio, wallpaper.render);
 const sessions = createSessionManager(state, view, getLanguage, elements, getMode);
@@ -42,11 +37,7 @@ timer = createTimerController({
   state,
   view,
   getLanguage,
-  onRunningChange: (isRunning) => {
-    if (!state.settings.tickingEnabled) return;
-    if (isRunning) audio.startTicking();
-    else audio.stopTicking();
-  },
+  onRunningChange: () => undefined,
   onCompleted: (session) => {
     sessions.record(session);
     const enabled = session.mode === 'work' ? state.settings.pomodoroAlertEnabled : state.settings.breakAlertEnabled;
@@ -64,13 +55,8 @@ stopwatch = createStopwatchController({
   onAutoStop: (session) => {
     sessions.record(session);
     if (state.settings.stopwatchAlertEnabled) audio.playStopwatchAlert();
-    if (state.settings.tickingEnabled) audio.stopTicking();
   },
-  onRunningChange: (isRunning) => {
-    if (!state.settings.tickingEnabled) return;
-    if (isRunning) audio.startTicking();
-    else audio.stopTicking();
-  }
+  onRunningChange: () => undefined
 });
 
 const syncTimerPresentation = () => {

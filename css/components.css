@@ -82,8 +82,6 @@
 
 .sound-icon-stopwatch { mask-image: url('../assets/icons/hourglass.svg'); -webkit-mask-image: url('../assets/icons/hourglass.svg'); }
 
-.sound-icon-ticking { mask-image: url('../assets/icons/hourglass.svg'); -webkit-mask-image: url('../assets/icons/hourglass.svg'); }
-
 .sound-icon-wallpaper { mask-image: url('../assets/icons/wallpaper.svg'); -webkit-mask-image: url('../assets/icons/wallpaper.svg'); }
 
 .sound-icon-color-swatch { mask-image: url('../assets/icons/color-swatch.svg'); -webkit-mask-image: url('../assets/icons/color-swatch.svg'); }
@@ -196,6 +194,11 @@
 .alert-volume-field output { color: var(--muted); font-size: .76rem; }
 
 #history-panel { width: min(100%, 720px); }
+
+/* 标题与主操作共享同一行，间距由标题栏而不是标题自身承担。 */
+#history-panel .panel-heading { margin-bottom: 16px; }
+
+#history-panel .panel-heading h2 { margin: 0; }
 
 .panel-heading { justify-content: space-between; gap: 16px; }
 
