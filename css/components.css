@@ -226,6 +226,10 @@
 
 .settings-grid input[type="number"], .settings-grid input[type="text"] { width: 100%; max-width: 120px; padding: 8px; border: 1px solid var(--line); border-radius: 8px; color: var(--ink); background: var(--glass); }
 
+/* 分钟字段上限为两位数，只为步进控件保留必要空间。 */
+#settings-panel :is(#work-minutes, #break-minutes),
+:is(#zen-work-minutes, #zen-break-minutes) { box-sizing: border-box; width: 5.5rem; max-width: 100%; }
+
 .input-hint { display: block; margin-top: 4px; color: var(--faint); font-size: .7rem; }
 
 .settings-grid select { width: auto; min-width: 160px; max-width: 200px; padding: 8px 32px 8px 10px; border: 1px solid var(--line); border-radius: 8px; color: var(--ink); background: var(--glass); font-size: .88rem; cursor: pointer; appearance: none; background-image: url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1.5L6 6.5L11 1.5' stroke='%23888888' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 10px center; transition: border-color .2s ease; }
@@ -306,13 +310,15 @@
 
 .simple-do-intro h2 { margin: 0; font-size: 1.25rem; }
 
-.simple-do-history-toggle { min-height: 34px; padding: 6px 10px; border: 1px solid var(--line); border-radius: 7px; color: var(--muted); background: var(--glass); font-size: .78rem; }
+.simple-do-history-toggle { display: flex; align-items: center; gap: 6px; min-height: 34px; margin: 8px auto 0; padding: 6px 10px; border: 1px solid var(--line); border-radius: 7px; color: var(--muted); background: var(--glass); font-size: .78rem; }
+.simple-do-history-toggle-icon { display: block; width: 16px; height: 16px; flex: 0 0 16px; color: var(--blue); }
+.simple-do-history-toggle-icon svg { display: block; width: 100%; height: 100%; }
 
 .simple-do-intro p { margin: 7px 0 0; color: var(--muted); font-size: .86rem; }
 
-.simple-do-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); grid-auto-rows: minmax(280px, auto); gap: 18px; }
+.simple-do-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); grid-auto-rows: auto; align-items: start; gap: 18px; }
 
-.simple-do-quadrant { display: flex; flex-direction: column; min-height: 0; height: 100%; padding: 14px; border: 1px solid var(--line); border-top: 4px solid var(--quadrant-color); border-radius: 14px; background: var(--glass); }
+.simple-do-quadrant { display: flex; flex-direction: column; min-height: 0; max-height: 440px; padding: 14px; border: 1px solid var(--line); border-top: 4px solid var(--quadrant-color); border-radius: 14px; background: var(--glass); overflow: hidden; }
 
 .simple-do-quadrant.q1 { --quadrant-color: #ef4444; }
 .simple-do-quadrant.q2 { --quadrant-color: #10b981; }
@@ -323,9 +329,9 @@
 
 .simple-do-heading-actions { display: flex; align-items: center; gap: 8px; }
 
-.simple-do-clear-quadrant { min-height: 28px; padding: 4px 8px; border: 1px solid var(--line); border-radius: 6px; color: var(--danger); background: var(--glass); font-size: .72rem; white-space: nowrap; }
+.simple-do-clear-quadrant { min-height: 28px; padding: 4px 8px; border: 1px solid color-mix(in srgb, var(--danger) 76%, transparent); border-radius: 6px; color: var(--danger); background: color-mix(in srgb, var(--danger) 12%, var(--glass)); font-size: .72rem; font-weight: 600; white-space: nowrap; transition: background .2s ease, border-color .2s ease, color .2s ease; }
 
-.simple-do-clear-quadrant:hover:not(:disabled) { opacity: .72; }
+.simple-do-clear-quadrant:hover:not(:disabled) { border-color: var(--danger); color: white; background: var(--danger); }
 
 .simple-do-clear-quadrant:disabled { cursor: not-allowed; opacity: .42; }
 
@@ -335,7 +341,7 @@
 
 .simple-do-count { display: grid; width: 26px; height: 26px; place-items: center; border-radius: 50%; color: var(--quadrant-color); background: color-mix(in srgb, var(--quadrant-color) 12%, transparent); font-size: .76rem; font-weight: 700; }
 
-.simple-do-list { display: grid; flex: 1; min-height: 0; gap: 6px; margin: 10px 0; padding: 0 4px 0 0; overflow-y: auto; scrollbar-width: thin; scrollbar-color: var(--line) transparent; list-style: none; }
+.simple-do-list { display: grid; grid-auto-rows: 46px; align-content: start; flex: 1 1 auto; min-height: 0; max-height: 282px; gap: 6px; margin: 10px 0; padding: 0 4px 0 0; overflow-y: auto; scrollbar-width: thin; scrollbar-color: var(--line) transparent; list-style: none; }
 
 .simple-do-list::-webkit-scrollbar { width: 7px; }
 
@@ -366,13 +372,18 @@
 
 .simple-do-empty { padding: 12px 0; color: var(--faint); font-size: .84rem; }
 
-.simple-do-add { display: flex; gap: 8px; margin-top: auto; }
+.simple-do-add { display: flex; gap: 8px; margin-top: 0; }
 
 .simple-do-add input { min-width: 0; flex: 1; min-height: 34px; padding: 7px 10px; border: 1px solid var(--line); border-radius: 7px; color: var(--ink); background: transparent; font-size: .84rem; }
 
 .simple-do-add button, .simple-do-completed-toggle { min-height: 34px; padding: 7px 10px; border: 1px solid var(--line); border-radius: 7px; color: var(--blue); background: var(--glass); font-size: .8rem; white-space: nowrap; }
 
-.simple-do-history-item { display: grid !important; grid-template-columns: minmax(0, 1fr) auto auto auto; gap: 12px; align-items: center; padding: 12px; border: 1px solid var(--line); border-radius: 8px; }
+.simple-do-history-item { display: grid !important; grid-template-columns: auto minmax(0, 1fr) auto auto auto; gap: 10px; align-items: center; width: 100%; height: 46px; box-sizing: border-box; padding: 6px 10px; border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
+
+.simple-do-history-title { min-width: 0; overflow: hidden; overflow-wrap: anywhere; font-size: .9rem; line-height: 1.45; text-overflow: ellipsis; white-space: nowrap; }
+
+.simple-do-history-icon { display: grid; width: 22px; height: 22px; place-items: center; border: 1px solid color-mix(in srgb, var(--blue) 38%, var(--line)); border-radius: 6px; color: var(--blue); background: color-mix(in srgb, var(--blue) 12%, var(--glass)); }
+.simple-do-history-icon svg { display: block; width: 16px; height: 16px; }
 
 .simple-do-history-meta { color: var(--faint); font-size: .8rem; white-space: nowrap; }
 

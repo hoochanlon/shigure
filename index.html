@@ -203,14 +203,26 @@
         </div>
 
         <section id="simple-do-screen" class="simple-do-screen" hidden aria-label="待办事项">
+          <button id="simple-do-exit" class="simple-do-exit" type="button" data-i18n-aria="exitTodoMode" aria-label="退出待办事项">
+            <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M0 0h24v24H0z" fill="none" />
+              <path fill="currentColor" d="M19 13H6.83l3.59 3.59L9 18l-6-6l6-6l1.42 1.41L6.83 11H19v2z" />
+            </svg>
+          </button>
           <div id="simple-do-view" class="simple-do-view"></div>
-          <section id="simple-do-history-panel" class="simple-do-history-panel">
-            <div class="simple-do-history-heading">
-              <h2 id="simple-do-history-title"></h2>
-              <button id="simple-do-clear-history" class="simple-do-completed-toggle" type="button"></button>
-            </div>
-            <ul id="simple-do-history-list" class="simple-do-history-list"></ul>
-          </section>
+          <div id="simple-do-history-panel" class="simple-do-history-drawer" hidden>
+            <button id="simple-do-history-backdrop" class="simple-do-history-backdrop" type="button" aria-label="关闭完成记录"></button>
+            <section class="simple-do-history-panel" role="dialog" aria-modal="true" aria-labelledby="simple-do-history-title" tabindex="-1">
+              <div class="simple-do-history-heading">
+                <h2 id="simple-do-history-title"></h2>
+                <div class="simple-do-history-actions">
+                  <button id="simple-do-clear-history" class="simple-do-completed-toggle" type="button"></button>
+                  <button id="simple-do-history-close" class="simple-do-history-close" type="button" aria-label="关闭完成记录">×</button>
+                </div>
+              </div>
+              <ul id="simple-do-history-list" class="simple-do-history-list"></ul>
+            </section>
+          </div>
         </section>
 
         <!-- 禅模式设置 -->
@@ -391,12 +403,6 @@
       <ul id="history-list" class="history-list"></ul>
     </section>
   </main>
-  <button id="simple-do-exit" class="simple-do-exit" type="button" data-i18n-aria="exitTodoMode" aria-label="退出待办事项">
-    <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true">
-      <path d="M0 0h24v24H0z" fill="none" />
-      <path fill="currentColor" d="M19 13H6.83l3.59 3.59L9 18l-6-6l6-6l1.42 1.41L6.83 11H19v2z" />
-    </svg>
-  </button>
   <button id="zen-exit" class="zen-exit" type="button" aria-label="退出禅模式">
     <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true">
       <path d="M0 0h24v24H0z" fill="none" />

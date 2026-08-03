@@ -37,6 +37,15 @@ export const createSimpleDoController = ({ root, getLanguage, onFocus }) => {
   const historyTitle = root.getElementById('simple-do-history-title');
   const historyList = root.getElementById('simple-do-history-list');
   const clearHistoryButton = root.getElementById('simple-do-clear-history');
+  const closeHistoryButton = root.getElementById('simple-do-history-close');
+  const historyBackdrop = root.getElementById('simple-do-history-backdrop');
+  const completedRecordIcon = (className) => {
+    const icon = root.createElement('span');
+    icon.className = className;
+    icon.setAttribute('aria-hidden', 'true');
+    icon.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"><path d="M0 0h24v24H0z" fill="none"/><path fill="currentColor" d="M8 20q-.825 0-1.412-.587T6 18v-3h3v-2.25q-.875-.05-1.662-.387T5.9 11.35v-1.1H4.75L1.5 7q.9-1.15 2.225-1.625T6.4 4.9q.675 0 1.313.1T9 5.375V4h12v13q0 1.25-.875 2.125T18 20zm3-5h6v2q0 .425.288.713T18 18t.713-.288T19 17V6h-8v.6l6 6V14h-1.4l-2.85-2.85l-.2.2q-.35.35-.737.625T11 12.4zM5.6 8.25h2.3v2.15q.3.2.625.275t.675.075q.575 0 1.038-.175t.912-.625l.2-.2l-1.4-1.4q-.725-.725-1.625-1.088T6.4 6.9q-.5 0-.95.075t-.9.225zM15 17H8v1h7.15q-.075-.225-.112-.475T15 17m-7 1v-1z"/></svg>';
+    return icon;
+  };
   let historyExpanded = false;
   const appendButton = (label, className, action, value) => {
     const button = root.createElement('button');
@@ -131,13 +140,15 @@ export const createSimpleDoController = ({ root, getLanguage, onFocus }) => {
     headingRow.className = 'simple-do-intro-heading';
     const title = root.createElement('h2');
     title.textContent = text(language(), 'title');
-    const historyToggle = appendButton(`${text(language(), 'history')} (${completedItems().length})`, 'simple-do-history-toggle', 'toggle-history');
+    const historyToggle = appendButton('', 'simple-do-history-toggle', 'toggle-history');
+    historyToggle.id = 'simple-do-history-toggle';
+    historyToggle.append(completedRecordIcon('simple-do-history-toggle-icon'), root.createTextNode(`${text(language(), 'history')} (${completedItems().length})`));
     historyToggle.setAttribute('aria-controls', 'simple-do-history-panel');
     historyToggle.setAttribute('aria-expanded', String(historyExpanded));
-    headingRow.append(title, historyToggle);
+    headingRow.append(title);
     const subtitle = root.createElement('p');
     subtitle.textContent = text(language(), 'subtitle');
-    heading.append(headingRow, subtitle);
+    heading.append(headingRow, historyToggle, subtitle);
     const grid = root.createElement('div');
     grid.className = 'simple-do-grid';
     grid.append(...QUADRANTS.map(quadrant));
@@ -159,6 +170,7 @@ export const createSimpleDoController = ({ root, getLanguage, onFocus }) => {
       const row = root.createElement('li');
       row.className = 'simple-do-history-item';
       const content = root.createElement('span');
+      content.className = 'simple-do-history-title';
       content.textContent = item.title;
       const metadata = root.createElement('span');
       metadata.className = 'simple-do-history-meta';
@@ -166,7 +178,7 @@ export const createSimpleDoController = ({ root, getLanguage, onFocus }) => {
       const restore = appendButton('↺', 'simple-do-history-restore', 'restore', item.id);
       restore.setAttribute('aria-label', text(language(), 'completed'));
       const remove = appendButton(text(language(), 'delete'), 'history-delete', 'history-delete', item.id);
-      row.append(content, metadata, restore, remove);
+      row.append(completedRecordIcon('simple-do-history-icon'), content, metadata, restore, remove);
       historyList.append(row);
     });
   };
@@ -187,9 +199,20 @@ export const createSimpleDoController = ({ root, getLanguage, onFocus }) => {
     persist();
     refresh();
   };
-  const toggleHistory = () => {
-    historyExpanded = !historyExpanded;
+  const closeHistory = () => {
+    if (!historyExpanded) return;
+    historyExpanded = false;
     refresh();
+    root.getElementById('simple-do-history-toggle')?.focus();
+  };
+  const toggleHistory = () => {
+    if (historyExpanded) {
+      closeHistory();
+      return;
+    }
+    historyExpanded = true;
+    refresh();
+    historyPanel.querySelector('[role="dialog"]')?.focus();
   };
   container.addEventListener('submit', (event) => {
     const form = event.target.closest('.simple-do-add');
@@ -252,5 +275,10 @@ export const createSimpleDoController = ({ root, getLanguage, onFocus }) => {
     refresh();
   };
   clearHistoryButton.addEventListener('click', clearHistory);
+  closeHistoryButton.addEventListener('click', closeHistory);
+  historyBackdrop.addEventListener('click', closeHistory);
+  root.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') closeHistory();
+  });
   return { clearHistory, render, renderHistory, resetHistoryPanel, title: () => text(language(), 'title'), subtitle: () => text(language(), 'subtitle') };
 };

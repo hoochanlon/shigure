@@ -161,6 +161,22 @@ export const createEventBinder = ({ state, elements, view, getLanguage, setLangu
     dropdown: document.getElementById(`pomodoro-${mode}-sound-dropdown`),
     input: document.getElementById(`pomodoro-${mode}-alert-sound`)
   }));
+  const previewButtons = [...document.querySelectorAll('.option-preview-btn')];
+  let activePreviewButton = null;
+  const renderPreviewButton = (button) => {
+    previewButtons.forEach((item) => {
+      const active = item === button;
+      item.textContent = active ? '⏸' : '▶';
+      item.setAttribute('aria-label', active ? '暂停试听' : '试听');
+      item.setAttribute('aria-pressed', String(active));
+    });
+    activePreviewButton = button;
+  };
+  const stopActivePreview = () => {
+    audio.stopPreview();
+    renderPreviewButton(null);
+  };
+
   const closeSoundSelectors = () => soundSelectors.forEach(({ trigger, dropdown }) => {
     if (!trigger || !dropdown) return;
     dropdown.hidden = true;
@@ -176,7 +192,7 @@ export const createEventBinder = ({ state, elements, view, getLanguage, setLangu
     dropdown?.querySelectorAll('.custom-select-option').forEach((option) => listen(option, 'click', (event) => {
       if (event.target.closest('.option-preview-btn')) return;
       input.value = option.dataset.value;
-      audio.stopPreview();
+      stopActivePreview();
       audio.updateAlert(mode === 'work' ? { workSound: option.dataset.value } : { breakSound: option.dataset.value });
       closeSoundSelectors();
     }));
@@ -200,9 +216,14 @@ export const createEventBinder = ({ state, elements, view, getLanguage, setLangu
     ambient.dropdown.hidden = true;
     ambient.trigger.setAttribute('aria-expanded', 'false');
   }));
-  document.querySelectorAll('.option-preview-btn').forEach((button) => listen(button, 'click', (event) => {
+  previewButtons.forEach((button) => listen(button, 'click', (event) => {
     event.stopPropagation();
+    if (button === activePreviewButton) {
+      stopActivePreview();
+      return;
+    }
     audio.preview({ ambientSound: button.dataset.ambientSound, alertSound: button.dataset.sound });
+    renderPreviewButton(button);
   }));
 
   listen(document, 'click', (event) => {
@@ -214,7 +235,7 @@ export const createEventBinder = ({ state, elements, view, getLanguage, setLangu
       closeSoundSelectors();
       if (ambient.dropdown) ambient.dropdown.hidden = true;
       ambient.trigger?.setAttribute('aria-expanded', 'false');
-      audio.stopPreview();
+      stopActivePreview();
     }
     if (!event.target.closest('#zen-settings')) {
       elements['zen-settings-panel'].hidden = true;

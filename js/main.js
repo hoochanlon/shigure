@@ -12,6 +12,9 @@ import { createEventBinder } from './eventBinder.js';
 import { createSimpleDoController } from './simpleDoController.js';
 
 const state = loadState();
+// 浏览器刷新后不能可靠恢复有声媒体播放，状态必须反映本页实际播放情况。
+state.settings.ambientEnabled = false;
+saveState(state);
 let language = localStorage.getItem('pomodoro.timer.language') || 'zh';
 let mode = 'pomodoro';
 let screen = 'timer';
