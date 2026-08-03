@@ -19,7 +19,7 @@ export const createTimerController = ({ state, view, getLanguage, onCompleted, o
       onRunningChange(timerState.status === 'running');
     }
     view.renderTimer(timerState, getLanguage());
-  }, persistState);
+  }, persistState, (timerState) => view.renderTimerTitle(timerState, getLanguage()));
 
   return {
     get state() { return timer.state; },

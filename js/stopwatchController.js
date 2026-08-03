@@ -17,7 +17,8 @@ export const createStopwatchController = ({ state, view, getLanguage, onAutoStop
       view.renderStopwatch(stopwatchState, getLanguage(), state.settings.stopwatchTimeFormat);
     },
     onAutoStop,
-    persistState
+    persistState,
+    (stopwatchState) => view.renderStopwatchTitle(stopwatchState, getLanguage())
   );
 
   return {

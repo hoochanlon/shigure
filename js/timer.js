@@ -4,7 +4,7 @@ export class Timer {
   #state = { status: 'idle', session: null, remainingMs: null };
   #persist = null;
 
-  constructor(onTick, persist) { this.onTick = onTick; this.#persist = persist; }
+  constructor(onTick, persist, onTitleTick = () => {}) { this.onTick = onTick; this.onTitleTick = onTitleTick; this.#persist = persist; }
   get state() { return this.#state; }
 
   start({ task, mode, minutes }) {
@@ -92,6 +92,7 @@ export class Timer {
     const remainingMs = this.#remainingMs();
     this.#state = { ...this.#state, remainingMs };
     if (this.#presentationActive || remainingMs === 0) this.#emit();
+    else this.onTitleTick(this.#state);
     if (remainingMs === 0) this.stop('completed');
   }
 

@@ -46,6 +46,15 @@ export const createSettingsController = (state, view, elements, audioController,
     }
     
     view.renderNoise(state.settings.ambientEnabled, state.settings.ambientVolume);
+    view.renderAlert(
+      state.settings.pomodoroAlertEnabled,
+      state.settings.breakAlertEnabled,
+      state.settings.workAlertSound,
+      state.settings.breakAlertSound,
+      state.settings.stopwatchAlertEnabled,
+      state.settings.tickingEnabled,
+      state.settings.alertVolume
+    );
     onWallpaperChange();
     elements['zen-toggle'].checked = state.settings.zenMode;
     document.documentElement.classList.remove('zen-mode-preload');
