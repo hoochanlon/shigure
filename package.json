@@ -1,0 +1,47 @@
+{
+  "name": "shigure",
+  "version": "1.0.0",
+  "description": "<div align=\"center\">",
+  "main": "performance-test.js",
+  "dependencies": {
+    "ansi-regex": "^6.2.2",
+    "ansi-styles": "^6.2.3",
+    "chromium-bidi": "^17.0.2",
+    "cliui": "^9.0.1",
+    "devtools-protocol": "^0.0.1653615",
+    "emoji-regex": "^10.6.0",
+    "escalade": "^3.2.0",
+    "get-caller-file": "^2.0.5",
+    "get-east-asian-width": "^1.6.0",
+    "lilconfig": "^3.1.3",
+    "mitt": "^3.0.1",
+    "modern-tar": "^0.7.7",
+    "puppeteer": "^25.4.0",
+    "puppeteer-core": "^25.4.0",
+    "string-width": "^8.2.2",
+    "strip-ansi": "^7.2.0",
+    "typed-query-selector": "^2.12.2",
+    "webdriver-bidi-protocol": "^0.4.2",
+    "wrap-ansi": "^9.0.2",
+    "ws": "^8.21.1",
+    "y18n": "^5.0.8",
+    "yargs": "^18.1.0",
+    "yargs-parser": "^22.0.0",
+    "zod": "^3.25.76"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hoochanlon/shigure.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/hoochanlon/shigure/issues"
+  },
+  "homepage": "https://github.com/hoochanlon/shigure#readme"
+}

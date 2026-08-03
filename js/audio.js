@@ -30,14 +30,21 @@ export const createAudioPlayer = (source, { loop = false, volume = 1, maxGain = 
   const audio = new Audio(source);
   audio.preload = 'auto';
   audio.loop = loop;
+  audio.addEventListener('ended', () => {
+    if (loop) {
+      audio.currentTime = 0;
+      audio.play().catch(() => undefined);
+    }
+  });
   
   // 创建 MediaElementSource 和 GainNode
   let mediaSource = null;
   let gainNode = null;
   let isConnected = false;
+  let disposed = false;
   
   const setupWebAudio = () => {
-    if (!isConnected) {
+    if (!isConnected && !disposed) {
       try {
         mediaSource = audioContext.createMediaElementSource(audio);
         gainNode = audioContext.createGain();
@@ -54,6 +61,8 @@ export const createAudioPlayer = (source, { loop = false, volume = 1, maxGain = 
   
   return {
     play: async () => {
+      if (disposed) return undefined;
+      audio.loop = loop;
       setupWebAudio();
       await unlockAudio();
       return audio.play().catch(() => undefined);
@@ -70,8 +79,26 @@ export const createAudioPlayer = (source, { loop = false, volume = 1, maxGain = 
         audio.volume = clampedValue;
       }
     },
+    isPlaying: () => {
+      return !disposed && !audio.paused && audio.currentTime > 0 && !audio.ended;
+    },
+    dispose: () => {
+      if (disposed) return;
+      disposed = true;
+      audio.pause();
+      audio.removeAttribute('src');
+      audio.load();
+      mediaSource?.disconnect();
+      gainNode?.disconnect();
+      mediaSource = null;
+      gainNode = null;
+      isConnected = false;
+    },
     get volume() { 
       return gainNode ? gainNode.gain.value / maxGain : audio.volume; 
+    },
+    get source() {
+      return source;
     }
   };
 };
@@ -80,16 +107,27 @@ export const createBufferedPlayer = (source, { volume = 1, maxGain = 2.0 } = {})
   let currentSource = source;
   let currentVolume = volume;
   let bufferPromise = loadAudioBuffer(source);
-  const activeSources = new Set();
+  let disposed = false;
+  const activeSources = new Map();
+
+  const releaseSource = (sourceNode) => {
+    const gainNode = activeSources.get(sourceNode);
+    sourceNode.disconnect();
+    gainNode?.disconnect();
+    activeSources.delete(sourceNode);
+  };
 
   const stop = () => {
-    activeSources.forEach((sourceNode) => sourceNode.stop());
-    activeSources.clear();
+    activeSources.forEach((_, sourceNode) => {
+      try { sourceNode.stop(); } catch { /* Source may already have ended. */ }
+      releaseSource(sourceNode);
+    });
   };
 
   return {
     preload: () => bufferPromise,
     play: async () => {
+      if (disposed) return false;
       try {
         const buffer = await bufferPromise;
         if (!buffer) return false;
@@ -103,8 +141,8 @@ export const createBufferedPlayer = (source, { volume = 1, maxGain = 2.0 } = {})
         gainNode.gain.value = Math.min(currentVolume * maxGain, maxGain);
         sourceNode.connect(gainNode);
         gainNode.connect(masterGain);
-        sourceNode.addEventListener('ended', () => activeSources.delete(sourceNode), { once: true });
-        activeSources.add(sourceNode);
+        sourceNode.addEventListener('ended', () => releaseSource(sourceNode), { once: true });
+        activeSources.set(sourceNode, gainNode);
         sourceNode.start(0);
         return true;
       } catch (error) {
@@ -113,6 +151,11 @@ export const createBufferedPlayer = (source, { volume = 1, maxGain = 2.0 } = {})
       }
     },
     stop,
+    dispose: () => {
+      if (disposed) return;
+      disposed = true;
+      stop();
+    },
     setSource: (nextSource) => {
       if (nextSource === currentSource) return;
       stop();
@@ -160,6 +203,12 @@ export const createAudioManager = () => {
       players.set(key, player);
     },
     
+    // 注销指定音频，避免已替换的播放器继续被管理器持有
+    unregister: (key) => {
+      players.get(key)?.dispose?.();
+      players.delete(key);
+    },
+    
     // 播放指定音频
     play: (key) => {
       const player = players.get(key);
@@ -187,6 +236,10 @@ export const createAudioManager = () => {
     // 停止所有音频
     stopAll: () => {
       players.forEach(player => player.stop());
+    },
+    disposeAll: () => {
+      players.forEach(player => player.dispose?.());
+      players.clear();
     }
   };
 };

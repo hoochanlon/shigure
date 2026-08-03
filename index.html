@@ -115,7 +115,7 @@
         <nav class="rail-nav" aria-label="Timer tools">
           <div class="rail-item">
             <button class="rail-link" type="button" data-panel-target="settings-panel" aria-expanded="false"><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M0 0h24v24H0z" fill="none" /><path fill="currentColor" d="M8.86 5.5A1 1 0 0 0 8 5H3v2h4.43l6.71 11.5a1 1 0 0 0 .86.5h6v-2h-5.43zM15 5h6v2h-6z" /></svg><span data-i18n="settings">选项</span></button>
-            <section id="settings-panel" class="panel" hidden><h2 data-i18n="settings">选项</h2><div id="pomodoro-settings" class="settings-grid"><label><span data-i18n="workMinutes">专注时长（分钟）</span><input id="work-minutes" type="number" min="0" max="99" step="1" value="25"><small class="input-hint">0 = 默认 25 分钟</small></label><label><span data-i18n="breakMinutes">休息时长（分钟）</span><input id="break-minutes" type="number" min="0" max="99" step="1" value="5"><small class="input-hint">0 = 默认 5 分钟</small></label><label class="toggle-field"><input id="auto-loop" type="checkbox"><span data-i18n="autoLoop">自动循环</span></label></div><div id="stopwatch-settings" class="settings-grid" hidden><label><span data-i18n="stopwatchAutoStop">秒表自动停止（秒）</span><input id="stopwatch-auto-stop" type="number" min="0" max="5999" step="1" value="0"></label><p class="settings-hint" data-i18n="stopwatchAutoStopMaxHint">0 = 关闭，最大 5999 秒（99:59.99）</p><label><span data-i18n="stopwatchTimeFormat">时长显示格式</span><select id="stopwatch-time-format"><option value="smart" data-i18n="stopwatchTimeFormatSmart">智能格式（1h15m）</option><option value="precise" data-i18n="stopwatchTimeFormatPrecise">精确格式（01:15:23）</option></select></label></div></section>
+            <section id="settings-panel" class="panel" hidden><h2 data-i18n="settings">选项</h2><div id="pomodoro-settings" class="settings-grid"><label><span data-i18n="workMinutes">专注时长（分钟）</span><input id="work-minutes" type="number" min="0" max="99" step="1" value="25"><small class="input-hint">0 = 默认 25 分钟</small></label><label><span data-i18n="breakMinutes">休息时长（分钟）</span><input id="break-minutes" type="number" min="0" max="99" step="1" value="5"><small class="input-hint">0 = 默认 5 分钟</small></label><label><span data-i18n="autoLoop">自动循环</span><select id="cycle-mode"><option value="off" data-i18n="cycleModeOff">关闭</option><option value="once" data-i18n="cycleModeOnce">完成本轮后停止</option><option value="continuous" data-i18n="cycleModeContinuous">持续循环</option></select></label></div><div id="stopwatch-settings" class="settings-grid" hidden><label><span data-i18n="stopwatchAutoStop">秒表自动结束</span><input id="stopwatch-auto-stop" type="text" placeholder="0" value="0"></label><p class="settings-hint" data-i18n="stopwatchAutoStopMaxHint">0 = 关闭，最大 359999 秒（99:59:59.99）</p><label><span data-i18n="stopwatchTimeFormat">时长显示格式</span><select id="stopwatch-time-format"><option value="smart" data-i18n="stopwatchTimeFormatSmart">智能格式（1h15m）</option><option value="precise" data-i18n="stopwatchTimeFormatPrecise">精确格式（01:15:23）</option></select></label></div></section>
           </div>
           <div class="rail-item">
             <button class="rail-link" type="button" data-panel-target="restore-panel" aria-expanded="false">
@@ -123,13 +123,13 @@
                 <path d="M0 0h512v512H0z" fill="none" />
                 <path fill="currentColor" fill-rule="evenodd" d="M426.667 106.667v42.666L358 149.33c36.077 31.659 58.188 77.991 58.146 128.474c-.065 78.179-53.242 146.318-129.062 165.376s-154.896-15.838-191.92-84.695C58.141 289.63 72.637 204.42 130.347 151.68a85.33 85.33 0 0 0 33.28 30.507a124.59 124.59 0 0 0-46.294 97.066c1.05 69.942 58.051 126.088 128 126.08c64.072 1.056 118.71-46.195 126.906-109.749c6.124-47.483-15.135-92.74-52.236-118.947L320 256h-42.667V106.667zM202.667 64c23.564 0 42.666 19.103 42.666 42.667s-19.102 42.666-42.666 42.666S160 130.231 160 106.667S179.103 64 202.667 64" />
               </svg>
-              <span data-i18n="systemRestore">系统还原</span>
+              <span data-i18n="systemRestore">系统重置</span>
             </button>
             <section id="restore-panel" class="panel" hidden>
-              <h2 data-i18n="systemRestore">系统还原</h2>
+              <h2 data-i18n="systemRestore">系统重置</h2>
               <div class="settings-grid">
-                <button id="restore-options-main" class="restore-option" type="button" data-i18n="restoreOptions">还原选项设置</button>
-                <button id="restore-environment-main" class="restore-option" type="button" data-i18n="restoreEnvironment">还原环境设置</button>
+                <button id="restore-options-main" class="restore-option" type="button" data-i18n="restoreOptions">选项重置</button>
+                <button id="restore-environment-main" class="restore-option" type="button" data-i18n="restoreEnvironment">环境重置</button>
               </div>
             </section>
           </div>
@@ -218,18 +218,15 @@
                 <input id="zen-break-minutes" type="number" min="0" max="99" step="1" value="5">
               </label>
               <small class="zen-settings-hint" data-i18n="breakMinutesHint">0 = 默认 5 分钟，最大 99 分钟</small>
-              <label class="zen-toggle-field">
-                <input id="zen-auto-loop" type="checkbox">
-                <span data-i18n="autoLoop">自动循环</span>
-              </label>
+              <label><span data-i18n="autoLoop">自动循环</span><select id="zen-cycle-mode"><option value="off" data-i18n="cycleModeOff">关闭</option><option value="once" data-i18n="cycleModeOnce">完成本轮后停止</option><option value="continuous" data-i18n="cycleModeContinuous">持续循环</option></select></label>
             </div>
             <div id="zen-stopwatch-settings" class="zen-settings-content" hidden>
               <h3 data-i18n="stopwatch">秒表</h3>
               <label>
-                <span data-i18n="stopwatchAutoStop">自动停止（秒）</span>
-                <input id="zen-stopwatch-auto-stop" type="number" min="0" max="5999" step="1" value="0">
+                <span data-i18n="stopwatchAutoStop">秒表自动结束</span>
+                <input id="zen-stopwatch-auto-stop" type="text" placeholder="0" value="0">
               </label>
-              <small class="zen-settings-hint" data-i18n="stopwatchAutoStopMaxHint">0 = 关闭，最大 5999 秒（99:59.99）</small>
+              <small class="zen-settings-hint" data-i18n="stopwatchAutoStopMaxHint">0 = 关闭，最大 359999 秒（99:59:59.99）</small>
               <label>
                 <span data-i18n="stopwatchTimeFormat">时长显示格式</span>
                 <select id="zen-stopwatch-time-format">
@@ -252,15 +249,35 @@
       <aside class="environment-panel" aria-label="Sound and settings">
         <div class="panel-label"><span data-i18n="environment">环境</span><span class="panel-line"></span></div>
         <div class="sound-control">
-          <div class="sound-icon" aria-hidden="true"><span class="sound-glyph sound-icon-rain"></span></div>
-          <div><strong data-i18n="rainSound">雨声</strong><p data-i18n="rainDescription">淅沥的雨声填充背景</p></div>
-          <label class="switch"><input id="rain-toggle" type="checkbox"><span></span><b class="sr-only" data-i18n="rainSound">雨声</b></label>
+          <div class="sound-icon" aria-hidden="true">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M4 12h2M4 8h2M4 16h2M8 10h2M8 6h2M8 14h2M8 18h2M12 8h2M12 4h2M12 12h2M12 16h2M12 20h2M16 10h2M16 6h2M16 14h2M16 18h2M20 12h2M20 8h2M20 16h2" stroke="var(--blue)" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <div class="sound-control-content">
+            <strong data-i18n="rainSound">氛围音</strong>
+            <div class="custom-select-wrapper">
+              <button type="button" class="custom-select-trigger" id="ambient-sound-trigger" aria-expanded="false">
+                <span id="ambient-sound-label" data-i18n="ambientRain">雨声</span>
+                <svg width="10" height="6" viewBox="0 0 10 6" fill="none"><path d="M1 1L5 5L9 1" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </button>
+              <div class="custom-select-dropdown" id="ambient-sound-dropdown" hidden>
+                <div class="custom-select-option" data-value="rain.mp3" data-label-key="ambientRain"><span data-i18n="ambientRain">雨声</span><button type="button" class="option-preview-btn" data-ambient-sound="rain.mp3" aria-label="试听">▶</button></div>
+                <div class="custom-select-option" data-value="air-conditioner-sound-white-noise.mp3" data-label-key="ambientAirConditioner"><span data-i18n="ambientAirConditioner">空调声</span><button type="button" class="option-preview-btn" data-ambient-sound="air-conditioner-sound-white-noise.mp3" aria-label="试听">▶</button></div>
+                <div class="custom-select-option" data-value="the-sound-of-a-coffee-shop.mp3" data-label-key="ambientCoffeeShop"><span data-i18n="ambientCoffeeShop">咖啡馆</span><button type="button" class="option-preview-btn" data-ambient-sound="the-sound-of-a-coffee-shop.mp3" aria-label="试听">▶</button></div>
+                <div class="custom-select-option" data-value="alex-morgan-lofi-hip-hop-rhythm-rainy-night.mp3" data-label-key="ambientLofiRainyNight"><span data-i18n="ambientLofiRainyNight">Lofi 雨夜</span><button type="button" class="option-preview-btn" data-ambient-sound="alex-morgan-lofi-hip-hop-rhythm-rainy-night.mp3" aria-label="试听">▶</button></div>
+                <div class="custom-select-option" data-value="prettyjohn1-lofi-lofi-girl-lofi-music.mp3" data-label-key="ambientLofiGirl"><span data-i18n="ambientLofiGirl">Lofi Girl</span><button type="button" class="option-preview-btn" data-ambient-sound="prettyjohn1-lofi-lofi-girl-lofi-music.mp3" aria-label="试听">▶</button></div>
+              </div>
+              <input type="hidden" id="ambient-sound" value="rain.mp3">
+            </div>
+          </div>
+          <label class="switch"><input id="rain-toggle" type="checkbox"><span></span><b class="sr-only" data-i18n="rainSound">氛围音</b></label>
         </div>
         <label class="volume-control" for="rain-volume"><span class="sound-icon" aria-hidden="true"><span class="sound-glyph sound-icon-volume"></span></span><span class="sr-only" data-i18n="volume">音量</span><input id="rain-volume" type="range" min="0" max="1" step="0.01" value="0.35"><output id="rain-volume-value">35%</output></label>
         <div class="sound-control pomodoro-alert-control">
           <div class="sound-icon" aria-hidden="true"><span class="sound-glyph sound-icon-alert"></span></div>
           <div class="sound-control-content">
-            <strong data-i18n="workAlertSound">专注完成提示音</strong>
+            <strong data-i18n="workAlertSound">专注结束音</strong>
             <div class="custom-select-wrapper">
               <button type="button" class="custom-select-trigger" id="pomodoro-work-sound-trigger" aria-expanded="false">
                 <span id="pomodoro-work-sound-label" data-i18n="soundWestminster">西敏寺钟声</span>
@@ -272,16 +289,18 @@
                 <div class="custom-select-option" data-value="ringtone.mp3" data-label-key="soundRingtone"><span data-i18n="soundRingtone">手机铃</span><button type="button" class="option-preview-btn" data-sound="ringtone.mp3" aria-label="试听">▶</button></div>
                 <div class="custom-select-option" data-value="Westminster-chimes.mp3" data-label-key="soundWestminster"><span data-i18n="soundWestminster">西敏寺钟声</span><button type="button" class="option-preview-btn" data-sound="Westminster-chimes.mp3" aria-label="试听">▶</button></div>
                 <div class="custom-select-option" data-value="school-bell-for-recess.mp3" data-label-key="soundSchoolBell"><span data-i18n="soundSchoolBell">校园铃</span><button type="button" class="option-preview-btn" data-sound="school-bell-for-recess.mp3" aria-label="试听">▶</button></div>
+                <div class="custom-select-option" data-value="toy-piano.mp3" data-label-key="soundToyPiano"><span data-i18n="soundToyPiano">玩具钢琴</span><button type="button" class="option-preview-btn" data-sound="toy-piano.mp3" aria-label="试听">▶</button></div>
+                <div class="custom-select-option" data-value="piano-film-head-advertising-rhythm-light-background-material.mp3" data-label-key="soundPianoFilm"><span data-i18n="soundPianoFilm">钢琴轻音乐</span><button type="button" class="option-preview-btn" data-sound="piano-film-head-advertising-rhythm-light-background-material.mp3" aria-label="试听">▶</button></div>
               </div>
-              <input type="hidden" id="pomodoro-work-alert-sound" value="Westminster-chimes.mp3">
+              <input type="hidden" id="pomodoro-work-alert-sound" value="piano-film-head-advertising-rhythm-light-background-material.mp3">
             </div>
           </div>
-          <label class="switch"><input id="pomodoro-alert-toggle" type="checkbox"><span></span><b class="sr-only" data-i18n="workAlertSound">专注完成提示音</b></label>
+          <label class="switch"><input id="pomodoro-alert-toggle" type="checkbox"><span></span><b class="sr-only" data-i18n="workAlertSound">专注结束音</b></label>
         </div>
         <div class="sound-control pomodoro-alert-control">
           <div class="sound-icon" aria-hidden="true"><span class="sound-glyph sound-icon-alert"></span></div>
           <div class="sound-control-content">
-            <strong data-i18n="breakAlertSound">休息完成提示音</strong>
+            <strong data-i18n="breakAlertSound">休息结束音</strong>
             <div class="custom-select-wrapper">
               <button type="button" class="custom-select-trigger" id="pomodoro-break-sound-trigger" aria-expanded="false">
                 <span id="pomodoro-break-sound-label" data-i18n="soundRing">铃声</span>
@@ -293,16 +312,18 @@
                 <div class="custom-select-option" data-value="ringtone.mp3" data-label-key="soundRingtone"><span data-i18n="soundRingtone">手机铃</span><button type="button" class="option-preview-btn" data-sound="ringtone.mp3" aria-label="试听">▶</button></div>
                 <div class="custom-select-option" data-value="Westminster-chimes.mp3" data-label-key="soundWestminster"><span data-i18n="soundWestminster">西敏寺钟声</span><button type="button" class="option-preview-btn" data-sound="Westminster-chimes.mp3" aria-label="试听">▶</button></div>
                 <div class="custom-select-option" data-value="school-bell-for-recess.mp3" data-label-key="soundSchoolBell"><span data-i18n="soundSchoolBell">校园铃</span><button type="button" class="option-preview-btn" data-sound="school-bell-for-recess.mp3" aria-label="试听">▶</button></div>
+                <div class="custom-select-option" data-value="toy-piano.mp3" data-label-key="soundToyPiano"><span data-i18n="soundToyPiano">玩具钢琴</span><button type="button" class="option-preview-btn" data-sound="toy-piano.mp3" aria-label="试听">▶</button></div>
+                <div class="custom-select-option" data-value="piano-film-head-advertising-rhythm-light-background-material.mp3" data-label-key="soundPianoFilm"><span data-i18n="soundPianoFilm">钢琴轻音乐</span><button type="button" class="option-preview-btn" data-sound="piano-film-head-advertising-rhythm-light-background-material.mp3" aria-label="试听">▶</button></div>
               </div>
-              <input type="hidden" id="pomodoro-break-alert-sound" value="ring.mp3">
+              <input type="hidden" id="pomodoro-break-alert-sound" value="Westminster-chimes.mp3">
             </div>
           </div>
-          <label class="switch"><input id="break-alert-toggle" type="checkbox"><span></span><b class="sr-only" data-i18n="breakAlertSound">休息完成提示音</b></label>
+          <label class="switch"><input id="break-alert-toggle" type="checkbox"><span></span><b class="sr-only" data-i18n="breakAlertSound">休息结束音</b></label>
         </div>
         <div class="sound-control stopwatch-alert-control">
           <div class="sound-icon" aria-hidden="true"><span class="sound-glyph sound-icon-stopwatch"></span></div>
-          <div><strong data-i18n="stopwatchAlert">秒表提示音</strong></div>
-          <label class="switch"><input id="stopwatch-alert-toggle" type="checkbox"><span></span><b class="sr-only" data-i18n="stopwatchAlert">秒表提示音</b></label>
+          <div><strong data-i18n="stopwatchAlert">秒表结束音</strong></div>
+          <label class="switch"><input id="stopwatch-alert-toggle" type="checkbox"><span></span><b class="sr-only" data-i18n="stopwatchAlert">秒表结束音</b></label>
         </div>
         <div class="sound-control ticking-control">
           <div class="sound-icon" aria-hidden="true"><span class="sound-glyph sound-icon-ticking"></span></div>
@@ -317,6 +338,7 @@
             <button id="wallpaper-light" class="wallpaper-option" type="button" aria-pressed="true" data-i18n="lightWallpaper">纯白</button>
             <button id="wallpaper-dark" class="wallpaper-option" type="button" aria-pressed="false" data-i18n="darkWallpaper">纯黑</button>
             <button id="wallpaper-rain" class="wallpaper-option" type="button" aria-pressed="false" data-i18n="rainWallpaper">雨景</button>
+            <button id="wallpaper-lofi-girl" class="wallpaper-option" type="button" aria-pressed="false" data-i18n="lofiGirlWallpaper">Lofi Girl</button>
           </div>
         </div>
         <div class="zen-control">

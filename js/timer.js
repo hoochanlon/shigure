@@ -1,5 +1,6 @@
 export class Timer {
   #intervalId = null;
+  #presentationActive = true;
   #state = { status: 'idle', session: null, remainingMs: null };
   #persist = null;
 
@@ -62,9 +63,22 @@ export class Timer {
       } else {
         this.stop('completed');
       }
-    } else if (this.#state.status === 'paused') {
+    } else {
+      // 恢复非运行状态（paused, stopped, completed）
       this.#emit();
     }
+  }
+
+  checkpoint() {
+    if (this.#state.status !== 'running') return;
+    const remainingMs = this.#remainingMs();
+    this.#state = { ...this.#state, remainingMs };
+    this.#persistState();
+  }
+
+  setPresentationActive(active) {
+    this.#presentationActive = Boolean(active);
+    if (this.#presentationActive) this.#emit();
   }
 
   #remainingMs() { return Math.max(0, this.#state.session.plannedEndAt - Date.now()); }
@@ -77,7 +91,7 @@ export class Timer {
   #tick() {
     const remainingMs = this.#remainingMs();
     this.#state = { ...this.#state, remainingMs };
-    this.#emit();
+    if (this.#presentationActive || remainingMs === 0) this.#emit();
     if (remainingMs === 0) this.stop('completed');
   }
 

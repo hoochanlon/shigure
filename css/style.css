@@ -1,9 +1,18 @@
 /* 通用基础与主题变量 */
 :root {
   color-scheme: light;
-  --ink: #666666; --muted: #888888; --faint: #aaaaaa;
+  --ink: #333333; --muted: #666666; --faint: #999999;
   --line: #e0e0e0; --glass: #ffffff; --blue: #4a9eff; --danger: #ff6b6b;
   --bg: #f5f5f5;
+  --lofi-wallpaper: url('../assets/wallpapers/lofi-girl-gif.gif');
+}
+html.use-static-lofi-wallpaper {
+  --lofi-wallpaper: url('../assets/wallpapers/lofi-girl-static.jpg');
+}
+@media (prefers-reduced-motion: reduce) {
+  html.has-lofi-girl-wallpaper {
+    --lofi-wallpaper: url('../assets/wallpapers/lofi-girl-static.jpg');
+  }
 }
 * { box-sizing: border-box; }
 html { min-width: 320px; background: var(--bg); }
@@ -13,8 +22,238 @@ html.has-rain-wallpaper,
 body.has-rain-wallpaper { --ink: #f6f7fb; --muted: rgb(246 247 251 / .72); --faint: rgb(246 247 251 / .48); --line: rgb(255 255 255 / .18); --glass: rgb(14 22 38 / .34); --blue: #a8c7ff; --danger: #ffaaaa; --bg: #2a3f5f; background: linear-gradient(105deg, rgb(15 26 44 / .82), rgb(19 39 61 / .44)), url('../assets/wallpapers/rain.jpg') center / cover fixed; }
 html.has-rain-wallpaper::before,
 body.has-rain-wallpaper::before { display: none; }
+
+/* 雨景与 Lofi Girl 共用固定视口背景模型，避免长页面底部露底。 */
+html.has-rain-wallpaper {
+  background: var(--bg);
+}
+body.has-rain-wallpaper {
+  background: transparent;
+}
+body.has-rain-wallpaper::before {
+  content: '';
+  display: block;
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background: linear-gradient(105deg, rgb(15 26 44 / .82), rgb(19 39 61 / .44)), url('../assets/wallpapers/rain.jpg') center / cover no-repeat;
+}
+body.has-rain-wallpaper > :is(.app-shell, .zen-exit) {
+  position: relative;
+  z-index: 1;
+}
+html.has-lofi-girl-wallpaper,
+body.has-lofi-girl-wallpaper { 
+  --ink: #1a1a1a; 
+  --muted: #3a3a3a; 
+  --faint: #5a5a5a; 
+  --line: rgb(0 0 0 / .12); 
+  --glass: rgb(255 255 255 / .95); 
+  --blue: #ff7a56; 
+  --danger: #ff5252; 
+  --bg: #f5f1ed; 
+  background: var(--bg) var(--lofi-wallpaper) center / cover fixed; 
+}
+html.has-lofi-girl-wallpaper::before,
+body.has-lofi-girl-wallpaper::before { display: none; }
+
+/* 壁纸独立于文档滚动：内容溢出时仍持续覆盖整个视口。 */
+html.has-lofi-girl-wallpaper {
+  background: var(--bg);
+}
+body.has-lofi-girl-wallpaper {
+  background: transparent;
+}
+body.has-lofi-girl-wallpaper::before {
+  content: '';
+  display: block;
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background: var(--lofi-wallpaper) center / cover no-repeat;
+}
+body.has-lofi-girl-wallpaper > :is(.app-shell, .zen-exit) {
+  position: relative;
+  z-index: 1;
+}
+/* Lofi Girl 主题特殊优化 */
+html.has-lofi-girl-wallpaper .language-dropdown,
+body.has-lofi-girl-wallpaper .language-dropdown {
+  background: rgb(255 255 255 / .98);
+  box-shadow: 0 4px 12px rgb(0 0 0 / .15);
+}
+html.has-lofi-girl-wallpaper .custom-select-dropdown,
+body.has-lofi-girl-wallpaper .custom-select-dropdown {
+  background: rgb(255 255 255 / .98);
+  box-shadow: 0 4px 12px rgb(0 0 0 / .15);
+}
+html.has-lofi-girl-wallpaper,
+body.has-lofi-girl-wallpaper {
+  --muted: #2a2a2a;
+  --faint: #4a4a4a;
+}
+html.has-lofi-girl-wallpaper .panel,
+body.has-lofi-girl-wallpaper .panel {
+  background: rgb(255 255 255 / .88);
+  backdrop-filter: blur(12px);
+}
+html.has-lofi-girl-wallpaper .side-rail,
+body.has-lofi-girl-wallpaper .side-rail {
+  background: transparent;
+  backdrop-filter: none;
+}
+html.has-lofi-girl-wallpaper .side-rail :is(h1, .subtitle, .rail-caption, .session-count),
+body.has-lofi-girl-wallpaper .side-rail :is(h1, .subtitle, .rail-caption, .session-count) {
+  color: #fffaf5;
+  text-shadow: 0 1px 3px rgb(31 18 15 / .8);
+}
+html.has-lofi-girl-wallpaper .side-rail .rail-divider,
+body.has-lofi-girl-wallpaper .side-rail .rail-divider {
+  border-color: rgb(255 250 245 / .55);
+}
+html.has-lofi-girl-wallpaper .side-rail .rail-link,
+body.has-lofi-girl-wallpaper .side-rail .rail-link {
+  color: #fffaf5;
+  text-shadow: 0 1px 3px rgb(31 18 15 / .8);
+}
+html.has-lofi-girl-wallpaper .side-rail .rail-link[aria-expanded="true"],
+html.has-lofi-girl-wallpaper .side-rail .restore-option,
+body.has-lofi-girl-wallpaper .side-rail .rail-link[aria-expanded="true"],
+body.has-lofi-girl-wallpaper .side-rail .restore-option {
+  background: rgb(49 31 27 / .52);
+  color: #fffaf5;
+  backdrop-filter: blur(10px);
+}
+html.has-lofi-girl-wallpaper .side-rail #settings-panel,
+html.has-lofi-girl-wallpaper .side-rail #restore-panel,
+body.has-lofi-girl-wallpaper .side-rail #settings-panel,
+body.has-lofi-girl-wallpaper .side-rail #restore-panel {
+  background: transparent;
+}
+html.has-lofi-girl-wallpaper .side-rail .settings-grid label,
+html.has-lofi-girl-wallpaper .side-rail .input-hint,
+body.has-lofi-girl-wallpaper .side-rail .settings-grid label,
+body.has-lofi-girl-wallpaper .side-rail .input-hint {
+  color: rgb(255 250 245 / .92);
+  text-shadow: 0 1px 3px rgb(31 18 15 / .8);
+}
+html.has-lofi-girl-wallpaper .side-rail .settings-grid :is(input, select),
+body.has-lofi-girl-wallpaper .side-rail .settings-grid :is(input, select) {
+  background-color: rgb(49 31 27 / .58);
+  border-color: rgb(255 250 245 / .45);
+  color: #fffaf5;
+  box-shadow: 0 2px 8px rgb(31 18 15 / .22);
+  backdrop-filter: blur(10px);
+}
+html.has-lofi-girl-wallpaper .side-rail .settings-grid select,
+body.has-lofi-girl-wallpaper .side-rail .settings-grid select {
+  background-image: url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1.5L6 6.5L11 1.5' stroke='%23fffaf5' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+}
+html.has-lofi-girl-wallpaper .side-rail .restore-option:hover,
+body.has-lofi-girl-wallpaper .side-rail .restore-option:hover {
+  background: rgb(49 31 27 / .7);
+}
+html.has-lofi-girl-wallpaper .environment-panel :is(.panel-label, .sound-control strong, .sound-control p, .volume-control, .wallpaper-theme-control, .zen-control strong, .zen-control p),
+body.has-lofi-girl-wallpaper .environment-panel :is(.panel-label, .sound-control strong, .sound-control p, .volume-control, .wallpaper-theme-control, .zen-control strong, .zen-control p) {
+  color: #fffaf5;
+  text-shadow: 0 1px 3px rgb(31 18 15 / .8);
+}
+html.has-lofi-girl-wallpaper .environment-panel .panel-line,
+body.has-lofi-girl-wallpaper .environment-panel .panel-line {
+  border-color: rgb(255 250 245 / .55);
+}
+html.has-lofi-girl-wallpaper .environment-panel :is(.sound-icon, .custom-select-trigger),
+body.has-lofi-girl-wallpaper .environment-panel :is(.sound-icon, .custom-select-trigger) {
+  background: rgb(49 31 27 / .52);
+  border-color: rgb(255 250 245 / .38);
+  color: #fffaf5;
+  box-shadow: 0 2px 8px rgb(31 18 15 / .22);
+  backdrop-filter: blur(10px);
+}
+html.has-lofi-girl-wallpaper .environment-panel .custom-select-trigger svg,
+body.has-lofi-girl-wallpaper .environment-panel .custom-select-trigger svg {
+  color: #fffaf5;
+}
+html.has-lofi-girl-wallpaper .environment-panel .custom-select-dropdown,
+body.has-lofi-girl-wallpaper .environment-panel .custom-select-dropdown {
+  background: rgb(49 31 27 / .88);
+  border-color: rgb(255 250 245 / .3);
+  color: #fffaf5;
+  backdrop-filter: blur(14px);
+}
+html.has-lofi-girl-wallpaper .environment-panel .custom-select-option:hover,
+body.has-lofi-girl-wallpaper .environment-panel .custom-select-option:hover {
+  background: rgb(255 250 245 / .14);
+}
+html.has-lofi-girl-wallpaper .environment-panel .volume-control input,
+body.has-lofi-girl-wallpaper .environment-panel .volume-control input {
+  filter: drop-shadow(0 1px 2px rgb(31 18 15 / .55));
+}
+html.has-lofi-girl-wallpaper .timer-stage :is(.stage-heading, .remaining-time, .current-task, .task-line textarea, .task-icon),
+body.has-lofi-girl-wallpaper .timer-stage :is(.stage-heading, .remaining-time, .current-task, .task-line textarea, .task-icon) {
+  color: #fffaf5;
+  text-shadow: 0 2px 5px rgb(31 18 15 / .85);
+}
+html.has-lofi-girl-wallpaper .timer-stage .task-line,
+body.has-lofi-girl-wallpaper .timer-stage .task-line {
+  border-color: rgb(255 250 245 / .52);
+}
+html.has-lofi-girl-wallpaper .timer-stage .task-line textarea::placeholder,
+body.has-lofi-girl-wallpaper .timer-stage .task-line textarea::placeholder {
+  color: rgb(255 250 245 / .78);
+}
+html.has-lofi-girl-wallpaper .timer-stage .live-dot,
+body.has-lofi-girl-wallpaper .timer-stage .live-dot {
+  background: #fffaf5;
+}
+html.has-lofi-girl-wallpaper .timer-stage #stopwatch-time,
+html.has-lofi-girl-wallpaper .timer-stage .secondary-actions .text-button,
+body.has-lofi-girl-wallpaper .timer-stage #stopwatch-time,
+body.has-lofi-girl-wallpaper .timer-stage .secondary-actions .text-button {
+  color: #fffaf5;
+  text-shadow: 0 2px 5px rgb(31 18 15 / .85);
+}
+html.has-lofi-girl-wallpaper .timer-stage .secondary-actions .text-danger,
+body.has-lofi-girl-wallpaper .timer-stage .secondary-actions .text-danger {
+  color: #ff3b30;
+  text-shadow: 0 2px 5px rgb(31 18 15 / .85);
+}
+html.has-lofi-girl-wallpaper .history-list li,
+body.has-lofi-girl-wallpaper .history-list li {
+  background: rgb(255 255 255 / .75);
+  border-color: rgb(0 0 0 / .15);
+}
+html.has-lofi-girl-wallpaper .history-list li .history-icon,
+body.has-lofi-girl-wallpaper .history-list li .history-icon {
+  background: rgb(255 255 255 / .85);
+  border-color: rgb(0 0 0 / .15);
+}
+html.has-lofi-girl-wallpaper .restore-dropdown,
+body.has-lofi-girl-wallpaper .restore-dropdown {
+  background: rgb(255 255 255 / .90);
+  backdrop-filter: blur(12px);
+  box-shadow: 0 4px 12px rgb(0 0 0 / .2);
+}
+html.has-lofi-girl-wallpaper .history-list::-webkit-scrollbar-track,
+body.has-lofi-girl-wallpaper .history-list::-webkit-scrollbar-track {
+  background: rgb(0 0 0 / .05);
+}
+html.has-lofi-girl-wallpaper .history-list::-webkit-scrollbar-thumb,
+body.has-lofi-girl-wallpaper .history-list::-webkit-scrollbar-thumb {
+  background: rgb(0 0 0 / .2);
+}
+html.has-lofi-girl-wallpaper .history-list::-webkit-scrollbar-thumb:hover,
+body.has-lofi-girl-wallpaper .history-list::-webkit-scrollbar-thumb:hover {
+  background: rgb(0 0 0 / .35);
+}
+html.has-lofi-girl-wallpaper .custom-select-option:hover,
+body.has-lofi-girl-wallpaper .custom-select-option:hover {
+  background: rgb(0 0 0 / .08);
+}
 html.has-dark-wallpaper,
-body.has-dark-wallpaper { --ink: #e0e0e0; --muted: #b0b0b0; --faint: #808080; --line: #2a2a2a; --glass: #1a1a1a; --blue: #6ba3ff; --danger: #ff8080; --bg: #000000; background: var(--bg); }
+body.has-dark-wallpaper { --ink: #f0f0f0; --muted: #c0c0c0; --faint: #909090; --line: #2a2a2a; --glass: #1a1a1a; --blue: #6ba3ff; --danger: #ff8080; --bg: #000000; background: var(--bg); }
 html.has-dark-wallpaper::before,
 body.has-dark-wallpaper::before { display: none; }
 button, input, textarea { font: inherit; } button { cursor: pointer; } button:disabled { cursor: not-allowed; }
@@ -91,7 +330,9 @@ button, input, textarea { font: inherit; } button { cursor: pointer; } button:di
 /* 环境控制 */
 /* 环境与设置区域 */
 .environment-panel { align-self: stretch; padding-top: 10px; }.panel-label { display: flex; align-items: center; gap: 12px; color: var(--faint); font-size: .72rem; letter-spacing: .16em; text-transform: uppercase; }.panel-line { flex: 1; border-top: 1px solid var(--line); }.sound-control { display: grid; grid-template-columns: auto 1fr auto; gap: 13px; align-items: center; margin-top: 20px; }.sound-icon { display: grid; width: 39px; height: 39px; place-items: center; border: 1px solid var(--line); border-radius: 12px; color: var(--blue); background: var(--glass); }.has-rain-wallpaper .sound-icon { background: rgb(255 255 255 / .08); }
-.has-dark-wallpaper .sound-icon { background: #1a1a1a; }.sound-glyph { width: 20px; height: 20px; background: var(--blue); mask: center / contain no-repeat; -webkit-mask: center / contain no-repeat; }.sound-icon-rain { mask-image: url('../assets/icons/rain.svg'); -webkit-mask-image: url('../assets/icons/rain.svg'); }.sound-icon-alert { mask-image: url('../assets/icons/notice-active.svg'); -webkit-mask-image: url('../assets/icons/notice-active.svg'); }
+.has-dark-wallpaper .sound-icon { background: #1a1a1a; }.sound-glyph { width: 20px; height: 20px; background: var(--blue); mask: center / contain no-repeat; -webkit-mask: center / contain no-repeat; }
+.sound-glyph svg { width: 100%; height: 100%; color: var(--blue); }
+.sound-icon-alert { mask-image: url('../assets/icons/notice-active.svg'); -webkit-mask-image: url('../assets/icons/notice-active.svg'); }
 .sound-icon-stopwatch { mask-image: url('../assets/icons/hourglass.svg'); -webkit-mask-image: url('../assets/icons/hourglass.svg'); }
 .sound-icon-ticking { mask-image: url('../assets/icons/hourglass.svg'); -webkit-mask-image: url('../assets/icons/hourglass.svg'); }
 .sound-icon-wallpaper { mask-image: url('../assets/icons/wallpaper.svg'); -webkit-mask-image: url('../assets/icons/wallpaper.svg'); }.sound-icon-color-swatch { mask-image: url('../assets/icons/color-swatch.svg'); -webkit-mask-image: url('../assets/icons/color-swatch.svg'); }.sound-icon-volume { mask-image: url('../assets/icons/sound.svg'); -webkit-mask-image: url('../assets/icons/sound.svg'); }.sound-control strong { font-size: .91rem; font-weight: 600; }.sound-control p { margin: 4px 0 0; color: var(--muted); font-size: .75rem; }
@@ -115,6 +356,10 @@ button, input, textarea { font: inherit; } button { cursor: pointer; } button:di
 .has-rain-wallpaper .custom-select-dropdown { background: rgb(14 22 38 / .95); backdrop-filter: blur(24px); box-shadow: 0 4px 12px rgb(0 0 0 / .4); }
 .has-rain-wallpaper .custom-select-option:hover { background: rgb(255 255 255 / .1); }
 .has-rain-wallpaper .option-preview-btn { background: rgb(255 255 255 / .1); border-color: rgb(255 255 255 / .18); }
+.has-lofi-girl-wallpaper .custom-select-trigger { background: rgb(255 255 255 / .15); }
+.has-lofi-girl-wallpaper .custom-select-dropdown { background: rgb(14 22 38 / .98); backdrop-filter: blur(32px); box-shadow: 0 4px 16px rgb(0 0 0 / .5); }
+.has-lofi-girl-wallpaper .custom-select-option:hover { background: rgb(255 255 255 / .12); }
+.has-lofi-girl-wallpaper .option-preview-btn { background: rgb(255 255 255 / .15); border-color: rgb(255 255 255 / .2); }
 .has-dark-wallpaper .custom-select-trigger { background: #2a2a2a; }
 .has-dark-wallpaper .custom-select-dropdown { background: #1a1a1a; box-shadow: 0 4px 12px rgb(0 0 0 / .6); }
 .has-dark-wallpaper .custom-select-option:hover { background: #2a2a2a; }
@@ -138,7 +383,43 @@ button, input, textarea { font: inherit; } button { cursor: pointer; } button:di
 .has-dark-wallpaper .wallpaper-option { background: #1a1a1a; }.has-dark-wallpaper .wallpaper-option:hover, .has-dark-wallpaper .wallpaper-option[aria-pressed="true"] { border-color: var(--blue); color: var(--blue); background: #2a2a2a; }.environment-note { margin-top: 52px; padding-top: 14px; border-top: 1px solid var(--line); color: var(--faint); font-size: .78rem; line-height: 1.55; }.quick-settings { display: grid; gap: 8px; margin-top: 20px; }.quick-setting { justify-content: space-between; width: 100%; padding: 10px 0; border: 0; border-bottom: 1px solid var(--line); color: var(--muted); background: transparent; text-align: left; transition: opacity .2s ease; }.quick-setting:hover { opacity: .7; }.quick-setting strong { color: var(--ink); font-size: .82rem; font-weight: 500; }
 
 /* 设置面板与历史记录 */
-.panel { width: min(100%, 520px); margin: 32px auto 0; padding: 20px; border: 1px solid var(--line); border-radius: 18px; background: var(--glass); backdrop-filter: none; }.panel h2 { margin: 0 0 16px; font-size: 1.02rem; } #settings-panel { width: min(100%, 430px); padding: 16px; } .side-rail #settings-panel { width: 100%; margin: 8px 0 0; padding: 12px 0 0; border: 0; border-top: 1px solid var(--line); border-radius: 0; background: transparent; } .side-rail #settings-panel h2, .side-rail #restore-panel h2 { display: none; } .side-rail #settings-panel .settings-grid, .side-rail #restore-panel .settings-grid { grid-template-columns: 1fr; gap: 12px; } .side-rail #settings-panel .settings-grid input[type="number"] { width: 92px; max-width: 92px; } .side-rail #restore-panel { width: 100%; margin: 8px 0 0; padding: 12px 0 0; border: 0; border-top: 1px solid var(--line); border-radius: 0; background: transparent; } .settings-hint { margin: -4px 0 0; color: var(--faint); font-size: .72rem; line-height: 1.45; } .alert-volume-field { grid-template-columns: 1fr auto; align-items: center; } .alert-volume-field input[type="range"] { width: 100%; accent-color: var(--blue); } .alert-volume-field output { color: var(--muted); font-size: .76rem; } #history-panel { width: min(100%, 720px); }
+.panel { width: min(100%, 520px); margin: 32px auto 0; padding: 20px; border: 1px solid var(--line); border-radius: 18px; background: var(--glass); backdrop-filter: none; }.panel h2 { margin: 0 0 16px; font-size: 1.02rem; } #settings-panel { width: min(100%, 430px); padding: 16px; } .side-rail #settings-panel { width: 100%; margin: 8px 0 0; padding: 12px 0 0; border: 0; border-top: 1px solid var(--line); border-radius: 0; background: transparent; } .side-rail #settings-panel h2, .side-rail #restore-panel h2 { display: none; } .side-rail #settings-panel .settings-grid {
+  grid-template-columns: minmax(0, 1fr);
+  gap: 14px;
+}
+.side-rail #settings-panel .settings-grid label {
+  gap: 6px;
+  padding: 0;
+}
+.side-rail #settings-panel .settings-grid input[type="number"],
+.side-rail #settings-panel .settings-grid input[type="text"],
+.side-rail #settings-panel .settings-grid select {
+  width: 100%;
+  max-width: none;
+  min-width: 0;
+  box-sizing: border-box;
+}
+.side-rail #settings-panel .input-hint {
+  margin-top: 0;
+} .side-rail #restore-panel {
+  width: 100%;
+  margin: 8px 0 0;
+  padding: 12px 0 0;
+  border: 0;
+  border-top: 1px solid var(--line);
+  border-radius: 0;
+  background: transparent;
+}
+.side-rail #restore-panel .settings-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+.side-rail #restore-panel .restore-option {
+  min-width: 0;
+  text-align: center;
+  white-space: nowrap;
+}
+.settings-hint { margin: -4px 0 0; color: var(--faint); font-size: .72rem; line-height: 1.45; } .alert-volume-field { grid-template-columns: 1fr auto; align-items: center; } .alert-volume-field input[type="range"] { width: 100%; accent-color: var(--blue); } .alert-volume-field output { color: var(--muted); font-size: .76rem; } #history-panel { width: min(100%, 720px); }
 .has-rain-wallpaper .panel { background: rgb(14 22 38 / .34); backdrop-filter: blur(24px); }
 .has-dark-wallpaper .panel { background: #1a1a1a; backdrop-filter: none; }.panel-heading { justify-content: space-between; gap: 16px; }
 .panel-actions { display: flex; gap: 12px; align-items: center; }
@@ -150,10 +431,12 @@ button, input, textarea { font: inherit; } button { cursor: pointer; } button:di
 .restore-option:hover { background: var(--line); }
 .has-rain-wallpaper .restore-option:hover { background: rgb(255 255 255 / .1); }
 .has-dark-wallpaper .restore-option:hover { background: #2a2a2a; }
-.settings-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }.settings-grid[hidden] { display: none; }.settings-grid label { display: grid; gap: 7px; color: var(--muted); font-size: .8rem; }.settings-grid input[type="number"] { width: 100%; max-width: 120px; padding: 8px; border: 1px solid var(--line); border-radius: 8px; color: var(--ink); background: var(--glass); }
+.settings-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }.settings-grid[hidden] { display: none; }.settings-grid label { display: grid; gap: 7px; color: var(--muted); font-size: .8rem; }.settings-grid input[type="number"], .settings-grid input[type="text"] { width: 100%; max-width: 120px; padding: 8px; border: 1px solid var(--line); border-radius: 8px; color: var(--ink); background: var(--glass); }
+#stopwatch-auto-stop, #zen-stopwatch-auto-stop { font-family: 'SF Mono', 'Monaco', 'Menlo', monospace; font-size: .85rem; letter-spacing: 0.5px; }
+#stopwatch-auto-stop:focus, #zen-stopwatch-auto-stop:focus { border-color: var(--blue); outline: none; box-shadow: 0 0 0 3px rgba(168, 199, 255, 0.1); }
 .input-hint { display: block; margin-top: 4px; color: var(--faint); font-size: .7rem; }
-.has-rain-wallpaper .settings-grid input[type="number"] { background: rgb(255 255 255 / .1); }
-.has-dark-wallpaper .settings-grid input[type="number"] { background: #2a2a2a; }
+.has-rain-wallpaper .settings-grid input[type="number"], .has-rain-wallpaper .settings-grid input[type="text"] { background: rgb(255 255 255 / .1); }
+.has-dark-wallpaper .settings-grid input[type="number"], .has-dark-wallpaper .settings-grid input[type="text"] { background: #2a2a2a; }
 .settings-grid select { width: auto; min-width: 160px; max-width: 200px; padding: 8px 32px 8px 10px; border: 1px solid var(--line); border-radius: 8px; color: var(--ink); background: var(--glass); font-size: .88rem; cursor: pointer; appearance: none; background-image: url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1.5L6 6.5L11 1.5' stroke='%23888888' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 10px center; transition: border-color .2s ease; }
 .settings-grid select:hover { border-color: var(--muted); }
 .settings-grid select:focus { outline: none; border-color: var(--blue); }
