@@ -1,14 +1,16 @@
 export class Stopwatch {
-  constructor(onTick, onAutoStop = () => {}, persist = null) {
+  constructor(onTick, onAutoStop = () => {}, persist = null, onTitleTick = () => {}) {
     this.onTick = onTick;
     this.onAutoStop = onAutoStop;
     this.persist = persist;
+    this.onTitleTick = onTitleTick;
     this.state = { status: 'idle', elapsedMs: 0, startedAt: null, task: '', sessionStartedAt: null };
     this.presentationTimeoutId = null;
+    this.titleTimeoutId = null;
     this.autoStopTimeoutId = null;
     this.isPresentationEnabled = true;
     this.MAX_TIME_MS = (99 * 3600 + 59 * 60 + 59) * 1000;
-    this.PRESENTATION_INTERVAL_MS = 100;
+    this.PRESENTATION_INTERVAL_MS = 10;
   }
 
   start({ autoStopSeconds = 0 } = {}) {
@@ -78,11 +80,13 @@ export class Stopwatch {
     window.clearTimeout(this.presentationTimeoutId);
     this.presentationTimeoutId = null;
     if (nextEnabled) this.#present();
+    else this.#presentTitle();
   }
 
   #startScheduling() {
     this.#scheduleAutoStop();
     if (this.isPresentationEnabled) this.#present();
+    else this.#presentTitle();
   }
 
   #present() {
@@ -91,6 +95,14 @@ export class Stopwatch {
     if (this.#hasReachedDeadline()) return this.#stopForDeadline();
     this.onTick(this.state);
     this.presentationTimeoutId = window.setTimeout(() => this.#present(), this.PRESENTATION_INTERVAL_MS);
+  }
+
+  #presentTitle() {
+    if (this.state.status !== 'running' || this.isPresentationEnabled) return;
+    this.#updateElapsed();
+    if (this.#hasReachedDeadline()) return this.#stopForDeadline();
+    this.onTitleTick(this.state);
+    this.titleTimeoutId = window.setTimeout(() => this.#presentTitle(), 1000);
   }
 
   #scheduleAutoStop() {
@@ -126,8 +138,10 @@ export class Stopwatch {
 
   #cancelScheduling() {
     if (this.presentationTimeoutId !== null) window.clearTimeout(this.presentationTimeoutId);
+    if (this.titleTimeoutId !== null) window.clearTimeout(this.titleTimeoutId);
     if (this.autoStopTimeoutId !== null) window.clearTimeout(this.autoStopTimeoutId);
     this.presentationTimeoutId = null;
+    this.titleTimeoutId = null;
     this.autoStopTimeoutId = null;
   }
 

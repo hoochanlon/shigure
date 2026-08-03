@@ -1,0 +1,155 @@
+/* 页面结构、导航与计时舞台 */
+
+/* 页面外壳与顶部导航 */
+/* 页面外壳与顶部导航 */
+.app-shell { position: relative; width: min(100% - 96px, 1440px); min-height: 100vh; margin: auto; padding: 42px 0 54px; }
+
+.background-glow { display: none; }
+
+.app-header, .header-actions, .workspace, .stage-heading, .primary-actions, .secondary-actions, .panel-heading, .quick-setting { display: flex; align-items: center; }
+
+.app-header { justify-content: space-between; margin-bottom: clamp(32px, 6vh, 68px); }
+
+.brand { display: inline-flex; align-items: center; gap: 12px; color: var(--ink); font-size: 1.25rem; font-weight: 700; letter-spacing: -.03em; text-decoration: none; transition: opacity .2s ease; }
+
+.brand:hover { opacity: .7; }
+
+.brand-mark { display: flex; align-items: center; justify-content: center; }
+
+.brand-mark svg { display: block; width: 24px; height: 24px; }
+
+.header-actions { display: flex; align-items: center; gap: 9px; }
+
+.header-actions a { color: var(--ink); text-decoration: none; }
+
+.language-selector { position: relative; }
+
+/* 三栏工作区与左侧导航 */
+.workspace { display: grid; grid-template-columns: minmax(180px, .7fr) minmax(440px, 1.8fr) minmax(220px, .9fr); gap: clamp(32px, 5.5vw, 88px); align-items: start; }
+
+.side-rail { align-self: stretch; padding-top: 10px; }
+
+.eyebrow { margin: 0 0 16px; color: var(--blue); font-size: .72rem; font-weight: 750; letter-spacing: .2em; }
+
+.side-rail h1 { max-width: 230px; margin: 0 0 12px; font-size: clamp(1.9rem, 3.2vw, 3.4rem); letter-spacing: -.075em; line-height: .95; }
+
+.subtitle { max-width: 215px; margin: 0; color: var(--muted); line-height: 1.55; }
+
+.rail-divider { width: 34px; margin: 38px 0 14px; border-top: 1px solid var(--line); }
+
+.rail-caption { margin: 0; color: var(--faint); font-size: .76rem; }
+
+.session-count { display: block; margin: 3px 0 0; font-size: 2rem; font-weight: 500; }
+
+.rail-nav { display: grid; gap: 6px; margin-top: 42px; }
+
+.rail-item { display: grid; gap: 6px; }
+
+.rail-link { display: flex; gap: 11px; width: 100%; padding: 10px 20px; border: 0; border-radius: 10px; color: var(--muted); background: transparent; transition: opacity .2s ease; align-items: center; }
+
+.rail-link-icon { display: block; flex: 0 0 auto; width: 18px; height: 18px; color: currentColor; }
+
+.rail-link:hover { opacity: .7; }
+
+.rail-link[aria-expanded="true"] { color: var(--ink); background: var(--line); }
+
+/* 计时主舞台 */
+.timer-stage { min-width: 0; text-align: center; padding: 0 32px 0 16px; }
+
+.mode-tabs { display: flex; justify-content: center; gap: 12px; margin-bottom: 32px; }
+
+.mode-tab { padding: 10px 24px; border: 1px solid var(--line); border-radius: 8px; color: var(--muted); background: var(--glass); font-size: .88rem; font-weight: 500; transition: all .2s ease; }
+
+.mode-tab:hover { color: var(--ink); }
+
+.mode-tab.active { color: var(--glass); background: var(--blue); border-color: var(--blue); }
+
+.timer-view { display: block; }
+
+.timer-view[hidden] { display: none; }
+
+.stage-heading { justify-content: center; gap: 9px; color: var(--blue); font-size: .82rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
+
+.live-dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; opacity: .35; }
+
+.remaining-time { display: block; margin: 20px 0 18px; font-size: clamp(4.5rem, 12vw, 9.5rem); font-weight: 250; letter-spacing: .02em; line-height: .8; font-variant-numeric: tabular-nums; text-shadow: none; color: var(--ink); white-space: nowrap; }
+
+.remaining-time.is-running { color: var(--ink); }
+
+.progress-track { width: min(100%, 480px); height: 2px; margin: 0 auto 18px; background: var(--line); }
+
+.progress-bar { width: 100%; height: 100%; background: var(--blue); transition: width .4s linear; }
+
+.current-task { min-height: 1.4em; margin: 0 0 20px; color: var(--muted); font-size: .9rem; }
+
+.task-line { display: flex; align-items: flex-start; gap: 10px; width: min(100%, 390px); margin: 0 auto; border-bottom: 1px solid var(--line); min-height: 40px; }
+
+.task-line textarea { width: 100%; min-height: 28px; max-height: 3em; padding: 0 0 11px; resize: none; overflow-y: auto; border: 0; outline: 0; color: var(--ink); background: transparent; line-height: 1.4; }
+
+.task-line textarea::placeholder { color: var(--faint); }
+
+.primary-actions { justify-content: center; flex-wrap: wrap; gap: 11px; margin-top: 22px; }
+
+.secondary-actions { justify-content: center; gap: 22px; margin-top: 16px; }
+
+.side-rail #settings-panel { width: 100%; margin: 8px 0 0; padding: 12px 0 0; border: 0; border-top: 1px solid var(--line); border-radius: 0; background: transparent; }
+
+.side-rail #settings-panel h2, .side-rail #restore-panel h2 { display: none; }
+
+.side-rail #settings-panel .settings-grid {
+  grid-template-columns: minmax(0, 1fr);
+  gap: 14px;
+  padding-inline: 20px;
+}
+
+.side-rail #settings-panel .settings-grid label {
+  gap: 6px;
+  padding: 0;
+}
+
+.side-rail #settings-panel .settings-grid input[type="number"],
+.side-rail #settings-panel .settings-grid input[type="text"],
+.side-rail #settings-panel .settings-grid select {
+  width: min(100%, 11rem);
+  max-width: 11rem;
+  min-width: 0;
+  box-sizing: border-box;
+  padding: .6rem .75rem;
+  border-color: color-mix(in srgb, var(--line) 82%, var(--ink));
+  box-shadow: 0 1px 2px rgb(0 0 0 / .04);
+}
+
+.side-rail #settings-panel .settings-grid :is(input, select):focus {
+  outline: none;
+  border-color: var(--blue);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--blue) 16%, transparent);
+}
+
+.side-rail #settings-panel .input-hint {
+  margin-top: 0;
+}
+
+.side-rail #restore-panel {
+  width: 100%;
+  margin: 8px 0 0;
+  padding: 12px 0 0;
+  border: 0;
+  border-top: 1px solid var(--line);
+  border-radius: 0;
+  background: transparent;
+}
+
+.side-rail #restore-panel .settings-grid {
+  grid-template-columns: minmax(0, 1fr);
+  gap: 14px;
+}
+
+.side-rail #restore-panel .restore-option {
+  min-width: 0;
+  padding-inline: 20px;
+  text-align: left;
+  white-space: nowrap;
+  box-shadow: none;
+}
+
+.side-rail #restore-environment-main { margin-bottom: 12px; }

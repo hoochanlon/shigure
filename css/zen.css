@@ -1,0 +1,117 @@
+/* 禅模式的独立界面与交互状态 */
+
+#stopwatch-auto-stop, #zen-stopwatch-auto-stop { font-family: 'SF Mono', 'Monaco', 'Menlo', monospace; font-size: .85rem; letter-spacing: 0.5px; }
+
+#cycle-mode, #zen-cycle-mode { margin-bottom: 12px; }
+
+#stopwatch-auto-stop:focus, #zen-stopwatch-auto-stop:focus { border-color: var(--blue); outline: none; box-shadow: 0 0 0 3px rgba(168, 199, 255, 0.1); }
+
+/* 禅模式与页脚 */
+/* 禅模式预加载和运行时样式 */
+.zen-mode-preload .side-rail,
+.zen-mode-preload .environment-panel,
+.zen-mode-preload .app-header,
+body.zen-mode .side-rail,
+body.zen-mode .environment-panel,
+body.zen-mode .app-header { display: none; }
+
+.zen-mode-preload .workspace,
+body.zen-mode .workspace { display: flex; min-height: calc(100vh - 96px); align-items: center; justify-content: center; }
+
+.zen-mode-preload .timer-stage,
+body.zen-mode .timer-stage { width: min(100%, 600px); max-width: 600px; margin: 0 auto; padding: 0; }
+
+.zen-exit { display: none; position: fixed; top: 22px; right: 22px; z-index: 200; width: 44px; height: 44px; padding: 0; border: 1px solid var(--line); border-radius: 50%; color: var(--ink); background: var(--glass); box-shadow: 0 4px 12px rgb(0 0 0 / .12); cursor: pointer; transition: all .2s ease; }
+
+.zen-exit svg { display: block; margin: auto; width: 20px; height: 20px; }
+
+.zen-exit:hover { transform: scale(1.05); opacity: .85; }
+
+body.zen-mode #zen-exit { display: flex; position: fixed; top: max(22px, env(safe-area-inset-top)); right: max(22px, env(safe-area-inset-right)); bottom: auto; left: auto; z-index: 200; align-items: center; justify-content: center; }
+
+.zen-control { display: grid; grid-template-columns: auto 1fr auto; gap: 13px; align-items: center; margin-top: 18px; }
+
+.zen-control .sound-icon { display: grid; width: 39px; height: 39px; place-items: center; border: 1px solid var(--line); border-radius: 12px; background: var(--glass); color: var(--blue); }
+
+.zen-control .sound-icon svg { display: block; }
+
+.zen-control strong { font-size: .91rem; font-weight: 600; }
+
+.zen-control p { margin: 4px 0 0; color: var(--muted); font-size: .75rem; }
+
+.zen-restore-dropdown { position: absolute; top: calc(100% + 8px); right: 0; z-index: 200; min-width: 160px; padding: 8px; border: 1px solid var(--line); border-radius: 8px; background: var(--glass); box-shadow: 0 4px 12px rgb(0 0 0 / .15); }
+
+.zen-restore-dropdown[hidden] { display: none; }
+
+/* 禅模式设置 */
+.zen-settings { position: relative; margin-top: 32px; }
+
+body.zen-mode .zen-settings { display: block; }
+
+.zen-actions { display: flex; gap: 12px; justify-content: center; align-items: center; }
+
+.zen-action-button { display: flex; align-items: center; justify-content: center; width: 44px; height: 44px; margin: 0; padding: 0; border: 1px solid var(--line); border-radius: 50%; background: var(--glass); color: var(--ink); cursor: pointer; transition: all .2s ease; }
+
+.zen-action-button:hover { transform: scale(1.05); opacity: .85; }
+
+.zen-action-button svg { display: block; }
+
+.zen-settings-panel { position: absolute; bottom: calc(100% + 12px); left: 50%; transform: translateX(-50%); width: min(320px, calc(100vw - 48px)); padding: 20px; border: 1px solid var(--line); border-radius: 12px; background: var(--glass); box-shadow: 0 8px 24px rgb(0 0 0 / .15); z-index: 100; }
+
+.zen-settings-panel[hidden] { display: none; }
+
+.zen-settings-content h3 { margin: 0 0 16px; color: var(--ink); font-size: 1rem; font-weight: 600; text-align: center; }
+
+.zen-settings-content label { display: flex; flex-direction: column; align-items: center; gap: 8px; margin-bottom: 12px; }
+
+.zen-settings-content label span { color: var(--muted); font-size: .88rem; text-align: center; }
+
+.zen-settings-content :is(input[type="number"], input[type="text"]) { width: min(100%, 12rem); box-sizing: border-box; padding: 10px 12px; border: 1px solid color-mix(in srgb, var(--line) 82%, var(--ink)); border-radius: 8px; background: var(--glass); color: var(--ink); font-size: .94rem; text-align: center; box-shadow: 0 1px 2px rgb(0 0 0 / .04); transition: border-color .2s ease, box-shadow .2s ease; }
+
+.zen-settings-content :is(input[type="number"], input[type="text"]):focus { outline: none; border-color: var(--blue); box-shadow: 0 0 0 3px color-mix(in srgb, var(--blue) 16%, transparent); }
+
+.zen-settings-content select { width: auto; min-width: 180px; max-width: 220px; padding: 10px 32px 10px 12px; border: 1px solid var(--line); border-radius: 8px; background: var(--glass); color: var(--ink); font-size: .88rem; text-align: center; cursor: pointer; appearance: none; background-image: url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1.5L6 6.5L11 1.5' stroke='%23888888' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 10px center; transition: border-color .2s ease; }
+
+.zen-settings-content select:hover { border-color: var(--muted); }
+
+.zen-settings-content select:focus { outline: none; border-color: var(--blue); }
+
+.zen-settings-hint { display: block; margin: -8px 0 12px; color: var(--faint); font-size: .75rem; text-align: center; }
+
+.zen-toggle-field { flex-direction: row !important; align-items: center; justify-content: center; gap: 12px; margin-bottom: 0; }
+
+.zen-toggle-field input[type="checkbox"] { width: auto; margin: 0; }
+
+.zen-toggle-field span { margin: 0; text-align: left; }
+
+.zen-history-panel { position: absolute; top: calc(100% + 12px); left: 50%; transform: translateX(-50%); width: min(720px, calc(100vw - 48px)); max-height: 400px; padding: 20px; border: 1px solid var(--line); border-radius: 12px; background: var(--glass); box-shadow: 0 8px 24px rgb(0 0 0 / .15); overflow-y: auto; z-index: 100; }
+
+.zen-history-panel[hidden] { display: none; }
+
+.zen-history-heading { display: flex; justify-content: space-between; align-items: center; gap: 16px; margin-bottom: 16px; }
+
+.zen-history-panel h3 { margin: 0; color: var(--ink); font-size: 1rem; font-weight: 600; }
+
+.zen-clear-button { padding: 4px 10px; border: 1px solid var(--line); border-radius: 6px; color: var(--danger); background: var(--glass); font-size: .72rem; white-space: nowrap; transition: opacity .2s ease; cursor: pointer; }
+
+.zen-clear-button:hover { opacity: .7; }
+
+.zen-history-list { margin: 0; padding: 0; list-style: none; }
+
+.zen-history-list li { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 10px 12px; margin-bottom: 8px; border-radius: 8px; border-left: 3px solid transparent; color: var(--muted); background: var(--glass); border: 1px solid var(--line); font-size: .82rem; line-height: 1.4; }
+
+.zen-history-list li .history-icon { flex-shrink: 0; display: grid; place-items: center; width: 32px; height: 32px; border: 1px solid var(--line); border-radius: 8px; background: var(--glass); }
+
+.zen-history-list li .history-icon svg { display: block; width: 18px; height: 18px; }
+
+.zen-history-list li .history-text { display: flex; align-items: center; gap: 8px; flex: 1; min-width: 0; word-break: break-word; }
+
+.zen-history-list li .zen-history-content { display: flex; align-items: center; gap: 8px; flex: 1; min-width: 0; }
+
+.zen-history-list li .zen-history-delete { padding: 4px 10px; border: 1px solid var(--line); border-radius: 6px; color: var(--danger); background: var(--glass); font-size: .72rem; white-space: nowrap; transition: opacity .2s ease; }
+
+.zen-history-list li .zen-history-delete:hover { opacity: .7; }
+
+.zen-history-list li.completed { opacity: 1; }
+
+.zen-history-list li.stopped { opacity: .7; }

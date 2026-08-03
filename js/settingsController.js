@@ -6,7 +6,7 @@ import { parseTimeInput } from './timeParser.js';
 /**
  * 设置控制器 - 管理所有设置相关逻辑
  */
-export const createSettingsController = (state, view, elements, audioController) => {
+export const createSettingsController = (state, view, elements, audioController, onWallpaperChange = () => {}) => {
   const persist = () => saveState(state);
   
   // 工具函数
@@ -46,7 +46,16 @@ export const createSettingsController = (state, view, elements, audioController)
     }
     
     view.renderNoise(state.settings.ambientEnabled, state.settings.ambientVolume);
-    view.renderWallpaper(resolveWallpaper(), state.settings.themeMode);
+    view.renderAlert(
+      state.settings.pomodoroAlertEnabled,
+      state.settings.breakAlertEnabled,
+      state.settings.workAlertSound,
+      state.settings.breakAlertSound,
+      state.settings.stopwatchAlertEnabled,
+      state.settings.tickingEnabled,
+      state.settings.alertVolume
+    );
+    onWallpaperChange();
     elements['zen-toggle'].checked = state.settings.zenMode;
     document.documentElement.classList.remove('zen-mode-preload');
     document.body.classList.toggle('zen-mode', state.settings.zenMode);
@@ -141,7 +150,7 @@ export const createSettingsController = (state, view, elements, audioController)
   const updateWallpaper = (wallpaper) => {
     state.settings = { ...state.settings, wallpaper, themeMode: 'manual' };
     persist();
-    view.renderWallpaper(wallpaper, 'manual');
+    onWallpaperChange();
   };
   
   const updateZenMode = (enabled) => {
