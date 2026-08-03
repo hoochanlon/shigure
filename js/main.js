@@ -9,10 +9,13 @@ import { createTimerController } from './timerController.js';
 import { createStopwatchController } from './stopwatchController.js';
 import { createWallpaperController } from './wallpaperController.js';
 import { createEventBinder } from './eventBinder.js';
+import { createSimpleDoController } from './simpleDoController.js';
 
 const state = loadState();
 let language = localStorage.getItem('pomodoro.timer.language') || 'zh';
 let mode = 'pomodoro';
+let screen = 'timer';
+const SCREEN_STORAGE_KEY = 'shigure.ui.screen';
 const persist = () => saveState(state);
 const view = createView(document, () => state.pomodoroResetAt);
 const { elements } = view;
@@ -61,8 +64,9 @@ stopwatch = createStopwatchController({
 
 const syncTimerPresentation = () => {
   const pageVisible = document.visibilityState === 'visible';
-  stopwatch.setPresentationEnabled(pageVisible && mode === 'stopwatch');
-  timer.setPresentationActive(pageVisible && mode === 'pomodoro');
+  const timerVisible = pageVisible && screen === 'timer';
+  stopwatch.setPresentationEnabled(timerVisible && mode === 'stopwatch');
+  timer.setPresentationActive(timerVisible && mode === 'pomodoro');
 };
 const switchMode = (nextMode) => {
   mode = nextMode;
@@ -78,9 +82,27 @@ const switchMode = (nextMode) => {
   sessions.render();
   syncTimerPresentation();
 };
+const switchScreen = (nextScreen) => {
+  screen = nextScreen === 'todo' ? 'todo' : 'timer';
+  localStorage.setItem(SCREEN_STORAGE_KEY, screen);
+  const showingTodo = screen === 'todo';
+  if (showingTodo && state.settings.zenMode) {
+    elements['zen-toggle'].checked = false;
+    settings.updateZenMode(false);
+  }
+  document.body.classList.toggle('todo-mode', showingTodo);
+  document.getElementById('simple-do-screen').hidden = !showingTodo;
+  if (showingTodo) {
+    simpleDo.render();
+    simpleDo.renderHistory();
+  }
+  syncTimerPresentation();
+};
+let simpleDo;
+
 const render = () => {
   view.applyLanguage(language);
-  view.renderTimer({ ...timer.state, remainingMs: timer.state.remainingMs ?? state.settings.workMinutes * 60_000 }, language);
+  view.renderTimer({ ...timer.state, defaultDurationMs: state.settings.workMinutes * 60_000 }, language);
   view.renderStopwatch(stopwatch.state, language, state.settings.stopwatchTimeFormat);
   sessions.render();
 };
@@ -89,8 +111,17 @@ const setLanguage = (nextLanguage) => {
   localStorage.setItem('pomodoro.timer.language', language);
 };
 
+simpleDo = createSimpleDoController({
+  root: document,
+  getLanguage,
+  onFocus: (task) => {
+    elements['task-name'].value = task;
+    switchScreen('timer');
+  }
+});
+
 createEventBinder({
-  state, elements, view, getLanguage, setLanguage, getMode, switchMode, timer, stopwatch,
+  state, elements, view, getLanguage, setLanguage, getMode, switchMode, switchScreen, timer, stopwatch,
   settings, sessions, audio, wallpaper, persist, render
 });
 
@@ -124,10 +155,16 @@ window.addEventListener('pagehide', (event) => {
 });
 
 settings.applySettings(language);
+const focusTask = localStorage.getItem('shigure.todo.focus-task');
+if (focusTask) {
+  elements['task-name'].value = focusTask;
+  localStorage.removeItem('shigure.todo.focus-task');
+}
 switchMode('pomodoro');
 render();
 timer.restore();
 stopwatch.restore();
+switchScreen(localStorage.getItem(SCREEN_STORAGE_KEY));
 syncTimerPresentation();
 
 const brandLink = document.getElementById('brand-link');

@@ -112,4 +112,48 @@ body.zen-mode .zen-settings { display: block; }
 
 .zen-history-list li.completed { opacity: 1; }
 
-.zen-history-list li.stopped { opacity: .7; }
+
+/* 待办模式与禅模式共用同页切换策略，避免独立页面重载。 */
+.simple-do-screen { width: min(100%, 1180px); }
+
+.simple-do-exit { display: none; position: fixed; top: 22px; right: 22px; z-index: 200; width: 44px; height: 44px; padding: 0; border: 1px solid var(--line); border-radius: 50%; color: var(--ink); background: var(--glass); box-shadow: 0 4px 12px rgb(0 0 0 / .12); cursor: pointer; }
+
+body.todo-mode .app-header,
+body.todo-mode .side-rail,
+body.todo-mode .environment-panel,
+body.todo-mode .mode-tabs,
+body.todo-mode .timer-view,
+body.todo-mode .zen-settings,
+body.todo-mode #history-panel { display: none; }
+
+body.todo-mode .workspace { display: flex; min-height: calc(100vh - 96px); align-items: center; justify-content: center; }
+
+body.todo-mode .timer-stage { width: min(100%, 1180px); max-width: 1180px; margin: 0 auto; padding: 0; }
+
+body.todo-mode .simple-do-exit { display: flex; align-items: center; justify-content: center; }
+
+.simple-do-history-panel[hidden] { display: none; }
+
+.simple-do-history-panel { display: flex; flex-direction: column; width: min(100%, 720px); height: min(560px, calc(100dvh - 160px)); margin: 28px auto 0; padding: 20px; border: 1px solid var(--line); border-radius: 14px; background: var(--glass); overflow: hidden; }
+
+.simple-do-history-heading { flex: 0 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+
+.simple-do-history-heading h2 { margin: 0; font-size: 1rem; }
+
+.simple-do-history-list { display: grid; flex: 1 1 auto; min-height: 0; gap: 10px; margin: 18px 0 0; padding: 0 6px 0 0; overflow-y: scroll; scrollbar-width: thin; scrollbar-color: var(--line) transparent; list-style: none; }
+
+.simple-do-history-list::-webkit-scrollbar { width: 7px; }
+
+.simple-do-history-list::-webkit-scrollbar-thumb { border-radius: 999px; background: var(--line); }
+
+.simple-do-history-list::-webkit-scrollbar-thumb:hover { background: var(--muted); }
+
+@media (max-width: 640px) {
+  body.todo-mode .workspace { min-height: calc(100vh - 48px); }
+  body.todo-mode .timer-stage { width: 100%; }
+  .simple-do-grid { grid-template-columns: 1fr; }
+  .simple-do-item { grid-template-columns: auto minmax(0, 1fr); height: 116px; }
+  .simple-do-item-actions { grid-column: 2; }
+  .simple-do-history-item { grid-template-columns: minmax(0, 1fr) auto auto !important; }
+  .simple-do-history-meta { grid-column: 1; }
+}

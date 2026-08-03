@@ -9,6 +9,10 @@ export const createTimerController = ({ state, view, getLanguage, onCompleted, o
 
   let lastStatus = null;
   let completedSessionId = null;
+  const renderTimer = (timerState) => {
+    const configuredMinutes = timerState.session?.mode === 'break' ? state.settings.breakMinutes : state.settings.workMinutes;
+    view.renderTimer({ ...timerState, defaultDurationMs: configuredMinutes * 60_000 }, getLanguage());
+  };
   const timer = new Timer((timerState) => {
     if (timerState.status === 'completed' && timerState.session?.id !== completedSessionId) {
       completedSessionId = timerState.session?.id;
@@ -18,8 +22,13 @@ export const createTimerController = ({ state, view, getLanguage, onCompleted, o
       lastStatus = timerState.status;
       onRunningChange(timerState.status === 'running');
     }
-    view.renderTimer(timerState, getLanguage());
+    renderTimer(timerState);
   }, persistState, (timerState) => view.renderTimerTitle(timerState, getLanguage()));
+
+  // 初始化时标记已存在的已完成会话，防止重复触发
+  if (state.activeTimer?.status === 'completed' && state.activeTimer?.session?.id) {
+    completedSessionId = state.activeTimer.session.id;
+  }
 
   return {
     get state() { return timer.state; },
