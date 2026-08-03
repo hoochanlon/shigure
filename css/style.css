@@ -386,6 +386,7 @@ button, input, textarea { font: inherit; } button { cursor: pointer; } button:di
 .panel { width: min(100%, 520px); margin: 32px auto 0; padding: 20px; border: 1px solid var(--line); border-radius: 18px; background: var(--glass); backdrop-filter: none; }.panel h2 { margin: 0 0 16px; font-size: 1.02rem; } #settings-panel { width: min(100%, 430px); padding: 16px; } .side-rail #settings-panel { width: 100%; margin: 8px 0 0; padding: 12px 0 0; border: 0; border-top: 1px solid var(--line); border-radius: 0; background: transparent; } .side-rail #settings-panel h2, .side-rail #restore-panel h2 { display: none; } .side-rail #settings-panel .settings-grid {
   grid-template-columns: minmax(0, 1fr);
   gap: 14px;
+  padding-inline: 20px;
 }
 .side-rail #settings-panel .settings-grid label {
   gap: 6px;
@@ -394,10 +395,22 @@ button, input, textarea { font: inherit; } button { cursor: pointer; } button:di
 .side-rail #settings-panel .settings-grid input[type="number"],
 .side-rail #settings-panel .settings-grid input[type="text"],
 .side-rail #settings-panel .settings-grid select {
-  width: 100%;
-  max-width: none;
+  width: min(100%, 11rem);
+  max-width: 11rem;
   min-width: 0;
   box-sizing: border-box;
+  padding: .6rem .75rem;
+  border-color: color-mix(in srgb, var(--line) 82%, var(--ink));
+  box-shadow: 0 1px 2px rgb(0 0 0 / .04);
+}
+.side-rail #settings-panel .settings-grid :is(input, select):focus {
+  outline: none;
+  border-color: var(--blue);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--blue) 16%, transparent);
+}
+html[lang="en"] .side-rail #restore-panel .settings-grid,
+html[lang="ja-JP"] .side-rail #restore-panel .settings-grid {
+  grid-template-columns: minmax(0, 1fr);
 }
 .side-rail #settings-panel .input-hint {
   margin-top: 0;
@@ -416,7 +429,8 @@ button, input, textarea { font: inherit; } button { cursor: pointer; } button:di
 }
 .side-rail #restore-panel .restore-option {
   min-width: 0;
-  text-align: center;
+  padding-inline: 20px;
+  text-align: left;
   white-space: nowrap;
 }
 .settings-hint { margin: -4px 0 0; color: var(--faint); font-size: .72rem; line-height: 1.45; } .alert-volume-field { grid-template-columns: 1fr auto; align-items: center; } .alert-volume-field input[type="range"] { width: 100%; accent-color: var(--blue); } .alert-volume-field output { color: var(--muted); font-size: .76rem; } #history-panel { width: min(100%, 720px); }
@@ -511,10 +525,10 @@ body.zen-mode .zen-settings { display: block; }
 .zen-settings-content h3 { margin: 0 0 16px; color: var(--ink); font-size: 1rem; font-weight: 600; text-align: center; }
 .zen-settings-content label { display: flex; flex-direction: column; align-items: center; gap: 8px; margin-bottom: 12px; }
 .zen-settings-content label span { color: var(--muted); font-size: .88rem; text-align: center; }
-.zen-settings-content input[type="number"] { width: 90px; padding: 10px 12px; border: 1px solid var(--line); border-radius: 8px; background: var(--glass); color: var(--ink); font-size: .94rem; text-align: center; transition: border-color .2s ease; }
-.zen-settings-content input[type="number"]:focus { outline: none; border-color: var(--blue); }
-.has-rain-wallpaper .zen-settings-content input[type="number"] { background: rgb(255 255 255 / .08); }
-.has-dark-wallpaper .zen-settings-content input[type="number"] { background: #0a0a0a; }
+.zen-settings-content :is(input[type="number"], input[type="text"]) { width: min(100%, 12rem); box-sizing: border-box; padding: 10px 12px; border: 1px solid color-mix(in srgb, var(--line) 82%, var(--ink)); border-radius: 8px; background: var(--glass); color: var(--ink); font-size: .94rem; text-align: center; box-shadow: 0 1px 2px rgb(0 0 0 / .04); transition: border-color .2s ease, box-shadow .2s ease; }
+.zen-settings-content :is(input[type="number"], input[type="text"]):focus { outline: none; border-color: var(--blue); box-shadow: 0 0 0 3px color-mix(in srgb, var(--blue) 16%, transparent); }
+.has-rain-wallpaper .zen-settings-content :is(input[type="number"], input[type="text"]) { background: rgb(255 255 255 / .08); }
+.has-dark-wallpaper .zen-settings-content :is(input[type="number"], input[type="text"]) { background: #0a0a0a; }
 .zen-settings-content select { width: auto; min-width: 180px; max-width: 220px; padding: 10px 32px 10px 12px; border: 1px solid var(--line); border-radius: 8px; background: var(--glass); color: var(--ink); font-size: .88rem; text-align: center; cursor: pointer; appearance: none; background-image: url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1.5L6 6.5L11 1.5' stroke='%23888888' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 10px center; transition: border-color .2s ease; }
 .zen-settings-content select:hover { border-color: var(--muted); }
 .zen-settings-content select:focus { outline: none; border-color: var(--blue); }

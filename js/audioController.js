@@ -1,98 +1,63 @@
 import { createAudioPlayer, createAudioManager, createBufferedPlayer, unlockAudio } from './audio.js';
 import { saveState } from './storage.js';
 
-/**
- * 音频控制器 - 管理所有音频播放逻辑
- */
-export const createAudioController = (state, elements, view) => {
-  const persist = () => saveState(state);
+export const createAudioController = ({ state, elements, view, isTickingActive }) => {
   const audioManager = createAudioManager();
-  
-  // 氛围音播放器
+  const persist = () => saveState(state);
   let ambientPlayer = null;
-  
-  const syncAmbient = (options = {}) => {
+  let previewPlayer = null;
+
+  const syncAmbient = ({ userSwitched = false } = {}) => {
     const { ambientSound, ambientVolume, ambientEnabled } = state.settings;
-    const { userSwitched = false } = options;
-    
-    const needsNewPlayer = !ambientPlayer || ambientPlayer.source !== `./assets/audio/ambient/${ambientSound}`;
-    
-    if (needsNewPlayer) {
-      const wasPlaying = ambientPlayer ? ambientPlayer.isPlaying() : false;
-      
-      if (ambientPlayer) {
-        ambientPlayer.stop();
-        audioManager.unregister('ambient');
-      }
-      
-      ambientPlayer = createAudioPlayer(
-        `./assets/audio/ambient/${ambientSound}`,
-        { loop: true, volume: ambientVolume }
-      );
+    const source = `./assets/audio/ambient/${ambientSound}`;
+    const needsReplacement = !ambientPlayer || ambientPlayer.source !== source;
+
+    if (needsReplacement) {
+      const wasPlaying = ambientPlayer?.isPlaying() ?? false;
+      audioManager.unregister('ambient');
+      ambientPlayer = createAudioPlayer(source, { loop: true, volume: ambientVolume });
       audioManager.register('ambient', ambientPlayer);
-      
-      if (userSwitched || wasPlaying || ambientEnabled) {
-        if (userSwitched && !ambientEnabled) {
-          state.settings.ambientEnabled = true;
-          persist();
-          setTimeout(() => {
-            if (elements['rain-toggle']) {
-              elements['rain-toggle'].checked = true;
-            }
-          }, 0);
-        }
-        
-        unlockAudio()
-          .then(() => ambientPlayer.play())
-          .catch(() => {/* 静默处理 */});
+      if (userSwitched && !ambientEnabled) {
+        state.settings.ambientEnabled = true;
+        persist();
+        elements['rain-toggle'].checked = true;
       }
-    } else {
-      ambientPlayer.setVolume(ambientVolume);
-      
-      if (ambientEnabled && !ambientPlayer.isPlaying()) {
-        unlockAudio()
-          .then(() => ambientPlayer.play())
-          .catch(() => {/* 静默处理 */});
-      } else if (!ambientEnabled && ambientPlayer.isPlaying()) {
-        ambientPlayer.stop();
+      if (userSwitched || wasPlaying || state.settings.ambientEnabled) {
+        unlockAudio().then(() => ambientPlayer.play()).catch(() => undefined);
       }
+      return;
+    }
+
+    ambientPlayer.setVolume(ambientVolume);
+    if (ambientEnabled && !ambientPlayer.isPlaying()) {
+      unlockAudio().then(() => ambientPlayer.play()).catch(() => undefined);
+    } else if (!ambientEnabled && ambientPlayer.isPlaying()) {
+      ambientPlayer.stop();
     }
   };
-  
-  const updateAmbient = (enabled, volume = state.settings.ambientVolume, soundFile = state.settings.ambientSound) => {
-    state.settings = { ...state.settings, ambientEnabled: enabled, ambientVolume: Number(volume), ambientSound: soundFile };
+
+  const updateAmbient = (enabled, volume = state.settings.ambientVolume, sound = state.settings.ambientSound) => {
+    state.settings = { ...state.settings, ambientEnabled: enabled, ambientVolume: Number(volume), ambientSound: sound };
     persist();
     syncAmbient();
     view.renderNoise(enabled, state.settings.ambientVolume);
   };
-  
-  // 滴答声播放器
-  const ticking = createAudioPlayer('./assets/audio/alerts/clock-stopwatch-ticking.mp3', { loop: true, volume: 0.3, maxGain: 3.0 });
+
+  const ticking = createAudioPlayer('./assets/audio/alerts/clock-stopwatch-ticking.mp3', { loop: true, volume: 0.3, maxGain: 3 });
   audioManager.register('ticking', ticking);
-  
-  // 提示音播放器
-  const loadAlertPlayer = (soundFile) => createBufferedPlayer(`./assets/audio/alerts/${soundFile}`, { maxGain: 3.0, volume: state.settings.alertVolume });
-  
-  let workAlertPlayer = loadAlertPlayer(state.settings.workAlertSound);
-  let breakAlertPlayer = loadAlertPlayer(state.settings.breakAlertSound);
-  let stopwatchAlertPlayer = loadAlertPlayer('ring.mp3');
-  const alertPlayers = [workAlertPlayer, breakAlertPlayer, stopwatchAlertPlayer];
-  
+  const alertPlayers = [
+    createBufferedPlayer(`./assets/audio/alerts/${state.settings.workAlertSound}`, { maxGain: 3, volume: state.settings.alertVolume }),
+    createBufferedPlayer(`./assets/audio/alerts/${state.settings.breakAlertSound}`, { maxGain: 3, volume: state.settings.alertVolume }),
+    createBufferedPlayer('./assets/audio/alerts/ring.mp3', { maxGain: 3, volume: state.settings.alertVolume })
+  ];
+  const [workAlertPlayer, breakAlertPlayer, stopwatchAlertPlayer] = alertPlayers;
   const preloadAlertPlayers = () => Promise.all(alertPlayers.map((player) => player.preload()));
-  
-  const playAlert = (player) => player.play()
-    .then((played) => {
-      if (!played) {
-        console.warn('Alert sound unavailable');
-      }
-    })
-    .catch(() => console.warn('Alert sound failed'));
-  
+  const playAlert = (player) => player.play().catch(() => undefined);
   const prepareAlertAudio = () => {
-    unlockAudio().catch(() => console.warn('Audio context unavailable'));
+    unlockAudio().catch(() => undefined);
     preloadAlertPlayers().catch(() => undefined);
   };
-  
+
   const updateAlert = ({ pomodoroEnabled, breakEnabled, workSound, breakSound, stopwatchEnabled, tickingEnabled, volume } = {}) => {
     state.settings = {
       ...state.settings,
@@ -102,28 +67,13 @@ export const createAudioController = (state, elements, view) => {
       breakAlertSound: breakSound ?? state.settings.breakAlertSound,
       stopwatchAlertEnabled: stopwatchEnabled ?? state.settings.stopwatchAlertEnabled,
       tickingEnabled: tickingEnabled ?? state.settings.tickingEnabled,
-      alertVolume: volume !== undefined ? Number(volume) : state.settings.alertVolume
+      alertVolume: volume === undefined ? state.settings.alertVolume : Number(volume)
     };
-
-    if (workSound !== undefined) {
-      workAlertPlayer.setSource(`./assets/audio/alerts/${workSound}`);
-    }
-    if (breakSound !== undefined) {
-      breakAlertPlayer.setSource(`./assets/audio/alerts/${breakSound}`);
-    }
+    if (workSound !== undefined) workAlertPlayer.setSource(`./assets/audio/alerts/${workSound}`);
+    if (breakSound !== undefined) breakAlertPlayer.setSource(`./assets/audio/alerts/${breakSound}`);
     alertPlayers.forEach((player) => player.setVolume(state.settings.alertVolume));
-    if (workSound !== undefined || breakSound !== undefined) {
-      preloadAlertPlayers().catch(() => undefined);
-    }
-
-    if (tickingEnabled !== undefined) {
-      if (tickingEnabled && (state.activeTimer?.status === 'running' || state.activeStopwatch?.status === 'running')) {
-        audioManager.play('ticking');
-      } else {
-        audioManager.stop('ticking');
-      }
-    }
-
+    if (workSound !== undefined || breakSound !== undefined) preloadAlertPlayers().catch(() => undefined);
+    if (tickingEnabled !== undefined) isTickingActive() ? audioManager.play('ticking') : audioManager.stop('ticking');
     persist();
     view.renderAlert(
       state.settings.pomodoroAlertEnabled,
@@ -135,19 +85,39 @@ export const createAudioController = (state, elements, view) => {
       state.settings.alertVolume
     );
   };
-  
-  // 初始化氛围音
+
+  const stopPreview = () => {
+    previewPlayer?.stop();
+    previewPlayer?.dispose();
+    previewPlayer = null;
+  };
+  const preview = ({ ambientSound, alertSound }) => {
+    stopPreview();
+    previewPlayer = ambientSound
+      ? createAudioPlayer(`./assets/audio/ambient/${ambientSound}`, { loop: true, volume: state.settings.ambientVolume })
+      : createAudioPlayer(`./assets/audio/alerts/${alertSound}`, { maxGain: 3, volume: state.settings.alertVolume });
+    return previewPlayer.play();
+  };
+  const dispose = () => {
+    stopPreview();
+    audioManager.disposeAll();
+    alertPlayers.forEach((player) => player.dispose());
+    ambientPlayer = null;
+  };
+
   syncAmbient();
-  
   return {
     syncAmbient,
     updateAmbient,
+    updateAlert,
+    prepareAlertAudio,
     playWorkAlert: () => playAlert(workAlertPlayer),
     playBreakAlert: () => playAlert(breakAlertPlayer),
     playStopwatchAlert: () => playAlert(stopwatchAlertPlayer),
-    updateAlert,
-    prepareAlertAudio,
     startTicking: () => audioManager.play('ticking'),
-    stopTicking: () => audioManager.stop('ticking')
+    stopTicking: () => audioManager.stop('ticking'),
+    stopPreview,
+    preview,
+    dispose
   };
 };
