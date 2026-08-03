@@ -2,8 +2,6 @@
 
 #stopwatch-auto-stop, #zen-stopwatch-auto-stop { font-family: 'SF Mono', 'Monaco', 'Menlo', monospace; font-size: .85rem; letter-spacing: 0.5px; }
 
-#cycle-mode, #zen-cycle-mode { margin-bottom: 12px; }
-
 #stopwatch-auto-stop:focus, #zen-stopwatch-auto-stop:focus { border-color: var(--blue); outline: none; box-shadow: 0 0 0 3px rgba(168, 199, 255, 0.1); }
 
 /* 禅模式与页脚 */

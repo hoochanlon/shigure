@@ -152,4 +152,8 @@
   box-shadow: none;
 }
 
-.side-rail #restore-environment-main { margin-bottom: 12px; }
+.side-rail #cycle-mode,
+#zen-cycle-mode,
+#stopwatch-time-format,
+#zen-stopwatch-time-format,
+#restore-environment-main { margin-bottom: 12px; }

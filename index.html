@@ -43,6 +43,8 @@
             : (state.settings?.wallpaper || 'light');
           if (wallpaper === 'rain') {
             document.documentElement.classList.add('has-rain-wallpaper');
+          } else if (wallpaper === 'lofi-girl') {
+            document.documentElement.classList.add('has-lofi-girl-wallpaper');
           } else if (wallpaper === 'dark') {
             document.documentElement.classList.add('has-dark-wallpaper');
           }
@@ -119,7 +121,7 @@
         <nav class="rail-nav" aria-label="Timer tools">
           <div class="rail-item">
             <button class="rail-link" type="button" data-panel-target="settings-panel" aria-expanded="false"><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M0 0h24v24H0z" fill="none" /><path fill="currentColor" d="M8.86 5.5A1 1 0 0 0 8 5H3v2h4.43l6.71 11.5a1 1 0 0 0 .86.5h6v-2h-5.43zM15 5h6v2h-6z" /></svg><span data-i18n="settings">选项</span></button>
-            <section id="settings-panel" class="panel" hidden><h2 data-i18n="settings">选项</h2><div id="pomodoro-settings" class="settings-grid"><label><span data-i18n="workMinutes">专注时长（分钟）</span><input id="work-minutes" type="number" min="0" max="99" step="1" value="25"><small class="input-hint">0 = 默认 25 分钟</small></label><label><span data-i18n="breakMinutes">休息时长（分钟）</span><input id="break-minutes" type="number" min="0" max="99" step="1" value="5"><small class="input-hint">0 = 默认 5 分钟</small></label><label><span data-i18n="autoLoop">自动循环</span><select id="cycle-mode"><option value="off" data-i18n="cycleModeOff">关闭</option><option value="once" data-i18n="cycleModeOnce">完成本轮后停止</option><option value="continuous" data-i18n="cycleModeContinuous">持续循环</option></select></label></div><div id="stopwatch-settings" class="settings-grid" hidden><label><span data-i18n="stopwatchAutoStop">秒表自动结束</span><input id="stopwatch-auto-stop" type="text" placeholder="0" value="0"></label><p class="settings-hint" data-i18n="stopwatchAutoStopMaxHint">0 = 关闭，最大 359999 秒（99:59:59.99）</p><label><span data-i18n="stopwatchTimeFormat">时长显示格式</span><select id="stopwatch-time-format"><option value="smart" data-i18n="stopwatchTimeFormatSmart">智能格式（1h15m）</option><option value="precise" data-i18n="stopwatchTimeFormatPrecise">精确格式（01:15:23）</option></select></label></div></section>
+            <section id="settings-panel" class="panel" hidden><h2 data-i18n="settings">选项</h2><div id="pomodoro-settings" class="settings-grid"><label><span data-i18n="workMinutes">专注时长（分钟）</span><input id="work-minutes" type="number" min="0" max="99" step="1" value="25"><small class="input-hint" data-i18n="workMinutesHint">0 = 默认 25 分钟</small></label><label><span data-i18n="breakMinutes">休息时长（分钟）</span><input id="break-minutes" type="number" min="0" max="99" step="1" value="5"><small class="input-hint" data-i18n="breakMinutesHint">0 = 默认 5 分钟</small></label><label><span data-i18n="autoLoop">自动循环</span><select id="cycle-mode"><option value="off" data-i18n="cycleModeOff">关闭</option><option value="once" data-i18n="cycleModeOnce">完成本轮后停止</option><option value="continuous" data-i18n="cycleModeContinuous">持续循环</option></select></label></div><div id="stopwatch-settings" class="settings-grid" hidden><label><span data-i18n="stopwatchAutoStop">秒表自动结束</span><input id="stopwatch-auto-stop" type="text" placeholder="0" value="0"></label><p class="settings-hint" data-i18n="stopwatchAutoStopMaxHint">0 = 关闭，最大 359999 秒（99:59:59.99）</p><label><span data-i18n="stopwatchTimeFormat">时长显示格式</span><select id="stopwatch-time-format"><option value="smart" data-i18n="stopwatchTimeFormatSmart">智能格式（1h15m）</option><option value="precise" data-i18n="stopwatchTimeFormatPrecise">精确格式（01:15:23）</option></select></label></div></section>
           </div>
           <div class="rail-item">
             <button class="rail-link" type="button" data-panel-target="restore-panel" aria-expanded="false">
@@ -281,7 +283,7 @@
         <div class="sound-control pomodoro-alert-control">
           <div class="sound-icon" aria-hidden="true"><span class="sound-glyph sound-icon-alert"></span></div>
           <div class="sound-control-content">
-            <strong data-i18n="workAlertSound">专注结束音</strong>
+            <strong data-i18n="workAlertSound">专注达成</strong>
             <div class="custom-select-wrapper">
               <button type="button" class="custom-select-trigger" id="pomodoro-work-sound-trigger" aria-expanded="false">
                 <span id="pomodoro-work-sound-label" data-i18n="soundWestminster">西敏寺钟声</span>
@@ -299,12 +301,12 @@
               <input type="hidden" id="pomodoro-work-alert-sound" value="piano-film-head-advertising-rhythm-light-background-material.mp3">
             </div>
           </div>
-          <label class="switch"><input id="pomodoro-alert-toggle" type="checkbox"><span></span><b class="sr-only" data-i18n="workAlertSound">专注结束音</b></label>
+          <label class="switch"><input id="pomodoro-alert-toggle" type="checkbox"><span></span><b class="sr-only" data-i18n="workAlertSound">专注达成</b></label>
         </div>
         <div class="sound-control pomodoro-alert-control">
           <div class="sound-icon" aria-hidden="true"><span class="sound-glyph sound-icon-alert"></span></div>
           <div class="sound-control-content">
-            <strong data-i18n="breakAlertSound">休息结束音</strong>
+            <strong data-i18n="breakAlertSound">休息到点</strong>
             <div class="custom-select-wrapper">
               <button type="button" class="custom-select-trigger" id="pomodoro-break-sound-trigger" aria-expanded="false">
                 <span id="pomodoro-break-sound-label" data-i18n="soundRing">铃声</span>
@@ -322,17 +324,12 @@
               <input type="hidden" id="pomodoro-break-alert-sound" value="Westminster-chimes.mp3">
             </div>
           </div>
-          <label class="switch"><input id="break-alert-toggle" type="checkbox"><span></span><b class="sr-only" data-i18n="breakAlertSound">休息结束音</b></label>
+          <label class="switch"><input id="break-alert-toggle" type="checkbox"><span></span><b class="sr-only" data-i18n="breakAlertSound">休息到点</b></label>
         </div>
         <div class="sound-control stopwatch-alert-control">
           <div class="sound-icon" aria-hidden="true"><span class="sound-glyph sound-icon-stopwatch"></span></div>
           <div><strong data-i18n="stopwatchAlert">秒表结束音</strong></div>
           <label class="switch"><input id="stopwatch-alert-toggle" type="checkbox"><span></span><b class="sr-only" data-i18n="stopwatchAlert">秒表结束音</b></label>
-        </div>
-        <div class="sound-control ticking-control">
-          <div class="sound-icon" aria-hidden="true"><span class="sound-glyph sound-icon-ticking"></span></div>
-          <div><strong data-i18n="tickingSound">计时滴答声</strong></div>
-          <label class="switch"><input id="ticking-toggle" type="checkbox"><span></span><b class="sr-only" data-i18n="tickingSound">计时滴答声</b></label>
         </div>
         <label class="volume-control" for="alert-volume"><span class="sound-icon" aria-hidden="true"><span class="sound-glyph sound-icon-volume"></span></span><span class="sr-only" data-i18n="alertVolume">提示音音量</span><input id="alert-volume" type="range" min="0" max="1" step="0.01" value="0.7"><output id="alert-volume-value">70%</output></label>
         <div class="wallpaper-theme-control">

@@ -94,7 +94,6 @@ export const createEventBinder = ({ state, elements, view, getLanguage, setLangu
   listen(elements['pomodoro-alert-toggle'], 'change', () => audio.updateAlert({ pomodoroEnabled: elements['pomodoro-alert-toggle'].checked }));
   listen(elements['break-alert-toggle'], 'change', () => audio.updateAlert({ breakEnabled: elements['break-alert-toggle'].checked }));
   listen(elements['stopwatch-alert-toggle'], 'change', () => audio.updateAlert({ stopwatchEnabled: elements['stopwatch-alert-toggle'].checked }));
-  listen(elements['ticking-toggle'], 'change', () => audio.updateAlert({ tickingEnabled: elements['ticking-toggle'].checked }));
   listen(elements['alert-volume'], 'input', () => audio.updateAlert({ volume: elements['alert-volume'].value }));
 
   listen(elements['clear-history'], 'click', () => {
@@ -117,7 +116,7 @@ export const createEventBinder = ({ state, elements, view, getLanguage, setLangu
     const defaults = getDefaultSettings();
     state.settings = { ...defaults };
     audio.updateAmbient(defaults.ambientEnabled, defaults.ambientVolume);
-    audio.updateAlert({ pomodoroEnabled: defaults.pomodoroAlertEnabled, breakEnabled: defaults.breakAlertEnabled, workSound: defaults.workAlertSound, breakSound: defaults.breakAlertSound, stopwatchEnabled: defaults.stopwatchAlertEnabled, tickingEnabled: defaults.tickingEnabled, volume: defaults.alertVolume });
+    audio.updateAlert({ pomodoroEnabled: defaults.pomodoroAlertEnabled, breakEnabled: defaults.breakAlertEnabled, workSound: defaults.workAlertSound, breakSound: defaults.breakAlertSound, stopwatchEnabled: defaults.stopwatchAlertEnabled, volume: defaults.alertVolume });
     settings.updateWallpaper(defaults.wallpaper);
     persist();
     settings.applySettings(language());

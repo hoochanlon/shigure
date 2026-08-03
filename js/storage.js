@@ -1,7 +1,7 @@
 const STORAGE_KEY = 'pomodoro.timer.state';
 const LEGACY_KEY = 'tomatoData';
 
-const defaultState = () => ({ version: 1, settings: { workMinutes: 25, breakMinutes: 5, cycleMode: 'off', stopwatchAutoStopSeconds: 0, stopwatchTimeFormat: 'smart', ambientEnabled: false, ambientVolume: 0.35, ambientSound: 'rain.mp3', alertEnabled: true, alertVolume: 0.7, pomodoroAlertEnabled: true, breakAlertEnabled: true, workAlertSound: 'piano-film-head-advertising-rhythm-light-background-material.mp3', breakAlertSound: 'Westminster-chimes.mp3', stopwatchAlertEnabled: true, stopwatchAlertSound: 'nokia.mp3', tickingEnabled: false, wallpaper: 'light', themeMode: 'manual', enterToStart: false, zenMode: false }, sessions: [], activeTimer: null, activeStopwatch: null, pomodoroResetAt: null });
+const defaultState = () => ({ version: 1, settings: { workMinutes: 25, breakMinutes: 5, cycleMode: 'off', stopwatchAutoStopSeconds: 0, stopwatchTimeFormat: 'smart', ambientEnabled: false, ambientVolume: 0.35, ambientSound: 'rain.mp3', alertEnabled: true, alertVolume: 0.7, pomodoroAlertEnabled: true, breakAlertEnabled: true, workAlertSound: 'piano-film-head-advertising-rhythm-light-background-material.mp3', breakAlertSound: 'Westminster-chimes.mp3', stopwatchAlertEnabled: true, stopwatchAlertSound: 'nokia.mp3', wallpaper: 'light', themeMode: 'manual', enterToStart: false, zenMode: false }, sessions: [], activeTimer: null, activeStopwatch: null, pomodoroResetAt: null });
 const isRecord = (value) => value && typeof value === 'object';
 
 const migrateLegacy = (legacy) => {
@@ -51,6 +51,10 @@ export const loadState = () => {
       }
       delete state.settings.rainEnabled;
       delete state.settings.rainVolume;
+      if ('tickingEnabled' in state.settings) {
+        delete state.settings.tickingEnabled;
+        saveState(state);
+      }
       return state;
     }
     const legacy = JSON.parse(localStorage.getItem(LEGACY_KEY));

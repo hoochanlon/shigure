@@ -95,6 +95,97 @@ body.has-lofi-girl-wallpaper .panel {
   backdrop-filter: blur(12px);
 }
 
+/* 历史记录是悬浮阅读层，保留背景纹理以区分于普通设置面板。 */
+html.has-lofi-girl-wallpaper #history-panel,
+body.has-lofi-girl-wallpaper #history-panel {
+  border-color: rgb(255 250 245 / .38);
+  background: rgb(49 31 27 / .76);
+  box-shadow: 0 12px 32px rgb(31 18 15 / .38);
+  backdrop-filter: blur(18px);
+}
+
+html.has-lofi-girl-wallpaper #history-panel h2,
+body.has-lofi-girl-wallpaper #history-panel h2 {
+  color: #fffaf5;
+  text-shadow: 0 1px 3px rgb(31 18 15 / .8);
+}
+
+html.has-lofi-girl-wallpaper #history-panel .history-list li,
+body.has-lofi-girl-wallpaper #history-panel .history-list li {
+  color: rgb(255 250 245 / .92);
+  background: rgb(31 18 15 / .62);
+  border-color: rgb(255 250 245 / .38);
+  box-shadow: 0 2px 8px rgb(31 18 15 / .24);
+  backdrop-filter: blur(12px);
+}
+
+html.has-lofi-girl-wallpaper #history-panel .history-icon,
+body.has-lofi-girl-wallpaper #history-panel .history-icon {
+  background: rgb(49 31 27 / .68);
+  border-color: rgb(255 250 245 / .4);
+  backdrop-filter: blur(10px);
+}
+
+html.has-lofi-girl-wallpaper #history-panel :is(#clear-history, .history-delete),
+body.has-lofi-girl-wallpaper #history-panel :is(#clear-history, .history-delete) {
+  padding: 6px 10px;
+  border: 1px solid rgb(255 250 245 / .4);
+  border-radius: 7px;
+  background: rgb(49 31 27 / .68);
+  box-shadow: 0 3px 10px rgb(31 18 15 / .28);
+  backdrop-filter: blur(12px);
+}
+
+html.has-lofi-girl-wallpaper #history-panel :is(#clear-history, .history-delete):hover,
+body.has-lofi-girl-wallpaper #history-panel :is(#clear-history, .history-delete):hover {
+  background: rgb(49 31 27 / .82);
+  opacity: 1;
+}
+
+/* 禅模式脱离侧栏后，使用深色玻璃维持与 Lofi 壁纸的前景层次。 */
+html.has-lofi-girl-wallpaper :is(.zen-settings-panel, .zen-history-panel),
+body.has-lofi-girl-wallpaper :is(.zen-settings-panel, .zen-history-panel) {
+  border-color: rgb(255 250 245 / .38);
+  background: rgb(49 31 27 / .76);
+  box-shadow: 0 12px 32px rgb(31 18 15 / .38);
+  backdrop-filter: blur(18px);
+}
+
+html.has-lofi-girl-wallpaper :is(.zen-settings-content h3, .zen-settings-content label span, .zen-history-panel h3),
+body.has-lofi-girl-wallpaper :is(.zen-settings-content h3, .zen-settings-content label span, .zen-history-panel h3) {
+  color: #fffaf5;
+  text-shadow: 0 1px 3px rgb(31 18 15 / .8);
+}
+
+html.has-lofi-girl-wallpaper .zen-settings-content :is(input[type="number"], input[type="text"], select),
+body.has-lofi-girl-wallpaper .zen-settings-content :is(input[type="number"], input[type="text"], select) {
+  border-color: rgb(255 250 245 / .45);
+  background-color: rgb(31 18 15 / .62);
+  color: #fffaf5;
+  box-shadow: 0 2px 8px rgb(31 18 15 / .24);
+  backdrop-filter: blur(10px);
+}
+
+html.has-lofi-girl-wallpaper .zen-settings-content select,
+body.has-lofi-girl-wallpaper .zen-settings-content select {
+  background-image: url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1.5L6 6.5L11 1.5' stroke='%23fffaf5' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+}
+
+html.has-lofi-girl-wallpaper :is(.zen-action-button, .zen-exit, .zen-clear-button, .zen-history-delete),
+body.has-lofi-girl-wallpaper :is(.zen-action-button, .zen-exit, .zen-clear-button, .zen-history-delete) {
+  border-color: rgb(255 250 245 / .4);
+  background: rgb(49 31 27 / .68);
+  color: #fffaf5;
+  box-shadow: 0 3px 10px rgb(31 18 15 / .28);
+  backdrop-filter: blur(12px);
+}
+
+html.has-lofi-girl-wallpaper :is(.zen-action-button, .zen-exit, .zen-clear-button, .zen-history-delete):hover,
+body.has-lofi-girl-wallpaper :is(.zen-action-button, .zen-exit, .zen-clear-button, .zen-history-delete):hover {
+  background: rgb(49 31 27 / .82);
+  opacity: 1;
+}
+
 html.has-lofi-girl-wallpaper .side-rail,
 body.has-lofi-girl-wallpaper .side-rail {
   background: transparent;
@@ -119,9 +210,7 @@ body.has-lofi-girl-wallpaper .side-rail .rail-link {
 }
 
 html.has-lofi-girl-wallpaper .side-rail .rail-link[aria-expanded="true"],
-html.has-lofi-girl-wallpaper .side-rail .restore-option,
-body.has-lofi-girl-wallpaper .side-rail .rail-link[aria-expanded="true"],
-body.has-lofi-girl-wallpaper .side-rail .restore-option {
+body.has-lofi-girl-wallpaper .side-rail .rail-link[aria-expanded="true"] {
   background: rgb(49 31 27 / .52);
   color: #fffaf5;
   backdrop-filter: blur(10px);
@@ -135,9 +224,13 @@ body.has-lofi-girl-wallpaper .side-rail #restore-panel {
 }
 
 html.has-lofi-girl-wallpaper .side-rail .settings-grid label,
+html.has-lofi-girl-wallpaper .side-rail .settings-hint,
 html.has-lofi-girl-wallpaper .side-rail .input-hint,
+html.has-lofi-girl-wallpaper .zen-settings-hint,
 body.has-lofi-girl-wallpaper .side-rail .settings-grid label,
-body.has-lofi-girl-wallpaper .side-rail .input-hint {
+body.has-lofi-girl-wallpaper .side-rail .settings-hint,
+body.has-lofi-girl-wallpaper .side-rail .input-hint,
+body.has-lofi-girl-wallpaper .zen-settings-hint {
   color: rgb(255 250 245 / .92);
   text-shadow: 0 1px 3px rgb(31 18 15 / .8);
 }
@@ -156,9 +249,38 @@ body.has-lofi-girl-wallpaper .side-rail .settings-grid select {
   background-image: url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1.5L6 6.5L11 1.5' stroke='%23fffaf5' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
 }
 
+html.has-lofi-girl-wallpaper .side-rail .restore-option,
+body.has-lofi-girl-wallpaper .side-rail .restore-option {
+  background: transparent;
+  color: #fffaf5;
+  text-shadow: 0 1px 3px rgb(31 18 15 / .8);
+  backdrop-filter: none;
+}
+
 html.has-lofi-girl-wallpaper .side-rail .restore-option:hover,
 body.has-lofi-girl-wallpaper .side-rail .restore-option:hover {
-  background: rgb(49 31 27 / .7);
+  background: rgb(255 250 245 / .18);
+}
+
+html.has-lofi-girl-wallpaper .brand,
+body.has-lofi-girl-wallpaper .brand {
+  color: #f6f7fb;
+}
+
+html.has-lofi-girl-wallpaper :is(.icon-button, .wallpaper-option),
+body.has-lofi-girl-wallpaper :is(.icon-button, .wallpaper-option) {
+  background: rgb(49 31 27 / .52);
+  border-color: rgb(255 250 245 / .38);
+  color: #fffaf5;
+  box-shadow: 0 2px 8px rgb(31 18 15 / .22);
+  backdrop-filter: blur(10px);
+}
+
+html.has-lofi-girl-wallpaper .wallpaper-option:is(:hover, [aria-pressed="true"]),
+body.has-lofi-girl-wallpaper .wallpaper-option:is(:hover, [aria-pressed="true"]) {
+  background: rgb(49 31 27 / .68);
+  border-color: #ff7a56;
+  color: #fffaf5;
 }
 
 html.has-lofi-girl-wallpaper .environment-panel :is(.panel-label, .sound-control strong, .sound-control p, .volume-control, .wallpaper-theme-control, .zen-control strong, .zen-control p),

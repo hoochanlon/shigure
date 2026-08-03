@@ -1,7 +1,7 @@
 import { createAudioPlayer, createAudioManager, createBufferedPlayer, unlockAudio } from './audio.js';
 import { saveState } from './storage.js';
 
-export const createAudioController = ({ state, elements, view, isTickingActive }) => {
+export const createAudioController = ({ state, elements, view }) => {
   const audioManager = createAudioManager();
   const persist = () => saveState(state);
   let ambientPlayer = null;
@@ -43,8 +43,6 @@ export const createAudioController = ({ state, elements, view, isTickingActive }
     view.renderNoise(enabled, state.settings.ambientVolume);
   };
 
-  const ticking = createAudioPlayer('./assets/audio/alerts/clock-stopwatch-ticking.mp3', { loop: true, volume: 0.3, maxGain: 3 });
-  audioManager.register('ticking', ticking);
   const alertPlayers = [
     createBufferedPlayer(`./assets/audio/alerts/${state.settings.workAlertSound}`, { maxGain: 3, volume: state.settings.alertVolume }),
     createBufferedPlayer(`./assets/audio/alerts/${state.settings.breakAlertSound}`, { maxGain: 3, volume: state.settings.alertVolume }),
@@ -58,7 +56,7 @@ export const createAudioController = ({ state, elements, view, isTickingActive }
     preloadAlertPlayers().catch(() => undefined);
   };
 
-  const updateAlert = ({ pomodoroEnabled, breakEnabled, workSound, breakSound, stopwatchEnabled, tickingEnabled, volume } = {}) => {
+  const updateAlert = ({ pomodoroEnabled, breakEnabled, workSound, breakSound, stopwatchEnabled, volume } = {}) => {
     state.settings = {
       ...state.settings,
       pomodoroAlertEnabled: pomodoroEnabled ?? state.settings.pomodoroAlertEnabled,
@@ -66,7 +64,6 @@ export const createAudioController = ({ state, elements, view, isTickingActive }
       workAlertSound: workSound ?? state.settings.workAlertSound,
       breakAlertSound: breakSound ?? state.settings.breakAlertSound,
       stopwatchAlertEnabled: stopwatchEnabled ?? state.settings.stopwatchAlertEnabled,
-      tickingEnabled: tickingEnabled ?? state.settings.tickingEnabled,
       alertVolume: volume === undefined ? state.settings.alertVolume : Number(volume)
     };
     if (pomodoroEnabled === false) workAlertPlayer.stop();
@@ -76,7 +73,6 @@ export const createAudioController = ({ state, elements, view, isTickingActive }
     if (breakSound !== undefined) breakAlertPlayer.setSource(`./assets/audio/alerts/${breakSound}`);
     alertPlayers.forEach((player) => player.setVolume(state.settings.alertVolume));
     if (workSound !== undefined || breakSound !== undefined) preloadAlertPlayers().catch(() => undefined);
-    if (tickingEnabled !== undefined) isTickingActive() ? audioManager.play('ticking') : audioManager.stop('ticking');
     persist();
     view.renderAlert(
       state.settings.pomodoroAlertEnabled,
@@ -84,7 +80,6 @@ export const createAudioController = ({ state, elements, view, isTickingActive }
       state.settings.workAlertSound,
       state.settings.breakAlertSound,
       state.settings.stopwatchAlertEnabled,
-      state.settings.tickingEnabled,
       state.settings.alertVolume
     );
   };
@@ -117,8 +112,6 @@ export const createAudioController = ({ state, elements, view, isTickingActive }
     playWorkAlert: () => state.settings.pomodoroAlertEnabled && playAlert(workAlertPlayer),
     playBreakAlert: () => state.settings.breakAlertEnabled && playAlert(breakAlertPlayer),
     playStopwatchAlert: () => state.settings.stopwatchAlertEnabled && playAlert(stopwatchAlertPlayer),
-    startTicking: () => audioManager.play('ticking'),
-    stopTicking: () => audioManager.stop('ticking'),
     stopPreview,
     preview,
     dispose
