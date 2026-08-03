@@ -14,6 +14,12 @@ const copy = {
 };
 
 const text = (language, key) => (copy[language] || copy.zh)[key];
+const viewCopy = {
+  zh: { overview: '四象限', allItems: '全部事项', search: '搜索事项', allQuadrants: '全部象限', noMatches: '没有匹配的事项' },
+  en: { overview: 'Quadrants', allItems: 'All tasks', search: 'Search tasks', allQuadrants: 'All quadrants', noMatches: 'No matching tasks' },
+  ja: { overview: '4象限', allItems: 'すべてのタスク', search: 'タスクを検索', allQuadrants: 'すべての象限', noMatches: '一致するタスクはありません' }
+};
+const viewText = (language, key) => (viewCopy[language] || viewCopy.zh)[key];
 const makeId = () => globalThis.crypto?.randomUUID?.() || `${Date.now()}-${Math.random().toString(36).slice(2)}`;
 const isItem = (item) => item && typeof item === 'object' && typeof item.id === 'string' && typeof item.title === 'string' && QUADRANTS.includes(item.quadrant) && ['active', 'completed'].includes(item.status);
 const load = () => {
@@ -36,6 +42,7 @@ export const createSimpleDoController = ({ root, getLanguage, onFocus }) => {
   const historyPanel = root.getElementById('simple-do-history-panel');
   const historyTitle = root.getElementById('simple-do-history-title');
   const historyList = root.getElementById('simple-do-history-list');
+  const exitButton = root.getElementById('simple-do-exit');
   const clearHistoryButton = root.getElementById('simple-do-clear-history');
   const closeHistoryButton = root.getElementById('simple-do-history-close');
   const historyBackdrop = root.getElementById('simple-do-history-backdrop');
@@ -47,6 +54,9 @@ export const createSimpleDoController = ({ root, getLanguage, onFocus }) => {
     return icon;
   };
   let historyExpanded = false;
+  let viewMode = 'quadrants';
+  let listFilter = 'all';
+  let listQuery = '';
   const appendButton = (label, className, action, value) => {
     const button = root.createElement('button');
     button.type = 'button';
@@ -131,7 +141,70 @@ export const createSimpleDoController = ({ root, getLanguage, onFocus }) => {
     panel.append(heading, list, form);
     return panel;
   };
+  const allItemsView = () => {
+    const section = root.createElement('section');
+    section.className = 'simple-do-all-view';
+    const controls = root.createElement('div');
+    controls.className = 'simple-do-all-controls';
+    const search = root.createElement('input');
+    search.type = 'search';
+    search.value = listQuery;
+    search.placeholder = viewText(language(), 'search');
+    search.setAttribute('aria-label', viewText(language(), 'search'));
+    search.dataset.action = 'search-items';
+    const filter = root.createElement('select');
+    filter.dataset.action = 'filter-items';
+    filter.setAttribute('aria-label', viewText(language(), 'allQuadrants'));
+    [{ id: 'all', label: viewText(language(), 'allQuadrants') }, ...QUADRANTS.map((id) => ({ id, label: text(language(), id) }))].forEach(({ id, label }) => {
+      const option = root.createElement('option');
+      option.value = id;
+      option.selected = listFilter === id;
+      option.textContent = label;
+      filter.append(option);
+    });
+    controls.append(search, filter);
+    const list = root.createElement('ul');
+    list.className = 'simple-do-all-list';
+    const matches = activeItems().filter((item) => (listFilter === 'all' || item.quadrant === listFilter) && item.title.toLocaleLowerCase().includes(listQuery.toLocaleLowerCase()));
+    if (!matches.length) {
+      const empty = root.createElement('li');
+      empty.className = 'simple-do-empty';
+      empty.textContent = listQuery || listFilter !== 'all' ? viewText(language(), 'noMatches') : text(language(), 'empty');
+      list.append(empty);
+    }
+    matches.forEach((item) => {
+      const row = root.createElement('li');
+      row.className = 'simple-do-all-item';
+      const title = root.createElement('span');
+      title.className = 'simple-do-all-title';
+      title.textContent = item.title;
+      const badge = root.createElement('span');
+      badge.className = `simple-do-all-quadrant ${item.quadrant}`;
+      badge.textContent = text(language(), item.quadrant);
+      const move = root.createElement('select');
+      move.className = 'simple-do-move';
+      move.dataset.action = 'move';
+      move.dataset.id = item.id;
+      move.setAttribute('aria-label', text(language(), 'move'));
+      QUADRANTS.forEach((quadrant) => {
+        const option = root.createElement('option');
+        option.value = quadrant;
+        option.selected = item.quadrant === quadrant;
+        option.textContent = text(language(), quadrant);
+        move.append(option);
+      });
+      const actions = root.createElement('div');
+      actions.className = 'simple-do-item-actions';
+      actions.append(appendButton(text(language(), 'focus'), 'simple-do-focus', 'focus', item.id), move, appendButton(text(language(), 'delete'), 'simple-do-delete', 'delete', item.id));
+      row.append(title, badge, actions);
+      list.append(row);
+    });
+    section.append(controls, list);
+    return section;
+  };
   const render = () => {
+    container.className = `simple-do-view${viewMode === 'all' ? ' is-all-items' : ''}`;
+    root.body.classList.toggle('simple-do-list-mode', viewMode === 'all');
     container.replaceChildren();
     historyPanel.hidden = !historyExpanded;
     const heading = root.createElement('div');
@@ -145,14 +218,34 @@ export const createSimpleDoController = ({ root, getLanguage, onFocus }) => {
     historyToggle.append(completedRecordIcon('simple-do-history-toggle-icon'), root.createTextNode(`${text(language(), 'history')} (${completedItems().length})`));
     historyToggle.setAttribute('aria-controls', 'simple-do-history-panel');
     historyToggle.setAttribute('aria-expanded', String(historyExpanded));
+    const modes = root.createElement('div');
+    modes.className = 'simple-do-view-tabs';
+    [['quadrants', viewText(language(), 'overview')], ['all', viewText(language(), 'allItems')]].forEach(([mode, label]) => {
+      const tab = appendButton(label, 'simple-do-view-tab', 'set-view');
+      tab.dataset.view = mode;
+      tab.setAttribute('aria-pressed', String(viewMode === mode));
+      modes.append(tab);
+    });
     headingRow.append(title);
     const subtitle = root.createElement('p');
     subtitle.textContent = text(language(), 'subtitle');
-    heading.append(headingRow, historyToggle, subtitle);
-    const grid = root.createElement('div');
-    grid.className = 'simple-do-grid';
-    grid.append(...QUADRANTS.map(quadrant));
-    container.append(heading, grid);
+    const controls = root.createElement('div');
+    controls.className = 'simple-do-view-controls';
+    const spacer = root.createElement('span');
+    spacer.className = 'simple-do-view-controls-spacer';
+    const actions = root.createElement('div');
+    actions.className = 'simple-do-view-actions';
+    actions.append(historyToggle, exitButton);
+    controls.append(spacer, modes, actions);
+    heading.append(headingRow, subtitle, controls);
+    if (viewMode === 'quadrants') {
+      const grid = root.createElement('div');
+      grid.className = 'simple-do-grid';
+      grid.append(...QUADRANTS.map(quadrant));
+      container.append(heading, grid);
+    } else {
+      container.append(heading, allItemsView());
+    }
   };
   const renderHistory = () => {
     historyTitle.textContent = text(language(), 'history');
@@ -231,6 +324,11 @@ export const createSimpleDoController = ({ root, getLanguage, onFocus }) => {
       toggleHistory();
       return;
     }
+    if (target.dataset.action === 'set-view') {
+      viewMode = target.dataset.view;
+      render();
+      return;
+    }
     if (target.dataset.action === 'clear-quadrant') {
       clearQuadrant(target.dataset.quadrant);
       return;
@@ -248,7 +346,22 @@ export const createSimpleDoController = ({ root, getLanguage, onFocus }) => {
     if (target.dataset.action === 'restore') { items = items.map((current) => current.id === item.id ? { ...current, status: 'active', completedAt: null } : current); persist(); refresh(); }
     if (target.dataset.action === 'focus') onFocus(item.title);
   });
+  container.addEventListener('input', (event) => {
+    const target = event.target.closest('[data-action="search-items"]');
+    if (!target) return;
+    listQuery = target.value;
+    render();
+    const search = container.querySelector('[data-action="search-items"]');
+    search?.focus();
+    search?.setSelectionRange(listQuery.length, listQuery.length);
+  });
   container.addEventListener('change', (event) => {
+    const filter = event.target.closest('[data-action="filter-items"]');
+    if (filter) {
+      listFilter = filter.value;
+      render();
+      return;
+    }
     const target = event.target.closest('[data-action="move"]');
     if (!target || !QUADRANTS.includes(target.value)) return;
     items = items.map((item) => item.id === target.dataset.id ? { ...item, quadrant: target.value } : item);
