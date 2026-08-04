@@ -325,6 +325,13 @@
   .workspace.is-simple-do .side-rail { position: absolute; top: 10px; left: 0; width: 180px; }
 
   .workspace.is-simple-do .timer-stage { width: min(100%, 720px); margin-inline: auto; padding: 0; }
+
+  /* 桌面总览将可视高度交给二维象限，事项列表在各自象限内滚动。 */
+  body.todo-mode:not(.simple-do-list-mode) .simple-do-screen { display: flex; flex-direction: column; height: calc(100dvh - 96px); min-height: 0; }
+  body.todo-mode:not(.simple-do-list-mode) .simple-do-view { display: flex; flex: 1 1 auto; min-height: 0; flex-direction: column; overflow: hidden; }
+  body.todo-mode:not(.simple-do-list-mode) .simple-do-grid { flex: 1 1 auto; min-height: 0; grid-template-rows: repeat(2, minmax(0, 1fr)); }
+  body.todo-mode:not(.simple-do-list-mode) .simple-do-quadrant { height: 100%; max-height: none; }
+  body.todo-mode:not(.simple-do-list-mode) .simple-do-list { max-height: none; }
 }
 
 .simple-do-view { text-align: left; }
