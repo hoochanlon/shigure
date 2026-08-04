@@ -36,7 +36,7 @@ export const createKanbanView = ({ root, container, getItems, onMove, onUpdate, 
       if (event.target === panel) dialog.remove();
     });
   };
-  const createNotesEditor = (host, initialValue, onSave) => {
+  const createNotesEditor = (host, initialValue, onSave, onAutoSaveToggle) => {
     const Vditor = root.defaultView.Vditor;
     if (!Vditor) {
       const fallback = root.createElement('textarea');
@@ -49,7 +49,7 @@ export const createKanbanView = ({ root, container, getItems, onMove, onUpdate, 
       height: '100%',
       value: initialValue,
       cache: { enable: false },
-      toolbar: ['headings', 'bold', 'italic', 'strike', '|', 'list', 'ordered-list', 'check', '|', 'quote', 'code', 'link', '|', 'undo', 'redo', 'fullscreen', { name: 'save-details', icon: '<svg viewBox="0 0 24 24"><path d="M5 4h11l3 3v13H5V4Zm2 2v5h8V6H7Zm0 9v3h10v-3H7Zm9-9.2V9h1.2L16 7.8V6h0Z" fill="currentColor"/></svg>', tip: copy('save'), tipPosition: 'ne', click: onSave }],
+      toolbar: ['headings', 'bold', 'italic', 'strike', '|', 'list', 'ordered-list', 'check', '|', 'quote', 'code', 'link', '|', 'undo', 'redo', 'fullscreen', { name: 'save-details', icon: '<svg viewBox="0 0 24 24"><path d="M5 4h11l3 3v13H5V4Zm2 2v5h8V6H7Zm0 9v3h10v-3H7Zm9-9.2V9h1.2L16 7.8V6h0Z" fill="currentColor"/></svg>', tip: copy('save'), tipPosition: 'ne', click: onSave }, { name: 'toggle-auto-save', className: 'kanban-details-auto-save is-active', icon: '<svg viewBox="0 0 24 24"><path d="m9 16.2-3.5-3.5L4.1 14.1 9 19l11-11-1.4-1.4z" fill="currentColor"/></svg>', tip: copy('autoSave'), tipPosition: 'ne', click: onAutoSaveToggle }],
       lang: ({ zh: 'zh_CN', ja: 'ja_JP', en: 'en_US' }[getLanguage()] || 'zh_CN'),
       cdn: 'https://cdn.jsdelivr.net/npm/vditor@3.11.2'
     });
@@ -59,7 +59,7 @@ export const createKanbanView = ({ root, container, getItems, onMove, onUpdate, 
     closeDetails({ animate: false });
     const dialog = root.createElement('div');
     dialog.className = 'kanban-details';
-    dialog.innerHTML = `<div class="kanban-details-backdrop" data-kanban-action="close-details"></div><section class="kanban-details-panel" role="dialog" aria-modal="true" aria-labelledby="kanban-details-title" tabindex="-1"><header><h2 id="kanban-details-title">${copy('details')}</h2><button type="button" class="kanban-details-close" data-kanban-action="close-details" aria-label="${copy('close')}">×</button></header><form class="kanban-details-form"><label>${copy('title')}<input name="title" maxlength="100" required></label><label>${copy('quadrant')}<select name="quadrant" data-ui-select></select></label><label>${copy('boardColumn')}<select name="boardColumn" data-ui-select></select></label><label>${copy('progress')}<div class="kanban-progress-editor"><input name="progress" type="range" min="0" max="100" step="1"><output></output></div></label><label class="kanban-details-autosave"><input name="autoSave" type="checkbox" checked><span>${copy('autoSave')}</span></label><div class="kanban-details-editor-label">${copy('notes')}</div><div class="kanban-details-editor" aria-label="${copy('notes')}"></div></form></section></div>`;
+    dialog.innerHTML = `<div class="kanban-details-backdrop" data-kanban-action="close-details"></div><section class="kanban-details-panel" role="dialog" aria-modal="true" aria-labelledby="kanban-details-title" tabindex="-1"><header><h2 id="kanban-details-title">${copy('details')}</h2><button type="button" class="kanban-details-close" data-kanban-action="close-details" aria-label="${copy('close')}">×</button></header><form class="kanban-details-form"><label>${copy('title')}<input name="title" maxlength="100" required></label><label>${copy('quadrant')}<select name="quadrant" data-ui-select></select></label><label>${copy('boardColumn')}<select name="boardColumn" data-ui-select></select></label><label>${copy('progress')}<div class="kanban-progress-editor"><input name="progress" type="range" min="0" max="100" step="1"><output></output></div></label><div class="kanban-details-editor-label">${copy('notes')}</div><div class="kanban-details-editor" aria-label="${copy('notes')}"></div></form></section></div>`;
     const form = dialog.querySelector('form');
     form.elements.title.value = item.title;
     form.elements.progress.value = item.progress || 0;
@@ -70,16 +70,29 @@ export const createKanbanView = ({ root, container, getItems, onMove, onUpdate, 
     renderContainer.append(dialog);
     enhanceSelects?.(dialog);
     const collectUpdates = () => ({ title: form.elements.title.value.trim(), quadrant: form.elements.quadrant.value, boardColumn: form.elements.boardColumn.value, progress: Number(form.elements.progress.value), notes: activeEditor.getMarkdown() });
+    let autoSave = true;
     let autoSaveTimer = 0;
     const scheduleAutoSave = () => {
       root.defaultView.clearTimeout(autoSaveTimer);
-      if (!form.elements.autoSave.checked) return;
+      if (!autoSave) return;
       autoSaveTimer = root.defaultView.setTimeout(() => onUpdate(item.id, collectUpdates(), { refresh: false }), 500);
     };
-    activeEditor = createNotesEditor(dialog.querySelector('.kanban-details-editor'), item.notes || '', () => form.requestSubmit());
+    activeEditor = createNotesEditor(
+      dialog.querySelector('.kanban-details-editor'),
+      item.notes || '',
+      () => form.requestSubmit(),
+      (event) => {
+        autoSave = !autoSave;
+        const toggle = event.currentTarget.closest('.vditor-toolbar__item') || autoSaveButton();
+        toggle?.classList.toggle('is-active', autoSave);
+        if (!autoSave) root.defaultView.clearTimeout(autoSaveTimer);
+      }
+    );
+    const autoSaveButton = () => dialog.querySelector('[data-type="toggle-auto-save"], .kanban-details-auto-save');
+    root.defaultView.setTimeout(() => autoSaveButton()?.classList.add('is-active'), 0);
     dialog.flushAutoSave = () => {
       root.defaultView.clearTimeout(autoSaveTimer);
-      if (form.elements.autoSave.checked) onUpdate(item.id, collectUpdates(), { refresh: false });
+      if (autoSave) onUpdate(item.id, collectUpdates(), { refresh: false });
     };
     form.addEventListener('input', scheduleAutoSave);
     form.addEventListener('change', scheduleAutoSave);
