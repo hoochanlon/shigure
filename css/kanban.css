@@ -39,7 +39,7 @@
 .kanban-card-details:hover { color: var(--blue); border-color: var(--blue); }
 .kanban-details { position: fixed; inset: 0; z-index: 50; }
 .kanban-details-backdrop { position: absolute; inset: 0; background: rgb(12 10 9 / .42); backdrop-filter: blur(2px); animation: kanban-backdrop-in .18s ease-out; }
-.kanban-details-panel { position: absolute; top: 50%; left: 50%; display: flex; flex-direction: column; width: min(calc(100% - 32px), 720px); height: min(88%, 760px); box-sizing: border-box; padding: 32px; border-radius: 14px; background: var(--glass); box-shadow: 0 18px 42px rgb(0 0 0 / .22); overflow-y: auto; transform: translate(-50%, -50%); animation: kanban-drawer-in .2s ease-out; }
+.kanban-details-panel { position: absolute; top: 50%; left: 50%; display: flex; flex-direction: column; width: min(calc(100% - 32px), 640px); height: min(88%, 620px); box-sizing: border-box; padding: 32px; border-radius: 14px; background: var(--glass); box-shadow: 0 18px 42px rgb(0 0 0 / .22); overflow-y: auto; transform: translate(-50%, -50%); animation: kanban-drawer-in .2s ease-out; }
 .kanban-details.is-closing .kanban-details-backdrop { animation: kanban-backdrop-out .18s ease-in forwards; }
 .kanban-details.is-closing .kanban-details-panel { animation: kanban-drawer-out .2s ease-in forwards; }
 @keyframes kanban-drawer-in { from { transform: translate(-50%, calc(-50% + 40px)); opacity: 0; } to { transform: translate(-50%, -50%); opacity: 1; } }
@@ -49,9 +49,11 @@
 .kanban-details-panel header { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
 .kanban-details-panel h2 { margin: 0; font-size: 1rem; }
 .kanban-details-close { width: 32px; height: 32px; padding: 0; border: 1px solid var(--line); border-radius: 7px; background: transparent; color: var(--muted); font-size: 1.3rem; cursor: pointer; }
-.kanban-details-form { display: grid; grid-template-columns: 1.15fr repeat(2, 1fr); align-content: start; flex: 1; gap: 14px; min-height: 0; margin-top: 20px; }
-.kanban-details-form > label:first-of-type { grid-column: span 2; }
+.kanban-details-form { display: grid; grid-template-columns: 120px 120px minmax(0, 1fr); align-content: start; flex: 1; gap: 10px; min-height: 0; margin-top: 20px; }
+.kanban-details-form > label:first-of-type { grid-column: 1 / -1; }
 .kanban-details-form > label:nth-of-type(2) { grid-column: 1; }
+.kanban-details-form > label:nth-of-type(3) { grid-column: 2; }
+.kanban-details-form > label:nth-of-type(4) { grid-column: 3; }
 .kanban-details-form label { display: grid; gap: 6px; color: var(--faint); font-size: .78rem; }
 .kanban-details-editor-label,
 .kanban-details-editor { grid-column: 1 / -1; }
@@ -62,12 +64,14 @@
 .kanban-details-form textarea { resize: vertical; line-height: 1.5; }
 .kanban-details-form :is(input:not([type="checkbox"]):not([type="range"]), select, textarea):focus { outline: none; border-color: var(--blue); box-shadow: 0 0 0 3px color-mix(in srgb, var(--blue) 14%, transparent); }
 .kanban-details-form .ui-select { width: 100%; min-width: 0; }
+.kanban-details-form > label:nth-of-type(2) .ui-select,
+.kanban-details-form > label:nth-of-type(3) .ui-select { width: 120px; }
 .kanban-details-form .ui-select-trigger { min-height: 40px; }
 .kanban-progress-editor { display: grid; grid-template-columns: 1fr 4ch; gap: 10px; align-items: center; }
 .kanban-progress-editor input[type="range"] { padding: 0; accent-color: var(--blue); }
 .kanban-progress-editor output { color: var(--ink); font-size: .84rem; text-align: right; }
 .kanban-details-editor-label { margin-top: 4px; color: var(--faint); font-size: .78rem; }
-.kanban-details-editor { display: flex; flex: 1; min-height: 420px; }
+.kanban-details-editor { display: flex; flex: 1; min-height: 320px; }
 .kanban-details-editor .vditor {
   --border-color: var(--line);
   --second-color: var(--faint);
@@ -149,5 +153,7 @@
   .kanban-details-form > label:nth-of-type(2),
   .kanban-details-form > label:nth-of-type(3),
   .kanban-details-form > label:nth-of-type(4) { grid-column: 1 / -1; max-width: none; }
+  .kanban-details-form > label:nth-of-type(2) .ui-select,
+  .kanban-details-form > label:nth-of-type(3) .ui-select { width: 100%; }
   .kanban-details-editor { min-height: 320px; }
 }
