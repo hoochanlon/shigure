@@ -44,7 +44,8 @@ body.zen-mode #zen-exit { display: flex; position: fixed; top: max(22px, env(saf
 /* 禅模式设置 */
 .zen-settings { position: relative; margin-top: 32px; }
 
-body.zen-mode .zen-settings { display: block; }
+body.zen-mode .zen-settings,
+html.zen-mode-preload .zen-settings { display: block; }
 
 .zen-actions { display: flex; gap: 12px; justify-content: center; align-items: center; }
 
