@@ -1,7 +1,7 @@
 const STORAGE_KEY = 'pomodoro.timer.state';
 const LEGACY_KEY = 'tomatoData';
 
-const defaultState = () => ({ version: 1, settings: { workMinutes: 25, breakMinutes: 5, cycleMode: 'off', stopwatchAutoStopSeconds: 0, stopwatchTimeFormat: 'smart', ambientEnabled: false, ambientVolume: 0.35, ambientSound: 'rain.mp3', alertEnabled: true, alertVolume: 0.7, pomodoroAlertEnabled: true, breakAlertEnabled: true, workAlertSound: 'piano-film-head-advertising-rhythm-light-background-material.mp3', breakAlertSound: 'Westminster-chimes.mp3', stopwatchAlertEnabled: true, stopwatchAlertSound: 'nokia.mp3', wallpaper: 'light', themeMode: 'manual', enterToStart: false, zenMode: false }, sessions: [], activeTimer: null, activeStopwatch: null, pomodoroResetAt: null });
+const defaultState = () => ({ version: 1, settings: { workMinutes: 25, breakMinutes: 5, cycleMode: 'off', stopwatchAutoStopSeconds: 0, stopwatchTimeFormat: 'compact', ambientEnabled: false, ambientVolume: 0.35, ambientSound: 'rain.mp3', alertEnabled: true, alertVolume: 0.7, pomodoroAlertEnabled: true, breakAlertEnabled: true, workAlertSound: 'piano-film-head-advertising-rhythm-light-background-material.mp3', breakAlertSound: 'Westminster-chimes.mp3', stopwatchAlertEnabled: true, stopwatchAlertSound: 'nokia.mp3', wallpaper: 'light', themeMode: 'manual', enterToStart: false, zenMode: false }, sessions: [], activeTimer: null, activeStopwatch: null, pomodoroResetAt: null });
 const isRecord = (value) => value && typeof value === 'object';
 
 const migrateLegacy = (legacy) => {
@@ -30,6 +30,11 @@ export const loadState = () => {
       }
       if (!validCycleModes.has(stored.settings?.cycleMode)) {
         state.settings.cycleMode = stored.settings?.autoLoop ? 'continuous' : 'off';
+      }
+      if (stored.settings?.stopwatchTimeFormat === 'smart') state.settings.stopwatchTimeFormat = 'compact';
+      if (stored.settings?.stopwatchTimeFormat === 'precise') state.settings.stopwatchTimeFormat = 'full';
+      if (!['compact', 'full'].includes(state.settings.stopwatchTimeFormat)) {
+        state.settings.stopwatchTimeFormat = defaultState().settings.stopwatchTimeFormat;
       }
       delete state.settings.autoLoop;
       const legacyAlertSound = validPomodoroAlertSounds.has(stored.settings?.pomodoroAlertSound) ? stored.settings.pomodoroAlertSound : null;

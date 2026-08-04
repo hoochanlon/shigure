@@ -1,0 +1,36 @@
+/* 壁纸背景与前景层级。 */
+
+/* 壁纸和深色主题的视觉覆盖 */
+
+html.has-rain-wallpaper,
+body.has-rain-wallpaper { --ink: #f6f7fb; --muted: rgb(246 247 251 / .72); --faint: rgb(246 247 251 / .48); --line: rgb(255 255 255 / .18); --glass: rgb(14 22 38 / .34); --blue: #a8c7ff; --danger: #ffaaaa; --bg: #2a3f5f; background: linear-gradient(105deg, rgb(15 26 44 / .82), rgb(19 39 61 / .44)), url('../assets/wallpapers/rain.jpg') center / cover fixed; }
+
+html.has-rain-wallpaper::before,
+body.has-rain-wallpaper::before { display: none; }
+
+/* 雨景与 Lofi Girl 共用固定视口背景模型，避免长页面底部露底。 */
+html.has-rain-wallpaper {
+  background: var(--bg);
+}
+
+body.has-rain-wallpaper {
+  background: transparent;
+}
+
+body.has-rain-wallpaper::before {
+  content: '';
+  display: block;
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background: linear-gradient(105deg, rgb(15 26 44 / .82), rgb(19 39 61 / .44)), url('../assets/wallpapers/rain.jpg') center / cover no-repeat;
+}
+
+body.has-rain-wallpaper > :is(.app-shell, .zen-exit, .todo-shell) {
+  position: relative;
+  z-index: 1;
+}
+
+html.has-lofi-girl-wallpaper,
+body.has-lofi-girl-wallpaper { 

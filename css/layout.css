@@ -92,7 +92,7 @@
 
 .secondary-actions { justify-content: center; gap: 22px; margin-top: 16px; }
 
-.side-rail #settings-panel { width: 100%; margin: 8px 0 0; padding: 12px 0 0; border: 0; border-top: 1px solid var(--line); border-radius: 0; background: transparent; }
+.side-rail #settings-panel { width: 100%; margin: 8px 0 0; padding: 12px 0 16px; border: 0; border-top: 1px solid var(--line); border-radius: 0; background: transparent; }
 
 .side-rail #settings-panel h2, .side-rail #restore-panel h2 { display: none; }
 
@@ -117,6 +117,11 @@
   padding: .6rem .75rem;
   border-color: color-mix(in srgb, var(--line) 82%, var(--ink));
   box-shadow: 0 1px 2px rgb(0 0 0 / .04);
+}
+
+.side-rail #settings-panel #stopwatch-auto-stop {
+  width: 10ch;
+  max-width: 100%;
 }
 
 .side-rail #settings-panel .settings-grid :is(input, select):focus {
@@ -151,6 +156,16 @@
   white-space: nowrap;
   box-shadow: none;
 }
+
+.side-rail #settings-panel .settings-grid .ui-select-trigger {
+  width: min(100%, 11rem);
+  box-sizing: border-box;
+  padding: .6rem 2.25rem .6rem .75rem;
+  border-color: color-mix(in srgb, var(--line) 82%, var(--ink));
+  box-shadow: 0 1px 2px rgb(0 0 0 / .04);
+}
+
+.side-rail #settings-panel .settings-grid .ui-select { margin-bottom: 8px; }
 
 .side-rail #cycle-mode,
 #zen-cycle-mode,

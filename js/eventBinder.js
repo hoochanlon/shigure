@@ -1,4 +1,4 @@
-import { translate } from './i18n.js';
+import { translate, translateCompact } from './i18n.js';
 import { getDefaultSettings } from './storage.js';
 
 export const createEventBinder = ({ state, elements, view, getLanguage, setLanguage, getMode, switchMode, switchScreen, timer, stopwatch, settings, sessions, audio, wallpaper, persist, render }) => {
@@ -9,11 +9,19 @@ export const createEventBinder = ({ state, elements, view, getLanguage, setLangu
     removers.push(() => target.removeEventListener(type, handler, options));
   };
   const language = () => getLanguage();
-  const closePanels = () => document.querySelectorAll('[data-panel-target]').forEach((button) => {
-    button.setAttribute('aria-expanded', 'false');
-    const panel = document.getElementById(button.dataset.panelTarget);
-    if (panel) panel.hidden = true;
-  });
+  const closePanels = () => {
+    document.querySelectorAll('.ui-select-listbox:not([hidden])').forEach((listbox) => {
+      listbox.hidden = true;
+      listbox.removeAttribute('style');
+      document.getElementById(listbox.id.replace(/-listbox$/, ''))?.parentElement?.append(listbox);
+    });
+    document.querySelectorAll('.ui-select-trigger[aria-expanded="true"]').forEach((trigger) => trigger.setAttribute('aria-expanded', 'false'));
+    document.querySelectorAll('[data-panel-target]').forEach((button) => {
+      button.setAttribute('aria-expanded', 'false');
+      const panel = document.getElementById(button.dataset.panelTarget);
+      if (panel) panel.hidden = true;
+    });
+  };
   const togglePanel = (button) => {
     const panel = document.getElementById(button.dataset.panelTarget);
     if (!panel) return;
@@ -72,6 +80,14 @@ export const createEventBinder = ({ state, elements, view, getLanguage, setLangu
   ['simple-do-toggle', 'simple-do-rail-toggle'].forEach((id) => listen(document.getElementById(id), 'click', () => switchScreen('todo')));
   listen(document.getElementById('simple-do-exit'), 'click', () => switchScreen('timer'));
 
+  const previewWorkDuration = (rawMinutes) => {
+    if (['running', 'paused'].includes(timer.state.status)) return;
+    const minutes = Number(rawMinutes);
+    if (!Number.isFinite(minutes) || minutes < 1 || minutes > 99) return;
+    view.renderTimer({ ...timer.state, defaultDurationMs: minutes * 60_000 }, language());
+  };
+
+  ['work-minutes', 'zen-work-minutes'].forEach((id) => listen(elements[id], 'input', (event) => previewWorkDuration(event.target.value)));
   ['work-minutes', 'break-minutes', 'cycle-mode'].forEach((id) => listen(elements[id], 'change', () => {
     if (settings.saveSettings(language())) render();
   }));
@@ -161,6 +177,22 @@ export const createEventBinder = ({ state, elements, view, getLanguage, setLangu
     dropdown: document.getElementById(`pomodoro-${mode}-sound-dropdown`),
     input: document.getElementById(`pomodoro-${mode}-alert-sound`)
   }));
+  const previewButtons = [...document.querySelectorAll('.option-preview-btn')];
+  let activePreviewButton = null;
+  const renderPreviewButton = (button) => {
+    previewButtons.forEach((item) => {
+      const active = item === button;
+      item.textContent = active ? '⏸' : '▶';
+      item.setAttribute('aria-label', active ? '暂停试听' : '试听');
+      item.setAttribute('aria-pressed', String(active));
+    });
+    activePreviewButton = button;
+  };
+  const stopActivePreview = () => {
+    audio.stopPreview();
+    renderPreviewButton(null);
+  };
+
   const closeSoundSelectors = () => soundSelectors.forEach(({ trigger, dropdown }) => {
     if (!trigger || !dropdown) return;
     dropdown.hidden = true;
@@ -176,7 +208,7 @@ export const createEventBinder = ({ state, elements, view, getLanguage, setLangu
     dropdown?.querySelectorAll('.custom-select-option').forEach((option) => listen(option, 'click', (event) => {
       if (event.target.closest('.option-preview-btn')) return;
       input.value = option.dataset.value;
-      audio.stopPreview();
+      stopActivePreview();
       audio.updateAlert(mode === 'work' ? { workSound: option.dataset.value } : { breakSound: option.dataset.value });
       closeSoundSelectors();
     }));
@@ -192,17 +224,26 @@ export const createEventBinder = ({ state, elements, view, getLanguage, setLangu
     if (event.target.closest('.option-preview-btn')) return;
     const sound = option.dataset.value;
     ambient.input.value = sound;
-    ambient.label.textContent = translate(language(), option.dataset.labelKey);
-    ambient.label.dataset.i18n = option.dataset.labelKey;
+    const labelKey = option.dataset.labelKey;
+    const fullLabel = translate(language(), labelKey);
+    ambient.label.textContent = translateCompact(language(), labelKey);
+    ambient.label.dataset.i18n = labelKey;
+    ambient.label.title = fullLabel;
+    ambient.trigger.setAttribute('aria-label', fullLabel);
     state.settings = { ...state.settings, ambientSound: sound };
     persist();
     audio.syncAmbient({ userSwitched: true });
     ambient.dropdown.hidden = true;
     ambient.trigger.setAttribute('aria-expanded', 'false');
   }));
-  document.querySelectorAll('.option-preview-btn').forEach((button) => listen(button, 'click', (event) => {
+  previewButtons.forEach((button) => listen(button, 'click', (event) => {
     event.stopPropagation();
+    if (button === activePreviewButton) {
+      stopActivePreview();
+      return;
+    }
     audio.preview({ ambientSound: button.dataset.ambientSound, alertSound: button.dataset.sound });
+    renderPreviewButton(button);
   }));
 
   listen(document, 'click', (event) => {
@@ -214,7 +255,7 @@ export const createEventBinder = ({ state, elements, view, getLanguage, setLangu
       closeSoundSelectors();
       if (ambient.dropdown) ambient.dropdown.hidden = true;
       ambient.trigger?.setAttribute('aria-expanded', 'false');
-      audio.stopPreview();
+      stopActivePreview();
     }
     if (!event.target.closest('#zen-settings')) {
       elements['zen-settings-panel'].hidden = true;
