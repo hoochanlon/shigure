@@ -1,5 +1,5 @@
 import { saveState, getDefaultSettings } from './storage.js';
-import { translate, translateCompact } from './i18n.js';
+import { translate } from './i18n.js';
 import { parseTimeInput } from './timeParser.js';
 
 /**
@@ -45,9 +45,8 @@ export const createSettingsController = (state, view, elements, audioController,
       if (selectedOption && elements['ambient-sound-label']) {
         const labelKey = selectedOption.dataset.labelKey;
         const fullLabel = translate(language, labelKey);
-        elements['ambient-sound-label'].textContent = translateCompact(language, labelKey);
+        elements['ambient-sound-label'].textContent = fullLabel;
         elements['ambient-sound-label'].dataset.i18n = labelKey;
-        elements['ambient-sound-label'].title = fullLabel;
         elements['ambient-sound-label'].closest('.custom-select-trigger')?.setAttribute('aria-label', fullLabel);
       }
     }

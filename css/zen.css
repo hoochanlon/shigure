@@ -151,8 +151,8 @@ html.todo-mode-preload #simple-do-screen[hidden] { display: block !important; }
 /* 全部事项是宽列表投影，不沿用四象限总览的 720px 画布。 */
 body.todo-mode.simple-do-list-mode .workspace.is-simple-do .timer-stage { width: min(100%, 1180px); max-width: 1180px; }
 
-/* 搜索结果的数量不应改变列表页面的垂直起点。 */
-body.todo-mode.simple-do-list-mode .workspace { align-items: flex-start; padding-top: 20px; box-sizing: border-box; }
+/* 列表视图与总览视图共用同一垂直起点，不因结果数量改变位置。 */
+body.todo-mode.simple-do-list-mode .workspace { align-items: flex-start; }
 
 .simple-do-view.is-all-items { width: min(100%, 980px); margin-inline: auto; }
 

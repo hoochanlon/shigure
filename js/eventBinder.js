@@ -1,4 +1,4 @@
-import { translate, translateCompact } from './i18n.js';
+import { translate } from './i18n.js';
 import { getDefaultSettings } from './storage.js';
 
 export const createEventBinder = ({ state, elements, view, getLanguage, setLanguage, getMode, switchMode, switchScreen, timer, stopwatch, settings, sessions, audio, wallpaper, persist, render }) => {
@@ -226,9 +226,8 @@ export const createEventBinder = ({ state, elements, view, getLanguage, setLangu
     ambient.input.value = sound;
     const labelKey = option.dataset.labelKey;
     const fullLabel = translate(language(), labelKey);
-    ambient.label.textContent = translateCompact(language(), labelKey);
+    ambient.label.textContent = fullLabel;
     ambient.label.dataset.i18n = labelKey;
-    ambient.label.title = fullLabel;
     ambient.trigger.setAttribute('aria-label', fullLabel);
     state.settings = { ...state.settings, ambientSound: sound };
     persist();
