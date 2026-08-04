@@ -22,7 +22,7 @@
 - **多语言支持** - 中文/英文/日文无缝切换
 - **零配置** - 单文件部署，打开即用，无需安装
 
-## 🎯 优势
+## 👍 优势
 
 - **原生技术栈** - 纯 HTML/CSS/JavaScript，无框架依赖
 - **轻量高效** - 无构建步骤，加载速度极快
@@ -53,7 +53,9 @@ python3 -m http.server 8000
 
 ![demo](./assets/screenshots/demo-2.png)
 
-## 📄 许可
+## 🎯 下一次计划
 
-MIT License - Copyright © 2026 [Hoochanlon](https://github.com/hoochanlon)
+* [ ] 计时画中画功能
+* [ ] 待办事项优化：事件可勾选、搜索框可输入中文
+* [ ] 优化【待办事项·完成记录】显示
 
