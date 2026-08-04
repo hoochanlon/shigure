@@ -1,5 +1,8 @@
+import { createKanbanView } from './kanban.js';
+
 const STORAGE_KEY = 'shigure.simple-do.state';
 const QUADRANTS = ['q1', 'q2', 'q3', 'q4'];
+const BOARD_COLUMNS = ['pending', 'inProgress', 'completed', 'cancelled'];
 
 const copy = {
   zh: {
@@ -15,17 +18,27 @@ const copy = {
 
 const text = (language, key) => (copy[language] || copy.zh)[key];
 const viewCopy = {
-  zh: { overview: '四象限', allItems: '全部事项', search: '搜索事项', allQuadrants: '全部象限', noMatches: '没有匹配的事项' },
-  en: { overview: 'Quadrants', allItems: 'All tasks', search: 'Search tasks', allQuadrants: 'All quadrants', noMatches: 'No matching tasks' },
-  ja: { overview: '4象限', allItems: 'すべてのタスク', search: 'タスクを検索', allQuadrants: 'すべての象限', noMatches: '一致するタスクはありません' }
+  zh: { overview: '四象限', kanban: '看板', allItems: '全部事项', search: '搜索事项', allQuadrants: '全部象限', noMatches: '没有匹配的事项' },
+  en: { overview: 'Quadrants', kanban: 'Kanban', allItems: 'All tasks', search: 'Search tasks', allQuadrants: 'All quadrants', noMatches: 'No matching tasks' },
+  ja: { overview: '4象限', kanban: 'カンバン', allItems: 'すべてのタスク', search: 'タスクを検索', allQuadrants: 'すべての象限', noMatches: '一致するタスクはありません' }
 };
 const viewText = (language, key) => (viewCopy[language] || viewCopy.zh)[key];
 const makeId = () => globalThis.crypto?.randomUUID?.() || `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+const migrateItem = (item) => {
+  const migrated = { ...item };
+  if (migrated.status === 'todo') migrated.status = 'active';
+  if (!migrated.boardColumn) migrated.boardColumn = migrated.status === 'completed' ? 'completed' : 'pending';
+  if (typeof migrated.boardOrder !== 'number') migrated.boardOrder = 0;
+  if (!migrated.createdAt) migrated.createdAt = Date.now();
+  if (typeof migrated.progress !== 'number') migrated.progress = migrated.status === 'completed' ? 100 : 0;
+  if (typeof migrated.notes !== 'string') migrated.notes = '';
+  return migrated;
+};
 const isItem = (item) => item && typeof item === 'object' && typeof item.id === 'string' && typeof item.title === 'string' && QUADRANTS.includes(item.quadrant) && ['active', 'completed'].includes(item.status);
 const load = () => {
   try {
     const state = JSON.parse(localStorage.getItem(STORAGE_KEY));
-    return Array.isArray(state?.items) ? state.items.filter(isItem) : [];
+    return Array.isArray(state?.items) ? state.items.filter(isItem).map(migrateItem) : [];
   } catch {
     return [];
   }
@@ -45,6 +58,9 @@ export const createSimpleDoController = ({ root, getLanguage, enhanceSelects, on
   const exitButton = root.getElementById('simple-do-exit');
   const clearHistoryButton = root.getElementById('simple-do-clear-history');
   const historyBackdrop = root.getElementById('simple-do-history-backdrop');
+  
+  let kanbanController = null;
+  const getQuadrantLabel = (quadrant) => text(language(), quadrant);
   const completedRecordIcon = (className) => {
     const icon = root.createElement('span');
     icon.className = className;
@@ -223,7 +239,7 @@ export const createSimpleDoController = ({ root, getLanguage, enhanceSelects, on
     return section;
   };
   const render = () => {
-    container.className = `simple-do-view${viewMode === 'all' ? ' is-all-items' : ''}`;
+    container.className = `simple-do-view${viewMode === 'all' ? ' is-all-items' : ''}${viewMode === 'kanban' ? ' is-kanban' : ''}`;
     root.body.classList.toggle('simple-do-list-mode', viewMode === 'all');
     container.replaceChildren();
     historyPanel.hidden = !historyExpanded && !historyClosing;
@@ -242,7 +258,7 @@ export const createSimpleDoController = ({ root, getLanguage, enhanceSelects, on
     historyToggle.setAttribute('aria-expanded', String(historyExpanded));
     const modes = root.createElement('div');
     modes.className = 'simple-do-view-tabs';
-    [['quadrants', viewText(language(), 'overview')], ['all', viewText(language(), 'allItems')]].forEach(([mode, label]) => {
+    [['quadrants', viewText(language(), 'overview')], ['kanban', viewText(language(), 'kanban')], ['all', viewText(language(), 'allItems')]].forEach(([mode, label]) => {
       const tab = appendButton(label, 'simple-do-view-tab', 'set-view');
       tab.dataset.view = mode;
       tab.setAttribute('aria-pressed', String(viewMode === mode));
@@ -265,6 +281,54 @@ export const createSimpleDoController = ({ root, getLanguage, enhanceSelects, on
       grid.className = 'simple-do-grid';
       grid.append(...QUADRANTS.map(quadrant));
       container.append(heading, grid);
+    } else if (viewMode === 'kanban') {
+      if (!kanbanController) {
+        kanbanController = createKanbanView({
+          root,
+          container,
+          getItems: () => items,
+          onMove: (itemId, newColumn, newOrder) => {
+            items = items.map((item) => {
+              if (item.id !== itemId) return item;
+              const updated = { ...item, boardColumn: newColumn, boardOrder: newOrder };
+              if (newColumn === 'completed' && item.progress < 100) updated.progress = 100;
+              if (newColumn === 'completed' && item.status !== 'completed') {
+                updated.status = 'completed';
+                updated.completedAt = Date.now();
+              }
+              if (newColumn !== 'completed' && item.status === 'completed') {
+                updated.status = 'active';
+                updated.completedAt = null;
+                if (item.progress === 100) updated.progress = 0;
+              }
+              return updated;
+            });
+            persist();
+            refresh();
+          },
+          onUpdate: (itemId, updates) => {
+            items = items.map((item) => {
+              if (item.id !== itemId) return item;
+              const updated = { ...item, ...updates };
+              if (updates.progress === 100 && item.boardColumn !== 'completed') {
+                updated.boardColumn = 'completed';
+                updated.status = 'completed';
+                updated.completedAt = Date.now();
+              }
+              return updated;
+            });
+            persist();
+            refresh();
+          },
+          enhanceSelects,
+          getLanguage,
+          getQuadrantLabel
+        });
+      }
+      const kanbanWrapper = root.createElement('div');
+      kanbanWrapper.className = 'simple-do-kanban-view';
+      kanbanController.render(kanbanWrapper);
+      container.append(heading, kanbanWrapper);
     } else {
       container.append(heading, allItemsView());
     }
@@ -338,7 +402,7 @@ export const createSimpleDoController = ({ root, getLanguage, enhanceSelects, on
     event.preventDefault();
     const title = new FormData(form).get('title').trim();
     if (!title) return;
-    items = [{ id: makeId(), title, quadrant: form.dataset.quadrant, status: 'active', createdAt: Date.now(), completedAt: null }, ...items];
+    items = [{ id: makeId(), title, quadrant: form.dataset.quadrant, status: 'active', createdAt: Date.now(), completedAt: null, boardColumn: 'pending', boardOrder: 0, progress: 0, notes: '' }, ...items];
     persist();
     refresh();
   });
@@ -362,13 +426,29 @@ export const createSimpleDoController = ({ root, getLanguage, enhanceSelects, on
     if (!item) return;
     if (target.dataset.action === 'toggle') {
       const completed = item.status !== 'completed';
-      items = items.map((current) => current.id === item.id ? { ...current, status: completed ? 'completed' : 'active', completedAt: completed ? Date.now() : null } : current);
+      items = items.map((current) => current.id === item.id ? { 
+        ...current, 
+        status: completed ? 'completed' : 'active', 
+        completedAt: completed ? Date.now() : null,
+        progress: completed ? 100 : (current.progress === 100 ? 0 : current.progress),
+        boardColumn: completed ? 'completed' : (current.boardColumn === 'completed' ? 'pending' : current.boardColumn)
+      } : current);
       persist();
       refresh();
     }
     if (target.dataset.action === 'delete') { items = items.filter((current) => current.id !== item.id); persist(); refresh(); }
     if (target.dataset.action === 'history-delete') { items = items.filter((current) => current.id !== item.id); persist(); refresh(); }
-    if (target.dataset.action === 'restore') { items = items.map((current) => current.id === item.id ? { ...current, status: 'active', completedAt: null } : current); persist(); refresh(); }
+    if (target.dataset.action === 'restore') {
+      items = items.map((current) => current.id === item.id ? { 
+        ...current, 
+        status: 'active', 
+        completedAt: null,
+        boardColumn: 'pending',
+        progress: current.progress === 100 ? 0 : current.progress
+      } : current);
+      persist();
+      refresh();
+    }
     if (target.dataset.action === 'focus') onFocus(item.title);
   });
   container.addEventListener('input', (event) => {
@@ -401,7 +481,13 @@ export const createSimpleDoController = ({ root, getLanguage, enhanceSelects, on
       items = items.filter((current) => current.id !== item.id);
     }
     if (target.dataset.action === 'restore') {
-      items = items.map((current) => current.id === item.id ? { ...current, status: 'active', completedAt: null } : current);
+      items = items.map((current) => current.id === item.id ? { 
+        ...current, 
+        status: 'active', 
+        completedAt: null,
+        boardColumn: 'pending',
+        progress: current.progress === 100 ? 0 : current.progress
+      } : current);
     }
     persist();
     refresh();

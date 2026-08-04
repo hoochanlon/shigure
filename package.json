@@ -22,6 +22,7 @@
     "string-width": "^8.2.2",
     "strip-ansi": "^7.2.0",
     "typed-query-selector": "^2.12.2",
+    "vditor": "^3.11.2",
     "webdriver-bidi-protocol": "^0.4.2",
     "wrap-ansi": "^9.0.2",
     "ws": "^8.21.1",

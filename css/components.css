@@ -326,12 +326,19 @@
 
   .workspace.is-simple-do .timer-stage { width: min(100%, 720px); margin-inline: auto; padding: 0; }
 
-  /* 桌面总览将可视高度交给二维象限，事项列表在各自象限内滚动。 */
-  body.todo-mode:not(.simple-do-list-mode) .simple-do-screen { display: flex; flex-direction: column; height: calc(100dvh - 96px); min-height: 0; }
-  body.todo-mode:not(.simple-do-list-mode) .simple-do-view { display: flex; flex: 1 1 auto; min-height: 0; flex-direction: column; overflow: hidden; }
+  /* 三个视图共享 flex 父容器，避免列表模式回退到 block 后发生外边距折叠。 */
+  body.todo-mode .simple-do-screen { display: flex; flex-direction: column; min-height: 0; }
+  body.todo-mode .simple-do-view { display: flex; flex-direction: column; min-height: 0; }
+
+  /* 总览和看板占用可视工作区；全部事项按自身内容自然延展。 */
+  body.todo-mode:not(.simple-do-list-mode) .simple-do-screen { height: calc(100dvh - 96px); }
+  body.todo-mode:not(.simple-do-list-mode) .simple-do-view { flex: 1 1 auto; overflow: hidden; }
   body.todo-mode:not(.simple-do-list-mode) .simple-do-grid { flex: 1 1 auto; min-height: 0; grid-template-rows: repeat(2, minmax(0, 1fr)); }
   body.todo-mode:not(.simple-do-list-mode) .simple-do-quadrant { height: 100%; max-height: none; }
   body.todo-mode:not(.simple-do-list-mode) .simple-do-list { max-height: none; }
+  
+  /* 三个视图的标题区使用同一顶部留白。 */
+  body.todo-mode .simple-do-intro { padding-top: 24px; margin-bottom: 18px; }
 }
 
 .simple-do-view { text-align: left; }
@@ -363,11 +370,11 @@
 
 .simple-do-intro p { margin: 7px 0 0; color: var(--muted); font-size: .86rem; }
 
-.simple-do-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); grid-auto-rows: auto; align-items: start; gap: 18px; }
+.simple-do-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); grid-auto-rows: auto; align-items: start; gap: 18px; padding-top: 14px; }
 
 .simple-do-all-view { width: min(100%, 980px); margin: 0 auto; }
 
-.simple-do-all-controls { display: flex; justify-content: center; gap: 10px; margin-bottom: 14px; }
+.simple-do-all-controls { display: flex; justify-content: center; gap: 10px; margin-top: 4px; margin-bottom: 18px; }
 
 .simple-do-all-controls input { flex: 0 1 280px; width: clamp(200px, 26vw, 280px); min-width: 0; min-height: 38px; padding: 8px 11px; border: 1px solid var(--line); border-radius: 8px; color: var(--ink); background: var(--glass); }
 
