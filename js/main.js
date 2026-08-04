@@ -94,6 +94,7 @@ const switchScreen = (nextScreen) => {
     settings.updateZenMode(false);
   }
   document.body.classList.toggle('todo-mode', showingTodo);
+  document.documentElement.classList.remove('todo-mode-preload');
   document.getElementById('simple-do-screen').hidden = !showingTodo;
   if (showingTodo) {
     simpleDo.render();

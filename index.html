@@ -52,6 +52,10 @@
           if (state.settings?.zenMode) {
             document.documentElement.classList.add('zen-mode-preload');
           }
+          // 在模块加载前恢复页面路由，避免刷新时先绘制默认计时界面。
+          if (localStorage.getItem('shigure.ui.screen') === 'todo') {
+            document.documentElement.classList.add('todo-mode-preload');
+          }
         }
       } catch (e) {}
     })();
