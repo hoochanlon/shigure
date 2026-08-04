@@ -2,8 +2,8 @@
 .simple-do-view.is-kanban { width: min(100%, 1180px); margin-inline: auto; }
 .simple-do-kanban-view { min-height: 0; }
 
-.kanban-board { display: grid; grid-template-columns: repeat(4, minmax(220px, 1fr)); gap: 14px; max-height: min(620px, calc(100dvh - 250px)); padding: 14px 0 18px; overflow-x: auto; overflow-y: hidden; overscroll-behavior-inline: contain; scrollbar-width: thin; }
-.kanban-column { display: flex; flex-direction: column; min-height: 0; max-height: 100%; border: 1px solid var(--line); border-radius: 14px; background: color-mix(in srgb, var(--glass) 84%, var(--ink)); overflow: hidden; }
+.kanban-board { display: grid; grid-template-columns: repeat(4, minmax(220px, 1fr)); gap: 14px; max-height: min(652px, calc(100dvh - 218px)); padding: 14px 0 18px; overflow-x: auto; overflow-y: hidden; overscroll-behavior-inline: contain; scrollbar-width: thin; }
+.kanban-column { display: flex; flex-direction: column; min-height: 620px; max-height: 100%; border: 1px solid var(--line); border-radius: 14px; background: color-mix(in srgb, var(--glass) 84%, var(--ink)); overflow: hidden; }
 .kanban-column.pending { --kanban-accent: #f59e0b; }
 .kanban-column.inProgress { --kanban-accent: #3b82f6; }
 .kanban-column.completed { --kanban-accent: #10b981; }
@@ -135,8 +135,10 @@
 .kanban-details-editor .vditor-ir th { background: color-mix(in srgb, var(--glass) 94%, var(--ink)); font-weight: 600; }
 .kanban-details-editor textarea { min-height: 100%; resize: vertical; line-height: 1.5; }
 @media (min-width: 901px) {
-  .simple-do-kanban-view .kanban-board { height: 100%; min-height: 0; max-height: min(620px, calc(100dvh - 250px)); padding-bottom: 0; }
-  .simple-do-kanban-view .kanban-column { min-height: 0; }
+  body.todo-mode:not(.simple-do-list-mode) .simple-do-view.is-kanban { overflow: visible; }
+  .simple-do-kanban-view { flex: 0 0 auto; min-height: 634px; }
+  .simple-do-kanban-view .kanban-board { height: 634px; min-height: 634px; max-height: 634px; padding-bottom: 0; }
+  .simple-do-kanban-view .kanban-column { min-height: 620px; }
 }
 @media (max-width: 640px) {
   .kanban-board { grid-template-columns: repeat(4, minmax(260px, 82vw)); max-height: min(520px, calc(100dvh - 220px)); padding-inline: 2px; }
