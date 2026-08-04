@@ -132,7 +132,10 @@ export const createBufferedPlayer = (source, { volume = 1, maxGain = 2.0 } = {})
         const buffer = await bufferPromise;
         if (!buffer) return false;
         if (audioContext.state !== 'running') {
-          console.warn('Alert sound skipped because the audio context is not running.');
+          await unlockAudio();
+        }
+        if (audioContext.state !== 'running') {
+          console.warn('Alert sound skipped because the audio context could not be resumed.');
           return false;
         }
         const sourceNode = audioContext.createBufferSource();
