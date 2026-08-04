@@ -1,9 +1,9 @@
 const COLUMNS = ['pending', 'inProgress', 'completed', 'cancelled'];
 
 const defaultCopy = {
-  zh: { pending: '待处理', inProgress: '进行中', completed: '已完成', cancelled: '已取消', details: '事项详情', title: '标题', quadrant: '象限', boardColumn: '看板区', progress: '项目进度', notes: '备注（Markdown）', preview: '内容预览', save: '保存', close: '关闭', move: '移动到', dragHint: '拖动卡片调整顺序', empty: '暂无事项' },
-  en: { pending: 'Pending', inProgress: 'In progress', completed: 'Completed', cancelled: 'Cancelled', details: 'Task details', title: 'Title', quadrant: 'Quadrant', boardColumn: 'Board column', progress: 'Progress', notes: 'Notes (Markdown)', preview: 'Content preview', save: 'Save', close: 'Close', move: 'Move to', dragHint: 'Drag cards to reorder', empty: 'No tasks' },
-  ja: { pending: '保留中', inProgress: '進行中', completed: '完了', cancelled: 'キャンセル', details: 'タスク詳細', title: 'タイトル', quadrant: '象限', boardColumn: 'ボード列', progress: '進捗', notes: 'メモ（Markdown）', preview: '内容プレビュー', save: '保存', close: '閉じる', move: '移動先', dragHint: 'カードをドラッグして並べ替え', empty: 'タスクはありません' }
+  zh: { pending: '待处理', inProgress: '进行中', completed: '已完成', cancelled: '已取消', details: '事项详情', title: '标题', quadrant: '象限', boardColumn: '看板区', progress: '项目进度', autoSave: '自动保存', notes: '备注（Markdown）', preview: '内容预览', save: '保存', close: '关闭', move: '移动到', dragHint: '拖动卡片调整顺序', empty: '暂无事项' },
+  en: { pending: 'Pending', inProgress: 'In progress', completed: 'Completed', cancelled: 'Cancelled', details: 'Task details', title: 'Title', quadrant: 'Quadrant', boardColumn: 'Board column', progress: 'Progress', autoSave: 'Auto-save', notes: 'Notes (Markdown)', preview: 'Content preview', save: 'Save', close: 'Close', move: 'Move to', dragHint: 'Drag cards to reorder', empty: 'No tasks' },
+  ja: { pending: '保留中', inProgress: '進行中', completed: '完了', cancelled: 'キャンセル', details: 'タスク詳細', title: 'タイトル', quadrant: '象限', boardColumn: 'ボード列', progress: '進捗', autoSave: '自動保存', notes: 'メモ（Markdown）', preview: '内容プレビュー', save: '保存', close: '閉じる', move: '移動先', dragHint: 'カードをドラッグして並べ替え', empty: 'タスクはありません' }
 };
 
 
@@ -20,12 +20,23 @@ export const createKanbanView = ({ root, container, getItems, onMove, onUpdate, 
     .sort((a, b) => a.boardOrder - b.boardOrder || a.createdAt - b.createdAt);
 
   let activeEditor = null;
-  const closeDetails = () => {
+  const closeDetails = ({ animate = true } = {}) => {
+    const dialog = renderContainer.querySelector('.kanban-details');
+    if (!dialog) return;
+    dialog.flushAutoSave?.();
     activeEditor?.destroy();
     activeEditor = null;
-    renderContainer.querySelector('.kanban-details')?.remove();
+    if (!animate) {
+      dialog.remove();
+      return;
+    }
+    dialog.classList.add('is-closing');
+    const panel = dialog.querySelector('.kanban-details-panel');
+    panel?.addEventListener('animationend', (event) => {
+      if (event.target === panel) dialog.remove();
+    });
   };
-  const createNotesEditor = (host, initialValue) => {
+  const createNotesEditor = (host, initialValue, onSave) => {
     const Vditor = root.defaultView.Vditor;
     if (!Vditor) {
       const fallback = root.createElement('textarea');
@@ -38,17 +49,17 @@ export const createKanbanView = ({ root, container, getItems, onMove, onUpdate, 
       height: '100%',
       value: initialValue,
       cache: { enable: false },
-      toolbar: ['headings', 'bold', 'italic', 'strike', '|', 'list', 'ordered-list', 'check', '|', 'quote', 'code', 'link', '|', 'undo', 'redo', 'fullscreen'],
+      toolbar: ['headings', 'bold', 'italic', 'strike', '|', 'list', 'ordered-list', 'check', '|', 'quote', 'code', 'link', '|', 'undo', 'redo', 'fullscreen', { name: 'save-details', icon: '<svg viewBox="0 0 24 24"><path d="M5 4h11l3 3v13H5V4Zm2 2v5h8V6H7Zm0 9v3h10v-3H7Zm9-9.2V9h1.2L16 7.8V6h0Z" fill="currentColor"/></svg>', tip: copy('save'), tipPosition: 'ne', click: onSave }],
       lang: ({ zh: 'zh_CN', ja: 'ja_JP', en: 'en_US' }[getLanguage()] || 'zh_CN'),
       cdn: 'https://cdn.jsdelivr.net/npm/vditor@3.11.2'
     });
     return { getMarkdown: () => editor.getValue(), destroy: () => editor.destroy() };
   };
   const openDetails = (item) => {
-    closeDetails();
+    closeDetails({ animate: false });
     const dialog = root.createElement('div');
     dialog.className = 'kanban-details';
-    dialog.innerHTML = `<div class="kanban-details-backdrop" data-kanban-action="close-details"></div><section class="kanban-details-panel" role="dialog" aria-modal="true" aria-labelledby="kanban-details-title" tabindex="-1"><header><h2 id="kanban-details-title">${copy('details')}</h2><button type="button" class="kanban-details-close" data-kanban-action="close-details" aria-label="${copy('close')}">×</button></header><form class="kanban-details-form"><label>${copy('title')}<input name="title" maxlength="100" required></label><label>${copy('quadrant')}<select name="quadrant" data-ui-select></select></label><label>${copy('boardColumn')}<select name="boardColumn" data-ui-select></select></label><label>${copy('progress')}<div class="kanban-progress-editor"><input name="progress" type="range" min="0" max="100" step="1"><output></output></div></label><div class="kanban-details-editor-label">${copy('notes')}</div><div class="kanban-details-editor" aria-label="${copy('notes')}"></div><button class="kanban-details-save" type="submit">${copy('save')}</button></form></section></div>`;
+    dialog.innerHTML = `<div class="kanban-details-backdrop" data-kanban-action="close-details"></div><section class="kanban-details-panel" role="dialog" aria-modal="true" aria-labelledby="kanban-details-title" tabindex="-1"><header><h2 id="kanban-details-title">${copy('details')}</h2><button type="button" class="kanban-details-close" data-kanban-action="close-details" aria-label="${copy('close')}">×</button></header><form class="kanban-details-form"><label>${copy('title')}<input name="title" maxlength="100" required></label><label>${copy('quadrant')}<select name="quadrant" data-ui-select></select></label><label>${copy('boardColumn')}<select name="boardColumn" data-ui-select></select></label><label>${copy('progress')}<div class="kanban-progress-editor"><input name="progress" type="range" min="0" max="100" step="1"><output></output></div></label><label class="kanban-details-autosave"><input name="autoSave" type="checkbox" checked><span>${copy('autoSave')}</span></label><div class="kanban-details-editor-label">${copy('notes')}</div><div class="kanban-details-editor" aria-label="${copy('notes')}"></div></form></section></div>`;
     const form = dialog.querySelector('form');
     form.elements.title.value = item.title;
     form.elements.progress.value = item.progress || 0;
@@ -58,10 +69,24 @@ export const createKanbanView = ({ root, container, getItems, onMove, onUpdate, 
     COLUMNS.forEach((column) => form.elements.boardColumn.append(new Option(columnLabel(column), column, false, item.boardColumn === column)));
     renderContainer.append(dialog);
     enhanceSelects?.(dialog);
-    activeEditor = createNotesEditor(dialog.querySelector('.kanban-details-editor'), item.notes || '');
+    const collectUpdates = () => ({ title: form.elements.title.value.trim(), quadrant: form.elements.quadrant.value, boardColumn: form.elements.boardColumn.value, progress: Number(form.elements.progress.value), notes: activeEditor.getMarkdown() });
+    let autoSaveTimer = 0;
+    const scheduleAutoSave = () => {
+      root.defaultView.clearTimeout(autoSaveTimer);
+      if (!form.elements.autoSave.checked) return;
+      autoSaveTimer = root.defaultView.setTimeout(() => onUpdate(item.id, collectUpdates(), { refresh: false }), 500);
+    };
+    activeEditor = createNotesEditor(dialog.querySelector('.kanban-details-editor'), item.notes || '', () => form.requestSubmit());
+    dialog.flushAutoSave = () => {
+      root.defaultView.clearTimeout(autoSaveTimer);
+      if (form.elements.autoSave.checked) onUpdate(item.id, collectUpdates(), { refresh: false });
+    };
+    form.addEventListener('input', scheduleAutoSave);
+    form.addEventListener('change', scheduleAutoSave);
     form.addEventListener('submit', (event) => {
       event.preventDefault();
-      onUpdate(item.id, { title: form.elements.title.value.trim(), quadrant: form.elements.quadrant.value, boardColumn: form.elements.boardColumn.value, progress: Number(form.elements.progress.value), notes: activeEditor.getMarkdown() });
+      dialog.flushAutoSave = null;
+      onUpdate(item.id, collectUpdates());
       closeDetails();
     });
     dialog.addEventListener('click', (event) => { if (event.target.closest('[data-kanban-action="close-details"]')) closeDetails(); });

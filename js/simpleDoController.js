@@ -306,7 +306,7 @@ export const createSimpleDoController = ({ root, getLanguage, enhanceSelects, on
             persist();
             refresh();
           },
-          onUpdate: (itemId, updates) => {
+          onUpdate: (itemId, updates, { refresh: shouldRefresh = true } = {}) => {
             items = items.map((item) => {
               if (item.id !== itemId) return item;
               const updated = { ...item, ...updates };
@@ -318,7 +318,7 @@ export const createSimpleDoController = ({ root, getLanguage, enhanceSelects, on
               return updated;
             });
             persist();
-            refresh();
+            if (shouldRefresh) refresh();
           },
           enhanceSelects,
           getLanguage,
