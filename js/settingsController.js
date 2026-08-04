@@ -1,6 +1,5 @@
 import { saveState, getDefaultSettings } from './storage.js';
-import { translate } from './i18n.js';
-import { siteConfig } from './config.js';
+import { translate, translateCompact } from './i18n.js';
 import { parseTimeInput } from './timeParser.js';
 
 /**
@@ -17,6 +16,8 @@ export const createSettingsController = (state, view, elements, audioController,
     return parsed !== null ? parsed : Number(input);
   };
   const isValidMinutes = (value) => (value === 0 || (Number.isFinite(value) && value > 0 && value <= 99));
+  const normalizePomodoroMinutes = (value, fallback) => isValidMinutes(value) && value > 0 ? value : fallback;
+  const normalizeStopwatchAutoStopSeconds = (value) => Number.isInteger(value) && value >= 0 && value <= 359_999 ? value : 0;
   
   const systemTheme = window.matchMedia('(prefers-color-scheme: dark)');
   const resolveWallpaper = () => state.settings.themeMode === 'system' 
@@ -24,24 +25,30 @@ export const createSettingsController = (state, view, elements, audioController,
     : state.settings.wallpaper;
   
   const applySettings = (language) => {
-    elements['work-minutes'].value = state.settings.workMinutes;
-    elements['break-minutes'].value = state.settings.breakMinutes;
+    const defaults = getDefaultSettings();
+    const displayConfiguredValue = (value, fallback) => value === 0 || value === fallback ? '' : value;
+    elements['work-minutes'].value = displayConfiguredValue(state.settings.workMinutes, defaults.workMinutes);
+    elements['break-minutes'].value = displayConfiguredValue(state.settings.breakMinutes, defaults.breakMinutes);
     elements['cycle-mode'].value = state.settings.cycleMode;
-    elements['stopwatch-auto-stop'].value = state.settings.stopwatchAutoStopSeconds;
-    elements['stopwatch-time-format'].value = state.settings.stopwatchTimeFormat || 'smart';
-    elements['zen-work-minutes'].value = state.settings.workMinutes;
-    elements['zen-break-minutes'].value = state.settings.breakMinutes;
+    elements['stopwatch-auto-stop'].value = state.settings.stopwatchAutoStopSeconds || '';
+    elements['stopwatch-time-format'].value = state.settings.stopwatchTimeFormat || 'compact';
+    elements['zen-work-minutes'].value = displayConfiguredValue(state.settings.workMinutes, defaults.workMinutes);
+    elements['zen-break-minutes'].value = displayConfiguredValue(state.settings.breakMinutes, defaults.breakMinutes);
     elements['zen-cycle-mode'].value = state.settings.cycleMode;
-    elements['zen-stopwatch-auto-stop'].value = state.settings.stopwatchAutoStopSeconds;
-    elements['zen-stopwatch-time-format'].value = state.settings.stopwatchTimeFormat || 'smart';
+    elements['zen-stopwatch-auto-stop'].value = state.settings.stopwatchAutoStopSeconds || '';
+    elements['zen-stopwatch-time-format'].value = state.settings.stopwatchTimeFormat || 'compact';
     
     // 应用氛围音设置
     if (elements['ambient-sound']) {
       elements['ambient-sound'].value = state.settings.ambientSound || 'rain.mp3';
       const selectedOption = document.querySelector(`#ambient-sound-dropdown [data-value="${state.settings.ambientSound || 'rain.mp3'}"]`);
       if (selectedOption && elements['ambient-sound-label']) {
-        elements['ambient-sound-label'].textContent = translate(language, selectedOption.dataset.labelKey);
-        elements['ambient-sound-label'].dataset.i18n = selectedOption.dataset.labelKey;
+        const labelKey = selectedOption.dataset.labelKey;
+        const fullLabel = translate(language, labelKey);
+        elements['ambient-sound-label'].textContent = translateCompact(language, labelKey);
+        elements['ambient-sound-label'].dataset.i18n = labelKey;
+        elements['ambient-sound-label'].title = fullLabel;
+        elements['ambient-sound-label'].closest('.custom-select-trigger')?.setAttribute('aria-label', fullLabel);
       }
     }
     
@@ -62,17 +69,9 @@ export const createSettingsController = (state, view, elements, audioController,
   };
   
   const saveSettings = (language) => {
-    let workMinutes = getMinutes(elements['work-minutes']);
-    let breakMinutes = getMinutes(elements['break-minutes']);
-    
-    if (!isValidMinutes(workMinutes) || !isValidMinutes(breakMinutes)) {
-      window.alert(translate(language, 'invalidDuration'));
-      applySettings(language);
-      return false;
-    }
-    
-    if (workMinutes === 0) workMinutes = siteConfig.defaults.workMinutes;
-    if (breakMinutes === 0) breakMinutes = siteConfig.defaults.breakMinutes;
+    const defaults = getDefaultSettings();
+    const workMinutes = normalizePomodoroMinutes(getMinutes(elements['work-minutes']), defaults.workMinutes);
+    const breakMinutes = normalizePomodoroMinutes(getMinutes(elements['break-minutes']), defaults.breakMinutes);
     
     state.settings = { ...state.settings, workMinutes, breakMinutes, cycleMode: elements['cycle-mode'].value };
     persist();
@@ -81,17 +80,9 @@ export const createSettingsController = (state, view, elements, audioController,
   };
   
   const saveZenPomodoroSettings = (language) => {
-    let workMinutes = getMinutes(elements['zen-work-minutes']);
-    let breakMinutes = getMinutes(elements['zen-break-minutes']);
-    
-    if (!isValidMinutes(workMinutes) || !isValidMinutes(breakMinutes)) {
-      window.alert(translate(language, 'invalidDuration'));
-      applySettings(language);
-      return false;
-    }
-    
-    if (workMinutes === 0) workMinutes = siteConfig.defaults.workMinutes;
-    if (breakMinutes === 0) breakMinutes = siteConfig.defaults.breakMinutes;
+    const defaults = getDefaultSettings();
+    const workMinutes = normalizePomodoroMinutes(getMinutes(elements['zen-work-minutes']), defaults.workMinutes);
+    const breakMinutes = normalizePomodoroMinutes(getMinutes(elements['zen-break-minutes']), defaults.breakMinutes);
     
     state.settings = { ...state.settings, workMinutes, breakMinutes, cycleMode: elements['zen-cycle-mode'].value };
     persist();
@@ -100,13 +91,7 @@ export const createSettingsController = (state, view, elements, audioController,
   };
   
   const saveZenStopwatchSettings = (language) => {
-    const stopwatchAutoStopSeconds = getSeconds(elements['zen-stopwatch-auto-stop']);
-    
-    if (!Number.isInteger(stopwatchAutoStopSeconds) || stopwatchAutoStopSeconds < 0) {
-      window.alert(translate(language, 'invalidAutoStop'));
-      applySettings(language);
-      return false;
-    }
+    const stopwatchAutoStopSeconds = normalizeStopwatchAutoStopSeconds(getSeconds(elements['zen-stopwatch-auto-stop']));
     
     state.settings = { 
       ...state.settings, 
@@ -124,13 +109,7 @@ export const createSettingsController = (state, view, elements, audioController,
   };
   
   const saveStopwatchSettings = (language) => {
-    const stopwatchAutoStopSeconds = getSeconds(elements['stopwatch-auto-stop']);
-    
-    if (!Number.isInteger(stopwatchAutoStopSeconds) || stopwatchAutoStopSeconds < 0) {
-      window.alert(translate(language, 'invalidAutoStop'));
-      applySettings(language);
-      return false;
-    }
+    const stopwatchAutoStopSeconds = normalizeStopwatchAutoStopSeconds(getSeconds(elements['stopwatch-auto-stop']));
     
     state.settings = { 
       ...state.settings, 
@@ -138,6 +117,7 @@ export const createSettingsController = (state, view, elements, audioController,
       stopwatchTimeFormat: elements['stopwatch-time-format'].value 
     };
     persist();
+    applySettings(language);
     
     const currentMode = document.getElementById('tab-stopwatch').classList.contains('active') 
       ? 'stopwatch' 

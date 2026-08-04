@@ -35,6 +35,18 @@ body.has-dark-wallpaper::before { display: none; }
 
 .has-rain-wallpaper .custom-select-dropdown { background: rgb(14 22 38 / .95); backdrop-filter: blur(24px); box-shadow: 0 4px 12px rgb(0 0 0 / .4); }
 
+/* 展开列表脱离半透明面板，使用实体深色层以隔绝雨景背景。 */
+.has-rain-wallpaper .ui-select-listbox { border-color: #52627c; background: #121b2c; box-shadow: 0 10px 26px rgb(0 0 0 / .48); }
+
+.has-rain-wallpaper .ui-select-option { color: #f6f8ff; }
+
+.has-rain-wallpaper .ui-select-option:hover,
+.has-rain-wallpaper .ui-select-option:focus-visible { background: #283750; }
+
+.has-rain-wallpaper .ui-select-option.is-selected { color: #f8fbff; background: #9ec5ff; }
+
+.has-rain-wallpaper .ui-select-option:disabled { color: #a8b2c4; opacity: 1; }
+
 .has-rain-wallpaper .custom-select-option:hover { background: rgb(255 255 255 / .1); }
 
 .has-rain-wallpaper .option-preview-btn { background: rgb(255 255 255 / .1); border-color: rgb(255 255 255 / .18); }

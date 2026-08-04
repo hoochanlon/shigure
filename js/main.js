@@ -10,6 +10,7 @@ import { createStopwatchController } from './stopwatchController.js';
 import { createWallpaperController } from './wallpaperController.js';
 import { createEventBinder } from './eventBinder.js';
 import { createSimpleDoController } from './simpleDoController.js';
+import { createSelectEnhancer } from './selectEnhancer.js';
 
 const state = loadState();
 // 浏览器刷新后不能可靠恢复有声媒体播放，状态必须反映本页实际播放情况。
@@ -22,6 +23,7 @@ const SCREEN_STORAGE_KEY = 'shigure.ui.screen';
 const persist = () => saveState(state);
 const view = createView(document, () => state.pomodoroResetAt);
 const { elements } = view;
+const selectEnhancer = createSelectEnhancer(document);
 const getLanguage = () => language;
 const getMode = () => mode;
 
@@ -106,6 +108,7 @@ let simpleDo;
 
 const render = () => {
   view.applyLanguage(language);
+  selectEnhancer.refreshAll();
   view.renderTimer({ ...timer.state, defaultDurationMs: state.settings.workMinutes * 60_000 }, language);
   view.renderStopwatch(stopwatch.state, language, state.settings.stopwatchTimeFormat);
   sessions.render();
@@ -118,11 +121,13 @@ const setLanguage = (nextLanguage) => {
 simpleDo = createSimpleDoController({
   root: document,
   getLanguage,
+  enhanceSelects: selectEnhancer.enhanceWithin,
   onFocus: (task) => {
     elements['task-name'].value = task;
     switchScreen('timer');
   }
 });
+selectEnhancer.enhanceWithin();
 
 createEventBinder({
   state, elements, view, getLanguage, setLanguage, getMode, switchMode, switchScreen, timer, stopwatch,

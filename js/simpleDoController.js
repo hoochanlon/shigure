@@ -3,13 +3,13 @@ const QUADRANTS = ['q1', 'q2', 'q3', 'q4'];
 
 const copy = {
   zh: {
-    title: '待办事项', subtitle: '用四象限，决定下一步', addPlaceholder: '写下一件要做的事', add: '添加事项', completed: '已完成', history: '完成记录', clearHistory: '清空完成记录', clearConfirm: '确认清空全部完成事项吗？', clearQuadrant: '清空', clearQuadrantConfirm: '确认清空“{quadrant}”中的全部未完成事项吗？完成记录不会受影响。', focus: '专注', delete: '删除', move: '移至', empty: '还没有事项', emptyHistory: '还没有完成事项。', q1: '第一象限', q1Hint: '重要且紧急', q2: '第二象限', q2Hint: '重要但不紧急', q3: '第三象限', q3Hint: '紧急但不重要', q4: '第四象限', q4Hint: '不紧急也不重要'
+    title: '待办事项', subtitle: '用四象限，决定下一步', addPlaceholder: '写下一件要做的事', add: '添加事项', completed: '已完成', history: '完成记录', clearHistory: '清空记录', clearConfirm: '确认清空全部完成事项吗？', clearQuadrant: '清空', clearQuadrantConfirm: '确认清空“{quadrant}”中的全部未完成事项吗？完成记录不会受影响。', focus: '专注', delete: '删除', move: '移至', empty: '还没有事项', emptyHistory: '还没有完成事项。', q1: '第一象限', q1Hint: '重要且紧急', q2: '第二象限', q2Hint: '重要但不紧急', q3: '第三象限', q3Hint: '紧急但不重要', q4: '第四象限', q4Hint: '不紧急也不重要'
   },
   en: {
-    title: 'To-do', subtitle: 'Use four quadrants to choose what is next', addPlaceholder: 'Write down something to do', add: 'Add task', completed: 'Completed', history: 'Completed tasks', clearHistory: 'Clear completed tasks', clearConfirm: 'Clear all completed tasks?', clearQuadrant: 'Clear', clearQuadrantConfirm: 'Clear all unfinished tasks in “{quadrant}”? Completed task history will be kept.', focus: 'Focus', delete: 'Delete', move: 'Move to', empty: 'No tasks yet', emptyHistory: 'No completed tasks yet.', q1: 'Quadrant 1', q1Hint: 'Important & urgent', q2: 'Quadrant 2', q2Hint: 'Important, not urgent', q3: 'Quadrant 3', q3Hint: 'Urgent, not important', q4: 'Quadrant 4', q4Hint: 'Not urgent, not important'
+    title: 'To-do', subtitle: 'Use four quadrants to choose what is next', addPlaceholder: 'Write down something to do', add: 'Add task', completed: 'Completed', history: 'Completed tasks', clearHistory: 'Clear history', clearConfirm: 'Clear all completed tasks?', clearQuadrant: 'Clear', clearQuadrantConfirm: 'Clear all unfinished tasks in “{quadrant}”? Completed task history will be kept.', focus: 'Focus', delete: 'Delete', move: 'Move to', empty: 'No tasks yet', emptyHistory: 'No completed tasks yet.', q1: 'Quadrant 1', q1Hint: 'Important & urgent', q2: 'Quadrant 2', q2Hint: 'Important, not urgent', q3: 'Quadrant 3', q3Hint: 'Urgent, not important', q4: 'Quadrant 4', q4Hint: 'Not urgent, not important'
   },
   ja: {
-    title: 'ToDoリスト', subtitle: '4象限で次の一歩を決める', addPlaceholder: 'やることを書き出す', add: '追加', completed: '完了済み', history: '完了履歴', clearHistory: '完了済みを削除', clearConfirm: '完了したすべてのタスクを削除しますか？', clearQuadrant: '削除', clearQuadrantConfirm: '「{quadrant}」の未完了タスクをすべて削除しますか？完了履歴は保持されます。', focus: '集中', delete: '削除', move: '移動先', empty: 'タスクはありません', emptyHistory: '完了したタスクはありません。', q1: '第1象限', q1Hint: '重要かつ緊急', q2: '第2象限', q2Hint: '重要・緊急ではない', q3: '第3象限', q3Hint: '緊急・重要ではない', q4: '第4象限', q4Hint: '緊急でも重要でもない'
+    title: 'ToDoリスト', subtitle: '4象限で次の一歩を決める', addPlaceholder: 'やることを書き出す', add: '追加', completed: '完了済み', history: '完了履歴', clearHistory: '履歴を消去', clearConfirm: '完了したすべてのタスクを削除しますか？', clearQuadrant: '削除', clearQuadrantConfirm: '「{quadrant}」の未完了タスクをすべて削除しますか？完了履歴は保持されます。', focus: '集中', delete: '削除', move: '移動先', empty: 'タスクはありません', emptyHistory: '完了したタスクはありません。', q1: '第1象限', q1Hint: '重要かつ緊急', q2: '第2象限', q2Hint: '重要・緊急ではない', q3: '第3象限', q3Hint: '緊急・重要ではない', q4: '第4象限', q4Hint: '緊急でも重要でもない'
   }
 };
 
@@ -32,7 +32,7 @@ const load = () => {
 };
 const save = (items) => localStorage.setItem(STORAGE_KEY, JSON.stringify({ version: 1, items }));
 
-export const createSimpleDoController = ({ root, getLanguage, onFocus }) => {
+export const createSimpleDoController = ({ root, getLanguage, enhanceSelects, onFocus }) => {
   const container = root.getElementById('simple-do-view');
   let items = load();
   const language = () => getLanguage();
@@ -44,7 +44,6 @@ export const createSimpleDoController = ({ root, getLanguage, onFocus }) => {
   const historyList = root.getElementById('simple-do-history-list');
   const exitButton = root.getElementById('simple-do-exit');
   const clearHistoryButton = root.getElementById('simple-do-clear-history');
-  const closeHistoryButton = root.getElementById('simple-do-history-close');
   const historyBackdrop = root.getElementById('simple-do-history-backdrop');
   const completedRecordIcon = (className) => {
     const icon = root.createElement('span');
@@ -54,9 +53,27 @@ export const createSimpleDoController = ({ root, getLanguage, onFocus }) => {
     return icon;
   };
   let historyExpanded = false;
+  let historyClosing = false;
+  let historyModalActive = false;
+  let lockedScrollY = 0;
   let viewMode = 'quadrants';
   let listFilter = 'all';
   let listQuery = '';
+  const setHistoryModalActive = (active) => {
+    if (active === historyModalActive) return;
+    historyModalActive = active;
+    root.documentElement.classList.toggle('simple-do-history-open', active);
+    root.body.classList.toggle('simple-do-history-open', active);
+    container.inert = active;
+    exitButton.inert = active;
+    if (active) {
+      lockedScrollY = window.scrollY;
+      root.body.style.top = `-${lockedScrollY}px`;
+      return;
+    }
+    root.body.style.removeProperty('top');
+    window.scrollTo(0, lockedScrollY);
+  };
   const appendButton = (label, className, action, value) => {
     const button = root.createElement('button');
     button.type = 'button';
@@ -80,6 +97,7 @@ export const createSimpleDoController = ({ root, getLanguage, onFocus }) => {
     if (item.status === 'active') actions.append(appendButton(text(language(), 'focus'), 'simple-do-focus', 'focus', item.id));
     const move = root.createElement('select');
     move.className = 'simple-do-move';
+    move.dataset.uiSelect = '';
     move.dataset.action = 'move';
     move.dataset.id = item.id;
     move.setAttribute('aria-label', text(language(), 'move'));
@@ -153,6 +171,7 @@ export const createSimpleDoController = ({ root, getLanguage, onFocus }) => {
     search.setAttribute('aria-label', viewText(language(), 'search'));
     search.dataset.action = 'search-items';
     const filter = root.createElement('select');
+    filter.dataset.uiSelect = '';
     filter.dataset.action = 'filter-items';
     filter.setAttribute('aria-label', viewText(language(), 'allQuadrants'));
     [{ id: 'all', label: viewText(language(), 'allQuadrants') }, ...QUADRANTS.map((id) => ({ id, label: text(language(), id) }))].forEach(({ id, label }) => {
@@ -183,6 +202,7 @@ export const createSimpleDoController = ({ root, getLanguage, onFocus }) => {
       badge.textContent = text(language(), item.quadrant);
       const move = root.createElement('select');
       move.className = 'simple-do-move';
+    move.dataset.uiSelect = '';
       move.dataset.action = 'move';
       move.dataset.id = item.id;
       move.setAttribute('aria-label', text(language(), 'move'));
@@ -206,7 +226,9 @@ export const createSimpleDoController = ({ root, getLanguage, onFocus }) => {
     container.className = `simple-do-view${viewMode === 'all' ? ' is-all-items' : ''}`;
     root.body.classList.toggle('simple-do-list-mode', viewMode === 'all');
     container.replaceChildren();
-    historyPanel.hidden = !historyExpanded;
+    historyPanel.hidden = !historyExpanded && !historyClosing;
+    historyPanel.classList.toggle('is-closing', historyClosing);
+    setHistoryModalActive(historyExpanded || historyClosing);
     const heading = root.createElement('div');
     heading.className = 'simple-do-intro';
     const headingRow = root.createElement('div');
@@ -246,6 +268,7 @@ export const createSimpleDoController = ({ root, getLanguage, onFocus }) => {
     } else {
       container.append(heading, allItemsView());
     }
+    enhanceSelects(container);
   };
   const renderHistory = () => {
     historyTitle.textContent = text(language(), 'history');
@@ -293,17 +316,19 @@ export const createSimpleDoController = ({ root, getLanguage, onFocus }) => {
     refresh();
   };
   const closeHistory = () => {
-    if (!historyExpanded) return;
+    if (!historyExpanded || historyClosing) return;
     historyExpanded = false;
-    refresh();
+    historyClosing = true;
+    historyPanel.classList.add('is-closing');
     root.getElementById('simple-do-history-toggle')?.focus();
   };
   const toggleHistory = () => {
-    if (historyExpanded) {
+    if (historyExpanded || historyClosing) {
       closeHistory();
       return;
     }
     historyExpanded = true;
+    historyClosing = false;
     refresh();
     historyPanel.querySelector('[role="dialog"]')?.focus();
   };
@@ -388,10 +413,38 @@ export const createSimpleDoController = ({ root, getLanguage, onFocus }) => {
     refresh();
   };
   clearHistoryButton.addEventListener('click', clearHistory);
-  closeHistoryButton.addEventListener('click', closeHistory);
   historyBackdrop.addEventListener('click', closeHistory);
+  historyPanel.addEventListener('animationend', (event) => {
+    if (!historyClosing || !event.target.matches('.simple-do-history-panel')) return;
+    historyClosing = false;
+    refresh();
+    root.getElementById('simple-do-history-toggle')?.focus();
+  });
   root.addEventListener('keydown', (event) => {
-    if (event.key === 'Escape') closeHistory();
+    if (!historyExpanded) return;
+    if (event.key === 'Escape') {
+      event.preventDefault();
+      closeHistory();
+      return;
+    }
+    if (event.key !== 'Tab') return;
+    const dialog = historyPanel.querySelector('[role="dialog"]');
+    const focusable = [...dialog.querySelectorAll('button:not(:disabled), [href], input:not(:disabled), select:not(:disabled), textarea:not(:disabled), [tabindex]:not([tabindex="-1"])')]
+      .filter((element) => !element.hidden);
+    if (!focusable.length) {
+      event.preventDefault();
+      dialog.focus();
+      return;
+    }
+    const [first] = focusable;
+    const last = focusable.at(-1);
+    if (event.shiftKey && root.activeElement === first) {
+      event.preventDefault();
+      last.focus();
+    } else if (!event.shiftKey && root.activeElement === last) {
+      event.preventDefault();
+      first.focus();
+    }
   });
   return { clearHistory, render, renderHistory, resetHistoryPanel, title: () => text(language(), 'title'), subtitle: () => text(language(), 'subtitle') };
 };

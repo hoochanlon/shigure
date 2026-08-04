@@ -227,6 +227,39 @@ body.has-lofi-girl-wallpaper .zen-settings-content :is(input[type="number"], inp
   backdrop-filter: blur(10px);
 }
 
+/* 自定义选择组件取代了原生 select 的可见层，需与禅模式输入框保持同一深色玻璃层。 */
+html.has-lofi-girl-wallpaper .zen-settings-content :is(.ui-select-trigger, .ui-select-listbox),
+body.has-lofi-girl-wallpaper .zen-settings-content :is(.ui-select-trigger, .ui-select-listbox) {
+  border-color: rgb(255 250 245 / .45);
+  background: rgb(31 18 15 / .62);
+  color: #fffaf5;
+  box-shadow: 0 2px 8px rgb(31 18 15 / .24);
+  backdrop-filter: blur(10px);
+}
+
+html.has-lofi-girl-wallpaper .zen-settings-content .ui-select-trigger::after,
+body.has-lofi-girl-wallpaper .zen-settings-content .ui-select-trigger::after {
+  border-color: #fffaf5;
+}
+
+html.has-lofi-girl-wallpaper .zen-settings-content .ui-select-option,
+body.has-lofi-girl-wallpaper .zen-settings-content .ui-select-option {
+  color: #fffaf5;
+}
+
+html.has-lofi-girl-wallpaper .zen-settings-content .ui-select-option:hover,
+html.has-lofi-girl-wallpaper .zen-settings-content .ui-select-option:focus-visible,
+body.has-lofi-girl-wallpaper .zen-settings-content .ui-select-option:hover,
+body.has-lofi-girl-wallpaper .zen-settings-content .ui-select-option:focus-visible {
+  background: rgb(255 250 245 / .16);
+}
+
+html.has-lofi-girl-wallpaper .zen-settings-content .ui-select-option.is-selected,
+body.has-lofi-girl-wallpaper .zen-settings-content .ui-select-option.is-selected {
+  background: var(--blue);
+  color: #fffaf5;
+}
+
 html.has-lofi-girl-wallpaper .zen-settings-content select,
 body.has-lofi-girl-wallpaper .zen-settings-content select {
   background-image: url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1.5L6 6.5L11 1.5' stroke='%23fffaf5' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
@@ -296,13 +329,18 @@ body.has-lofi-girl-wallpaper .zen-settings-hint {
   text-shadow: 0 1px 3px rgb(31 18 15 / .8);
 }
 
-html.has-lofi-girl-wallpaper .side-rail .settings-grid :is(input, select),
-body.has-lofi-girl-wallpaper .side-rail .settings-grid :is(input, select) {
+html.has-lofi-girl-wallpaper .side-rail .settings-grid :is(input, select, .ui-select-trigger),
+body.has-lofi-girl-wallpaper .side-rail .settings-grid :is(input, select, .ui-select-trigger) {
   background-color: rgb(49 31 27 / .58);
   border-color: rgb(255 250 245 / .45);
   color: #fffaf5;
   box-shadow: 0 2px 8px rgb(31 18 15 / .22);
   backdrop-filter: blur(10px);
+}
+
+html.has-lofi-girl-wallpaper .side-rail .settings-grid .ui-select-trigger::after,
+body.has-lofi-girl-wallpaper .side-rail .settings-grid .ui-select-trigger::after {
+  border-color: #fffaf5;
 }
 
 html.has-lofi-girl-wallpaper .side-rail .settings-grid select,
@@ -380,6 +418,40 @@ body.has-lofi-girl-wallpaper .environment-panel .custom-select-dropdown {
 html.has-lofi-girl-wallpaper .environment-panel .custom-select-option:hover,
 body.has-lofi-girl-wallpaper .environment-panel .custom-select-option:hover {
   background: rgb(255 250 245 / .14);
+}
+
+/* 通用选择浮层挂载到页面根节点，显式复用音效下拉的深棕视觉层级。 */
+html.has-lofi-girl-wallpaper .ui-select-listbox,
+body.has-lofi-girl-wallpaper .ui-select-listbox {
+  border-color: rgb(255 250 245 / .3);
+  background: rgb(49 31 27 / .88);
+  box-shadow: 0 4px 12px rgb(31 18 15 / .32);
+  color: #fffaf5;
+  backdrop-filter: blur(14px);
+}
+
+html.has-lofi-girl-wallpaper .ui-select-option,
+body.has-lofi-girl-wallpaper .ui-select-option {
+  color: #fffaf5;
+}
+
+html.has-lofi-girl-wallpaper .ui-select-option:hover,
+html.has-lofi-girl-wallpaper .ui-select-option:focus-visible,
+body.has-lofi-girl-wallpaper .ui-select-option:hover,
+body.has-lofi-girl-wallpaper .ui-select-option:focus-visible {
+  background: rgb(255 250 245 / .14);
+}
+
+html.has-lofi-girl-wallpaper .ui-select-option.is-selected,
+body.has-lofi-girl-wallpaper .ui-select-option.is-selected {
+  color: #fffaf5;
+  background: var(--blue);
+}
+
+html.has-lofi-girl-wallpaper .ui-select-option:disabled,
+body.has-lofi-girl-wallpaper .ui-select-option:disabled {
+  color: rgb(255 250 245 / .5);
+  opacity: 1;
 }
 
 html.has-lofi-girl-wallpaper .environment-panel .volume-control input,
@@ -479,4 +551,112 @@ body.has-lofi-girl-wallpaper .history-list::-webkit-scrollbar-thumb:hover {
 html.has-lofi-girl-wallpaper .custom-select-option:hover,
 body.has-lofi-girl-wallpaper .custom-select-option:hover {
   background: rgb(0 0 0 / .08);
+}
+
+/* Lofi 的内容区统一为暖白纸张：深色只留给壁纸上的独立文本与阴影。 */
+html.has-lofi-girl-wallpaper,
+body.has-lofi-girl-wallpaper {
+  --lofi-paper: #fffaf5;
+  --lofi-paper-muted: #f2e7df;
+  --lofi-paper-hover: #f8ddd2;
+  --lofi-ink: #311f1b;
+  --lofi-line: rgb(91 57 47 / .22);
+}
+
+html.has-lofi-girl-wallpaper :is(.simple-do-quadrant, .simple-do-history-panel),
+body.has-lofi-girl-wallpaper :is(.simple-do-quadrant, .simple-do-history-panel) {
+  border-color: var(--lofi-line);
+  background: var(--lofi-paper);
+  box-shadow: 0 10px 28px rgb(49 31 27 / .2);
+  backdrop-filter: blur(12px);
+}
+
+html.has-lofi-girl-wallpaper .simple-do-quadrant,
+body.has-lofi-girl-wallpaper .simple-do-quadrant {
+  border-top-color: var(--quadrant-color);
+}
+
+html.has-lofi-girl-wallpaper :is(.simple-do-intro h2, .simple-do-intro p, .simple-do-quadrant h2, .simple-do-item-title, .simple-do-history-heading h2, .simple-do-history-item),
+body.has-lofi-girl-wallpaper :is(.simple-do-intro h2, .simple-do-intro p, .simple-do-quadrant h2, .simple-do-item-title, .simple-do-history-heading h2, .simple-do-history-item) {
+  color: var(--lofi-ink);
+  text-shadow: none;
+}
+
+html.has-lofi-girl-wallpaper :is(.simple-do-intro h2, .simple-do-intro p),
+body.has-lofi-girl-wallpaper :is(.simple-do-intro h2, .simple-do-intro p) {
+  color: #fffaf5;
+  text-shadow: 0 2px 5px rgb(31 18 15 / .85);
+}
+
+html.has-lofi-girl-wallpaper :is(.simple-do-quadrant p, .simple-do-empty, .simple-do-history-meta),
+body.has-lofi-girl-wallpaper :is(.simple-do-quadrant p, .simple-do-empty, .simple-do-history-meta) {
+  color: #68483e;
+  text-shadow: none;
+}
+
+html.has-lofi-girl-wallpaper :is(.simple-do-item, .simple-do-history-item, .simple-do-all-item),
+body.has-lofi-girl-wallpaper :is(.simple-do-item, .simple-do-history-item, .simple-do-all-item) {
+  border-color: var(--lofi-line);
+  background: var(--lofi-paper-muted);
+  box-shadow: none;
+  backdrop-filter: none;
+}
+
+html.has-lofi-girl-wallpaper :is(.simple-do-all-controls input, .simple-do-all-controls .ui-select-trigger),
+body.has-lofi-girl-wallpaper :is(.simple-do-all-controls input, .simple-do-all-controls .ui-select-trigger) {
+  border-color: var(--lofi-line);
+  background: var(--lofi-paper);
+  color: var(--lofi-ink);
+  box-shadow: none;
+}
+
+html.has-lofi-girl-wallpaper :is(.simple-do-check, .simple-do-add input, .simple-do-item-actions button, .simple-do-move, .simple-do-clear-quadrant, .simple-do-history-toggle, .simple-do-completed-toggle, .simple-do-history-restore),
+body.has-lofi-girl-wallpaper :is(.simple-do-check, .simple-do-add input, .simple-do-item-actions button, .simple-do-move, .simple-do-clear-quadrant, .simple-do-history-toggle, .simple-do-completed-toggle, .simple-do-history-restore) {
+  border-color: var(--lofi-line);
+  background-color: var(--lofi-paper-muted);
+  color: var(--lofi-ink);
+  box-shadow: none;
+  backdrop-filter: none;
+}
+
+html.has-lofi-girl-wallpaper :is(.simple-do-exit, .simple-do-history-panel .history-delete),
+body.has-lofi-girl-wallpaper :is(.simple-do-exit, .simple-do-history-panel .history-delete) {
+  border-color: var(--lofi-line);
+  background: var(--lofi-paper-muted);
+  color: var(--lofi-ink);
+  box-shadow: none;
+  backdrop-filter: none;
+}
+
+html.has-lofi-girl-wallpaper :is(.simple-do-exit, .simple-do-history-panel .history-delete):hover,
+body.has-lofi-girl-wallpaper :is(.simple-do-exit, .simple-do-history-panel .history-delete):hover {
+  background: var(--lofi-paper-hover);
+}
+
+html.has-lofi-girl-wallpaper :is(.simple-do-clear-quadrant, .simple-do-delete, #simple-do-clear-history, .simple-do-history-panel .history-delete),
+body.has-lofi-girl-wallpaper :is(.simple-do-clear-quadrant, .simple-do-delete, #simple-do-clear-history, .simple-do-history-panel .history-delete) {
+  color: #a13d34 !important;
+}
+
+/* 暖白输入面必须使用深色提示；危险操作进入交互态后改为白字深底。 */
+html.has-lofi-girl-wallpaper .simple-do-add input::placeholder,
+body.has-lofi-girl-wallpaper .simple-do-add input::placeholder {
+  color: #8f746b;
+  opacity: 1;
+}
+
+html.has-lofi-girl-wallpaper .simple-do-quadrant .simple-do-clear-quadrant,
+body.has-lofi-girl-wallpaper .simple-do-quadrant .simple-do-clear-quadrant {
+  border-color: #a13d34;
+  background: #fffaf5;
+  color: #8e3029 !important;
+  -webkit-text-fill-color: #8e3029;
+}
+
+html.has-lofi-girl-wallpaper .simple-do-quadrant .simple-do-clear-quadrant:is(:hover, :active, :focus-visible):not(:disabled),
+body.has-lofi-girl-wallpaper .simple-do-quadrant .simple-do-clear-quadrant:is(:hover, :active, :focus-visible):not(:disabled) {
+  border-color: #8e3029;
+  background: #a13d34;
+  color: #fffaf5 !important;
+  -webkit-text-fill-color: #fffaf5;
 }
