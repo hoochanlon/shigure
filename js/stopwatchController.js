@@ -1,7 +1,7 @@
 import { Stopwatch } from './stopwatch.js';
 import { saveState } from './storage.js';
 
-export const createStopwatchController = ({ state, view, getLanguage, onAutoStop, onRunningChange }) => {
+export const createStopwatchController = ({ state, view, getLanguage, onAutoStop, onRunningChange, onStateChange = () => {} }) => {
   let lastStatus = null;
   let completedSessionStartedAt = null;
   const persistState = (stopwatchState) => {
@@ -16,6 +16,7 @@ export const createStopwatchController = ({ state, view, getLanguage, onAutoStop
         onRunningChange(stopwatchState.status === 'running');
       }
       view.renderStopwatch(stopwatchState, getLanguage(), state.settings.stopwatchTimeFormat);
+      onStateChange(stopwatchState);
     },
     (session) => {
       if (session.startedAt !== completedSessionStartedAt) {

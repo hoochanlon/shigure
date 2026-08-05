@@ -341,6 +341,9 @@
   body.todo-mode .simple-do-intro { padding-top: 24px; margin-bottom: 18px; }
 }
 
+/* 待办页面不承载计时状态，避免共享状态栏进入该视图。 */
+body.todo-mode .stage-heading { display: none; }
+
 .simple-do-view { text-align: left; }
 
 .simple-do-intro { margin-bottom: 18px; text-align: center; }
