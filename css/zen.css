@@ -212,7 +212,7 @@ body.simple-do-history-open {
   .simple-do-view-tabs, .simple-do-view-actions { grid-column: 1; justify-self: center; }
   .simple-do-all-controls { flex-direction: column; }
   .simple-do-all-controls :is(input, select) { width: 100%; flex: 1 1 auto; }
-  .simple-do-all-item { grid-template-columns: minmax(0, 1fr) auto; }
+  .simple-do-all-item { grid-template-columns: auto minmax(0, 1fr) auto; }
   .simple-do-all-item .simple-do-item-actions { grid-column: 1 / -1; }
   .simple-do-item { grid-template-columns: auto minmax(0, 1fr); height: 116px; }
   .simple-do-item-actions { grid-column: 2; }

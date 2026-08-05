@@ -210,6 +210,9 @@ export const createSimpleDoController = ({ root, getLanguage, enhanceSelects, on
     matches.forEach((item) => {
       const row = root.createElement('li');
       row.className = 'simple-do-all-item';
+      const complete = appendButton('', 'simple-do-check', 'toggle', item.id);
+      complete.setAttribute('aria-label', item.title);
+      complete.setAttribute('aria-pressed', 'false');
       const title = root.createElement('span');
       title.className = 'simple-do-all-title';
       title.textContent = item.title;
@@ -232,7 +235,7 @@ export const createSimpleDoController = ({ root, getLanguage, enhanceSelects, on
       const actions = root.createElement('div');
       actions.className = 'simple-do-item-actions';
       actions.append(appendButton(text(language(), 'focus'), 'simple-do-focus', 'focus', item.id), move, appendButton(text(language(), 'delete'), 'simple-do-delete', 'delete', item.id));
-      row.append(title, badge, actions);
+      row.append(complete, title, badge, actions);
       list.append(row);
     });
     section.append(controls, list);
@@ -451,14 +454,29 @@ export const createSimpleDoController = ({ root, getLanguage, enhanceSelects, on
     }
     if (target.dataset.action === 'focus') onFocus(item.title);
   });
-  container.addEventListener('input', (event) => {
-    const target = event.target.closest('[data-action="search-items"]');
-    if (!target) return;
+  let searchComposing = false;
+  const renderSearchResults = (target) => {
     listQuery = target.value;
     render();
     const search = container.querySelector('[data-action="search-items"]');
     search?.focus();
     search?.setSelectionRange(listQuery.length, listQuery.length);
+  };
+  container.addEventListener('compositionstart', (event) => {
+    if (event.target.closest('[data-action="search-items"]')) searchComposing = true;
+  });
+  container.addEventListener('compositionend', (event) => {
+    const target = event.target.closest('[data-action="search-items"]');
+    if (!target) return;
+    searchComposing = false;
+    renderSearchResults(target);
+  });
+  container.addEventListener('input', (event) => {
+    const target = event.target.closest('[data-action="search-items"]');
+    if (!target) return;
+    listQuery = target.value;
+    if (searchComposing || event.isComposing) return;
+    renderSearchResults(target);
   });
   container.addEventListener('change', (event) => {
     const filter = event.target.closest('[data-action="filter-items"]');
