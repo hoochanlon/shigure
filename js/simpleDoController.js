@@ -1,4 +1,3 @@
-import { translate } from './i18n.js';
 import { createKanbanView } from './kanban.js';
 
 const STORAGE_KEY = 'shigure.simple-do.state';
@@ -7,13 +6,13 @@ const BOARD_COLUMNS = ['pending', 'inProgress', 'completed', 'cancelled'];
 
 const copy = {
   zh: {
-    title: '待办事项', subtitle: '用四象限，决定下一步', addPlaceholder: '写下一件要做的事', add: '添加事项', completed: '已完成', history: '完成记录', clearHistory: '清空记录', clearConfirm: '确认清空全部完成事项吗？', clearQuadrant: '清空', clearQuadrantConfirm: '确认清空“{quadrant}”中的全部未完成事项吗？完成记录不会受影响。', focus: '专注', delete: '删除', move: '移至', empty: '还没有事项', emptyHistory: '还没有完成事项。', q1: '第一象限', q1Hint: '重要且紧急', q2: '第二象限', q2Hint: '重要但不紧急', q3: '第三象限', q3Hint: '紧急但不重要', q4: '第四象限', q4Hint: '不紧急也不重要'
+    title: '待办事项', subtitle: '用四象限，决定下一步', all: '全部', addPlaceholder: '写下一件要做的事', add: '添加事项', completed: '已完成', history: '完成记录', clearHistory: '清空记录', clearConfirm: '确认清空全部完成事项吗？', clearQuadrant: '清空', clearQuadrantConfirm: '确认清空“{quadrant}”中的全部未完成事项吗？完成记录不会受影响。', focus: '专注', delete: '删除', move: '移至', empty: '还没有事项', emptyHistory: '还没有完成事项。', q1: '第一象限', q1Hint: '重要且紧急', q2: '第二象限', q2Hint: '重要但不紧急', q3: '第三象限', q3Hint: '紧急但不重要', q4: '第四象限', q4Hint: '不紧急也不重要'
   },
   en: {
-    title: 'To-do', subtitle: 'Use four quadrants to choose what is next', addPlaceholder: 'Write down something to do', add: 'Add task', completed: 'Completed', history: 'Completed tasks', clearHistory: 'Clear history', clearConfirm: 'Clear all completed tasks?', clearQuadrant: 'Clear', clearQuadrantConfirm: 'Clear all unfinished tasks in “{quadrant}”? Completed task history will be kept.', focus: 'Focus', delete: 'Delete', move: 'Move to', empty: 'No tasks yet', emptyHistory: 'No completed tasks yet.', q1: 'Quadrant 1', q1Hint: 'Important & urgent', q2: 'Quadrant 2', q2Hint: 'Important, not urgent', q3: 'Quadrant 3', q3Hint: 'Urgent, not important', q4: 'Quadrant 4', q4Hint: 'Not urgent, not important'
+    title: 'To-do', subtitle: 'Use four quadrants to choose what is next', all: 'All', addPlaceholder: 'Write down something to do', add: 'Add task', completed: 'Completed', history: 'Completed tasks', clearHistory: 'Clear history', clearConfirm: 'Clear all completed tasks?', clearQuadrant: 'Clear', clearQuadrantConfirm: 'Clear all unfinished tasks in “{quadrant}”? Completed task history will be kept.', focus: 'Focus', delete: 'Delete', move: 'Move to', empty: 'No tasks yet', emptyHistory: 'No completed tasks yet.', q1: 'Quadrant 1', q1Hint: 'Important & urgent', q2: 'Quadrant 2', q2Hint: 'Important, not urgent', q3: 'Quadrant 3', q3Hint: 'Urgent, not important', q4: 'Quadrant 4', q4Hint: 'Not urgent, not important'
   },
   ja: {
-    title: 'ToDoリスト', subtitle: '4象限で次の一歩を決める', addPlaceholder: 'やることを書き出す', add: '追加', completed: '完了済み', history: '完了履歴', clearHistory: '履歴を消去', clearConfirm: '完了したすべてのタスクを削除しますか？', clearQuadrant: '削除', clearQuadrantConfirm: '「{quadrant}」の未完了タスクをすべて削除しますか？完了履歴は保持されます。', focus: '集中', delete: '削除', move: '移動先', empty: 'タスクはありません', emptyHistory: '完了したタスクはありません。', q1: '第1象限', q1Hint: '重要かつ緊急', q2: '第2象限', q2Hint: '重要・緊急ではない', q3: '第3象限', q3Hint: '緊急・重要ではない', q4: '第4象限', q4Hint: '緊急でも重要でもない'
+    title: 'ToDoリスト', subtitle: '4象限で次の一歩を決める', all: 'すべて', addPlaceholder: 'やることを書き出す', add: '追加', completed: '完了済み', history: '完了履歴', clearHistory: '履歴を消去', clearConfirm: '完了したすべてのタスクを削除しますか？', clearQuadrant: '削除', clearQuadrantConfirm: '「{quadrant}」の未完了タスクをすべて削除しますか？完了履歴は保持されます。', focus: '集中', delete: '削除', move: '移動先', empty: 'タスクはありません', emptyHistory: '完了したタスクはありません。', q1: '第1象限', q1Hint: '重要かつ緊急', q2: '第2象限', q2Hint: '重要・緊急ではない', q3: '第3象限', q3Hint: '緊急・重要ではない', q4: '第4象限', q4Hint: '緊急でも重要でもない'
   }
 };
 
@@ -190,8 +189,8 @@ export const createSimpleDoController = ({ root, getLanguage, enhanceSelects, on
     const filter = root.createElement('select');
     filter.dataset.uiSelect = '';
     filter.dataset.action = 'filter-items';
-    filter.setAttribute('aria-label', translate(language(), 'all'));
-    [{ id: 'all', label: translate(language(), 'all') }, ...QUADRANTS.map((id) => ({ id, label: text(language(), id) }))].forEach(({ id, label }) => {
+    filter.setAttribute('aria-label', text(language(), 'all'));
+    [{ id: 'all', label: text(language(), 'all') }, ...QUADRANTS.map((id) => ({ id, label: text(language(), id) }))].forEach(({ id, label }) => {
       const option = root.createElement('option');
       option.value = id;
       option.selected = listFilter === id;
