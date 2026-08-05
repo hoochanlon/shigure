@@ -383,7 +383,7 @@
 
 .simple-do-all-list { display: grid; gap: 8px; margin: 0; padding: 0; list-style: none; }
 
-.simple-do-all-item { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; gap: 14px; align-items: center; min-height: 54px; padding: 9px 12px; border: 1px solid var(--line); border-radius: 10px; background: color-mix(in srgb, var(--glass) 86%, var(--line)); }
+.simple-do-all-item { display: grid; grid-template-columns: auto minmax(0, 1fr) auto auto; gap: 14px; align-items: center; min-height: 54px; padding: 9px 12px; border: 1px solid var(--line); border-radius: 10px; background: color-mix(in srgb, var(--glass) 86%, var(--line)); }
 
 .simple-do-all-title { min-width: 0; overflow-wrap: anywhere; font-size: .92rem; line-height: 1.45; }
 
