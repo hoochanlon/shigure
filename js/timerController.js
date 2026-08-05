@@ -1,7 +1,7 @@
 import { Timer } from './timer.js';
 import { saveState } from './storage.js';
 
-export const createTimerController = ({ state, view, getLanguage, onCompleted, onRunningChange }) => {
+export const createTimerController = ({ state, view, getLanguage, onCompleted, onRunningChange, onStateChange = () => {} }) => {
   const persistState = (timerState) => {
     state.activeTimer = timerState;
     saveState(state);
@@ -23,6 +23,7 @@ export const createTimerController = ({ state, view, getLanguage, onCompleted, o
       onRunningChange(timerState.status === 'running');
     }
     renderTimer(timerState);
+    onStateChange(timerState);
   }, persistState, (timerState) => view.renderTimerTitle(timerState, getLanguage()));
 
   // 初始化时标记已存在的已完成会话，防止重复触发

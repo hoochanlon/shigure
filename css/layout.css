@@ -54,7 +54,17 @@
 .rail-link[aria-expanded="true"] { color: var(--ink); background: var(--line); }
 
 /* 计时主舞台 */
-.timer-stage { min-width: 0; text-align: center; padding: 0 32px 0 16px; }
+.timer-stage { position: relative; min-width: 0; text-align: center; padding: 0 16px; }
+
+.pip-toggle { display: inline-grid; width: 28px; height: 28px; place-items: center; margin: -6px 0; padding: 0; border: 0; border-radius: 6px; color: currentColor; background: transparent; cursor: pointer; transition: color .2s ease, background .2s ease, opacity .2s ease; }
+
+.pip-toggle:hover:not(:disabled), .pip-toggle[aria-pressed="true"] { color: var(--blue); background: color-mix(in srgb, var(--blue) 10%, transparent); }
+
+.pip-toggle:focus-visible { outline: 3px solid color-mix(in srgb, var(--blue) 35%, transparent); outline-offset: 2px; }
+
+.pip-toggle:disabled { cursor: not-allowed; opacity: .38; }
+
+.pip-toggle svg { display: block; }
 
 .mode-tabs { display: flex; justify-content: center; gap: 12px; margin-bottom: 32px; }
 

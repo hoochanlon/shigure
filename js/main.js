@@ -9,6 +9,7 @@ import { createTimerController } from './timerController.js';
 import { createStopwatchController } from './stopwatchController.js';
 import { createWallpaperController } from './wallpaperController.js';
 import { createEventBinder } from './eventBinder.js';
+import { createPictureInPictureController } from './pictureInPicture.js';
 import { createSimpleDoController } from './simpleDoController.js';
 import { createSelectEnhancer } from './selectEnhancer.js';
 
@@ -29,6 +30,7 @@ const getMode = () => mode;
 
 let timer;
 let stopwatch;
+let pip;
 const audio = createAudioController({ state, elements, view });
 const wallpaper = createWallpaperController({ state, view });
 const settings = createSettingsController(state, view, elements, audio, wallpaper.render);
@@ -41,11 +43,17 @@ const startTimer = (nextMode) => {
   timer.start({ task, mode: nextMode, minutes: nextMode === 'work' ? state.settings.workMinutes : state.settings.breakMinutes });
 };
 
+const syncStageStatus = () => view.renderStageStatus(mode, timer.state, stopwatch.state, language);
+
 timer = createTimerController({
   state,
   view,
   getLanguage,
   onRunningChange: () => undefined,
+  onStateChange: () => {
+    syncStageStatus();
+    pip?.update();
+  },
   onCompleted: (session) => {
     sessions.record(session);
     const enabled = session.mode === 'work' ? state.settings.pomodoroAlertEnabled : state.settings.breakAlertEnabled;
@@ -64,14 +72,60 @@ stopwatch = createStopwatchController({
     sessions.record(session);
     if (state.settings.stopwatchAlertEnabled) audio.playStopwatchAlert();
   },
-  onRunningChange: () => undefined
+  onRunningChange: () => undefined,
+  onStateChange: () => {
+    syncStageStatus();
+    pip?.update();
+  }
+});
+
+pip = createPictureInPictureController({
+  root: document,
+  getLanguage,
+  getMode,
+  getTimerState: () => timer.state,
+  getStopwatchState: () => stopwatch.state,
+  getTask: () => mode === 'pomodoro' ? elements['task-name'].value.trim() : document.getElementById('stopwatch-task-name').value.trim(),
+  timerActions: {
+    startWork: () => startTimer('work'),
+    startBreak: () => startTimer('break'),
+    pause: () => timer.pause(),
+    resume: () => timer.resume(),
+    stop: () => {
+      const session = timer.stop();
+      if (session) sessions.record(session);
+    },
+    reset: () => timer.reset()
+  },
+  stopwatchActions: {
+    start: () => {
+      if (!settings.saveStopwatchSettings(language)) return;
+      audio.prepareAlertAudio();
+      stopwatch.start();
+    },
+    stop: () => stopwatch.stop(),
+    complete: (task) => {
+      const session = stopwatch.complete(task);
+      if (session) {
+        sessions.record(session);
+        if (state.settings.stopwatchAlertEnabled) audio.playStopwatchAlert();
+      }
+    },
+    reset: () => stopwatch.reset()
+  },
+  onAvailabilityChange: ({ supported, open }) => {
+    const button = elements['pip-toggle'];
+    button.disabled = !supported;
+    button.setAttribute('aria-pressed', String(open));
+    button.title = translate(language, supported ? (open ? 'pictureInPictureOpen' : 'pictureInPicture') : 'pictureInPictureUnsupported');
+  }
 });
 
 const syncTimerPresentation = () => {
   const pageVisible = document.visibilityState === 'visible';
-  const timerVisible = pageVisible && screen === 'timer';
-  stopwatch.setPresentationEnabled(timerVisible && mode === 'stopwatch');
-  timer.setPresentationActive(timerVisible && mode === 'pomodoro');
+  const presentationTarget = (pageVisible && screen === 'timer') || pip?.isOpen();
+  stopwatch.setPresentationEnabled(presentationTarget && mode === 'stopwatch');
+  timer.setPresentationActive(presentationTarget && mode === 'pomodoro');
 };
 const switchMode = (nextMode) => {
   mode = nextMode;
@@ -84,7 +138,9 @@ const switchMode = (nextMode) => {
   elements['zen-pomodoro-settings'].hidden = !isPomodoro;
   elements['zen-stopwatch-settings'].hidden = isPomodoro;
   view.renderSettingsMode(mode);
+  syncStageStatus();
   sessions.render();
+  pip?.update();
   syncTimerPresentation();
 };
 const switchScreen = (nextScreen) => {
@@ -111,7 +167,9 @@ const render = () => {
   selectEnhancer.refreshAll();
   view.renderTimer({ ...timer.state, defaultDurationMs: state.settings.workMinutes * 60_000 }, language);
   view.renderStopwatch(stopwatch.state, language, state.settings.stopwatchTimeFormat);
+  syncStageStatus();
   sessions.render();
+  pip?.update();
 };
 const setLanguage = (nextLanguage) => {
   language = nextLanguage;
@@ -130,7 +188,7 @@ simpleDo = createSimpleDoController({
 selectEnhancer.enhanceWithin();
 
 createEventBinder({
-  state, elements, view, getLanguage, setLanguage, getMode, switchMode, switchScreen, timer, stopwatch,
+  state, elements, view, getLanguage, setLanguage, getMode, switchMode, switchScreen, timer, stopwatch, pip,
   settings, sessions, audio, wallpaper, persist, render
 });
 
