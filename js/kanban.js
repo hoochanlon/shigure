@@ -20,20 +20,40 @@ export const createKanbanView = ({ root, container, getItems, onMove, onUpdate, 
     .sort((a, b) => a.boardOrder - b.boardOrder || a.createdAt - b.createdAt);
 
   let activeEditor = null;
+  let detailsModalActive = false;
+  let lockedScrollY = 0;
+  const setDetailsModalActive = (active) => {
+    if (active === detailsModalActive) return;
+    detailsModalActive = active;
+    root.documentElement.classList.toggle('kanban-details-open', active);
+    root.body.classList.toggle('kanban-details-open', active);
+    renderContainer.inert = active;
+    if (active) {
+      lockedScrollY = root.defaultView.scrollY;
+      root.body.style.top = `-${lockedScrollY}px`;
+      return;
+    }
+    root.body.style.removeProperty('top');
+    root.defaultView.scrollTo(0, lockedScrollY);
+  };
   const closeDetails = ({ animate = true } = {}) => {
-    const dialog = renderContainer.querySelector('.kanban-details');
+    const dialog = root.querySelector('.kanban-details');
     if (!dialog) return;
+    const removeDialog = () => {
+      dialog.remove();
+      setDetailsModalActive(false);
+    };
     dialog.flushAutoSave?.();
     activeEditor?.destroy();
     activeEditor = null;
     if (!animate) {
-      dialog.remove();
+      removeDialog();
       return;
     }
     dialog.classList.add('is-closing');
     const panel = dialog.querySelector('.kanban-details-panel');
     panel?.addEventListener('animationend', (event) => {
-      if (event.target === panel) dialog.remove();
+      if (event.target === panel) removeDialog();
     });
   };
   const createNotesEditor = (host, initialValue, onSave, onAutoSaveToggle) => {
@@ -67,7 +87,8 @@ export const createKanbanView = ({ root, container, getItems, onMove, onUpdate, 
     form.elements.progress.addEventListener('input', () => { form.elements.progress.nextElementSibling.value = `${form.elements.progress.value}%`; });
     ['q1', 'q2', 'q3', 'q4'].forEach((quadrant) => form.elements.quadrant.append(new Option(getQuadrantLabel(quadrant), quadrant, false, item.quadrant === quadrant)));
     COLUMNS.forEach((column) => form.elements.boardColumn.append(new Option(columnLabel(column), column, false, item.boardColumn === column)));
-    renderContainer.append(dialog);
+    root.body.append(dialog);
+    setDetailsModalActive(true);
     enhanceSelects?.(dialog);
     const collectUpdates = () => ({ title: form.elements.title.value.trim(), quadrant: form.elements.quadrant.value, boardColumn: form.elements.boardColumn.value, progress: Number(form.elements.progress.value), notes: activeEditor.getMarkdown() });
     let autoSave = true;

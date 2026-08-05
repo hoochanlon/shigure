@@ -1,3 +1,4 @@
+import { translate } from './i18n.js';
 import { createKanbanView } from './kanban.js';
 
 const STORAGE_KEY = 'shigure.simple-do.state';
@@ -18,9 +19,9 @@ const copy = {
 
 const text = (language, key) => (copy[language] || copy.zh)[key];
 const viewCopy = {
-  zh: { overview: '四象限', kanban: '看板', allItems: '全部事项', search: '搜索事项', allQuadrants: '全部象限', noMatches: '没有匹配的事项' },
-  en: { overview: 'Quadrants', kanban: 'Kanban', allItems: 'All tasks', search: 'Search tasks', allQuadrants: 'All quadrants', noMatches: 'No matching tasks' },
-  ja: { overview: '4象限', kanban: 'カンバン', allItems: 'すべてのタスク', search: 'タスクを検索', allQuadrants: 'すべての象限', noMatches: '一致するタスクはありません' }
+  zh: { overview: '四象限', kanban: '看板', allItems: '全部事项', search: '搜索事项', noMatches: '没有匹配的事项' },
+  en: { overview: 'Quadrants', kanban: 'Kanban', allItems: 'All tasks', search: 'Search tasks', noMatches: 'No matching tasks' },
+  ja: { overview: '4象限', kanban: 'カンバン', allItems: 'すべてのタスク', search: 'タスクを検索', noMatches: '一致するタスクはありません' }
 };
 const viewText = (language, key) => (viewCopy[language] || viewCopy.zh)[key];
 const makeId = () => globalThis.crypto?.randomUUID?.() || `${Date.now()}-${Math.random().toString(36).slice(2)}`;
@@ -189,8 +190,8 @@ export const createSimpleDoController = ({ root, getLanguage, enhanceSelects, on
     const filter = root.createElement('select');
     filter.dataset.uiSelect = '';
     filter.dataset.action = 'filter-items';
-    filter.setAttribute('aria-label', viewText(language(), 'allQuadrants'));
-    [{ id: 'all', label: viewText(language(), 'allQuadrants') }, ...QUADRANTS.map((id) => ({ id, label: text(language(), id) }))].forEach(({ id, label }) => {
+    filter.setAttribute('aria-label', translate(language(), 'all'));
+    [{ id: 'all', label: translate(language(), 'all') }, ...QUADRANTS.map((id) => ({ id, label: text(language(), id) }))].forEach(({ id, label }) => {
       const option = root.createElement('option');
       option.value = id;
       option.selected = listFilter === id;
